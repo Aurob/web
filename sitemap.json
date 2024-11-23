@@ -1,0 +1,21 @@
+{
+    ".": {},
+    "art": {
+        "clock": {},
+        "fabric": {
+            "img": {},
+            "text": {}
+        },
+        "musee": {}
+    },
+    "game": {},
+    "data": {
+        "books": {
+            "bookpile": {}
+        },
+        "lorem": {
+            "test": {}
+        }
+    },
+    "game": {}
+}

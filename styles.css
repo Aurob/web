@@ -1,0 +1,85 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.edge {
+    width: 100%;
+    height: 100%;
+}
+
+.er {
+    background-color: #f12fa0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1em; /* Always show a sliver */
+    height: 100%;
+    align-content: center;
+    z-index: -1;
+    transition: width 0.3s; /* Smooth transition */
+    color: transparent; /* Hide text */
+    overflow: hidden; /* Hide overflow */
+}
+
+.er:hover {
+    width: fit-content; /* Show full on hover */
+    color: black; /* Show text */
+}
+
+.el {
+    background-color: #a9be00;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    top: 0;
+    width: fit-content;
+    height: 100%;
+    align-content: center;
+    z-index: -3;
+}
+
+.el > a {
+    padding-left: .5em;
+    padding-top: 2em;
+}
+
+.et {
+    background-color: #00a9be;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: fit-content;
+    z-index: 0;
+}
+
+
+.eb {
+    background-color: #c3b0d3;
+    position: fixed; /* Fixed to bottom as footer */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: fit-content;
+    z-index: -2;
+}
+
+.eb #year {
+    float: right;
+    padding-right: 1em;
+}
+
+.edge > a {
+    padding-right: .5em;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -5;
+}

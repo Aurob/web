@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="text-align: center; margin-top: 20px;">
+    </div>
+    <script src="../../script.js"></script>
+    <script type="module">
+        import * as THREE from '../libs/three.module.js';
+        import { OrbitControls } from '../libs/OrbitControls.js';
+        import { RectAreaLightHelper } from '../libs/RectAreaLightHelper.js';
+        import { RectAreaLightUniformsLib } from '../libs/RectAreaLightUniformsLib.js';
+
+        // Initialize RectAreaLightUniformsLib
+        RectAreaLightUniformsLib.init();
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            powerPreference: "high-performance"
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1;
+        document.body.appendChild(renderer.domElement);
+
+        // Add controls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // Floor with white color
+        const geoFloor = new THREE.BoxGeometry(25, 0.1, 40);
+        const matStdFloor = new THREE.MeshStandardMaterial({
+            color: 0xffffff, // White color
+            roughness: 0.1,
+            metalness: 0
+        });
+
+        const mshStdFloor = new THREE.Mesh(geoFloor, matStdFloor);
+        mshStdFloor.receiveShadow = true;
+        scene.add(mshStdFloor);
+
+        // Walls
+        const wallMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9, metalness: 0 });
+        const geoWall1 = new THREE.BoxGeometry(25, 13, 0.1);
+        const geoWall2 = new THREE.BoxGeometry(0.1, 13, 40);
+
+        const wall1 = new THREE.Mesh(geoWall1, wallMaterial);
+        wall1.position.set(0, 6.5, -20);
+        wall1.receiveShadow = true;
+        scene.add(wall1);
+
+        const wall2 = new THREE.Mesh(geoWall1, wallMaterial);
+        wall2.position.set(0, 6.5, 20);
+        wall2.receiveShadow = true;
+        scene.add(wall2);
+
+        const wall3 = new THREE.Mesh(geoWall2, wallMaterial);
+        wall3.position.set(-12.5, 6.5, 0);
+        wall3.receiveShadow = true;
+        scene.add(wall3);
+
+        const wall4 = new THREE.Mesh(geoWall2, wallMaterial);
+        wall4.position.set(12.5, 6.5, 0);
+        wall4.receiveShadow = true;
+        scene.add(wall4);
+
+        // Ambient light with soft amber color
+        const ambientLight = new THREE.AmbientLight(0xF9F1DA, 0.1); // Amber color
+        scene.add(ambientLight);
+
+        // Create a panel with its own light using an image texture
+        function createPanelWithLight(x, y, z, width, height, color, texture) {
+            const group = new THREE.Group();
+
+            // Panel
+            const panelGeometry = new THREE.PlaneGeometry(width, height);
+            const panelMaterialFront = new THREE.MeshStandardMaterial({
+                side: THREE.FrontSide
+            });
+            const panelMaterialBack = new THREE.MeshStandardMaterial({
+                side: THREE.BackSide
+            });
+
+            const panelFront = new THREE.Mesh(panelGeometry, panelMaterialFront);
+            const panelBack = new THREE.Mesh(panelGeometry, panelMaterialBack);
+            panelFront.castShadow = true;
+            panelBack.castShadow = true;
+            group.add(panelFront);
+            group.add(panelBack);
+
+            // Rectangular area light for local illumination
+            const rectLight = new THREE.RectAreaLight(color, 3, width, height);
+            rectLight.position.set(0, 0, 0.1);
+            rectLight.lookAt(0, 0, 0);
+            group.add(rectLight);
+
+            // Rectangular area light other side
+            const rectLight2 = new THREE.RectAreaLight(color, 3, width, height);
+            rectLight2.position.set(0, 0, -0.1);
+            rectLight2.lookAt(0, 0, 0);
+            group.add(rectLight2);
+
+            // Add RectAreaLightHelper for visualization
+            const rectLightHelper = new RectAreaLightHelper(rectLight);
+            const rectLightHelper2 = new RectAreaLightHelper(rectLight2);
+            rectLight.add(rectLightHelper);
+            rectLight2.add(rectLightHelper2);
+
+            // Create thin wire cylinders on each upper edge
+            const cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const cylinderHeight = 15; // Height above the ceiling
+            const cylinderRadius = 0.01; // Thin wire
+
+            const offset = width * 0.1; // 10% offset from edge
+            const positions = [
+                { x: -width / 2 + offset, y: height / 2, z: 0 },
+                { x: width / 2 - offset, y: height / 2, z: 0 }
+            ];
+
+            const cylinders = positions.map(pos => {
+                const cylinderGeometry = new THREE.CylinderGeometry(cylinderRadius, cylinderRadius, cylinderHeight, 8);
+                const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+                cylinder.position.set(pos.x, pos.y + cylinderHeight / 2, pos.z);
+                cylinder.rotation.x = Math.PI; // Align vertically
+                group.add(cylinder);
+                return cylinder;
+            });
+
+            group.position.set(x, y, z);
+
+            let rand_offset = Math.random() * .2;
+            // Animation function for swaying and color shift
+            function animatePanel(time) {
+                const swayAmount = rand_offset; // Sway amplitude determined by rand_offset
+                const swaySpeed = rand_offset * 0.01; // Sway speed determined by rand_offset
+                const colorShiftSpeed = 0.0005; // Color shift speed
+
+                // Sway effect
+                const swayOffset = Math.cos(time * swaySpeed) * swayAmount;
+                panelFront.position.x = swayOffset;
+                panelBack.position.x = swayOffset;
+                rectLight.position.x = swayOffset;
+                rectLight2.position.x = swayOffset;
+
+                // Make cylinders sway with the panels while maintaining their offset
+                cylinders.forEach((cylinder, index) => {
+                    const originalX = positions[index].x;
+                    cylinder.position.x = originalX + swayOffset;
+                });
+                if (texture === null) {
+                    // Color shift effect
+                    const baseColor = new THREE.Color(color);
+                    const hsl = {};
+                    baseColor.getHSL(hsl);
+                    hsl.h = (hsl.h + (Math.sin(time * colorShiftSpeed) + 1) / 2) % 1;
+                    const newColor = new THREE.Color().setHSL(hsl.h, hsl.s, hsl.l);
+                    panelMaterialFront.emissive = newColor;
+                    panelMaterialBack.emissive = newColor;
+                    rectLight.color = newColor;
+                    rectLight2.color = newColor;
+                }
+
+                requestAnimationFrame(animatePanel);
+            }
+
+            animatePanel(0);
+
+            return group;
+        }
+
+        // Add a grid of panels with lights
+        const panels = [];
+        const panelConfigs = [
+            { x: -3, y: 4, z: -6, width: 6, height: 4 },
+        ];
+
+        panelConfigs.forEach(config => {
+            const colors = [0x99ff99, 0x99ccff, 0xffff99, 0xffffff]; // Lightish green, blue, yellow, white
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const panel = createPanelWithLight(config.x, config.y, config.z, config.width, config.height, color, config.image);
+            panels.push(panel);
+        });
+
+        panels.forEach(panel => scene.add(panel));
+
+        // Position camera
+        camera.position.set(-7.540646413985421, 5.114286983091388, -16.763555739877443);
+        camera.rotation.set(-3.041191915359823, -0.4829822966593979, -3.0948410829823962);
+        controls.target.set(0, 3, 0);
+
+        // Determine mode from query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+
+        if (!mode) {
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        } else {
+            // Render once and display as image
+
+            controls.update();
+            renderer.render(scene, camera);
+            renderer.domElement.toBlob((blob) => {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(blob);
+                img.style.width = '100%';
+                img.style.height = '100%';
+                document.body.innerHTML = ''; // Clear existing content
+                document.body.appendChild(img);
+            }, 'image/png'); // Specify image format to ensure textures are captured
+        }
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // if k print camera position and rotation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'k') {
+                console.log('Camera position:', camera.position);
+                console.log('Camera rotation:', camera.rotation);
+            }
+        });
+    </script>
+</body>
+
+</html>

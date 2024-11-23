@@ -1,0 +1,1589 @@
+{
+  "A": {
+    "Douglas Adams": [
+      {
+        "title": "Mostly Harmless",
+        "book_url": "https://openlibrary.org/works/OL2163638W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11465755-L.jpg"
+      },
+      {
+        "title": "So Long and Thanks for All the Fish",
+        "book_url": "https://openlibrary.org/works/OL2163719W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11465415-L.jpg"
+      }
+    ],
+    "Isaac Asimov": [
+      {
+        "title": "Pebble in the Sky",
+        "book_url": "https://openlibrary.org/works/OL46402W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6550102-L.jpg"
+      },
+      {
+        "title": "The Caves of Steel",
+        "book_url": "https://openlibrary.org/works/OL46401W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13790511-L.jpg"
+      },
+      {
+        "title": "Robots and Empire",
+        "book_url": "https://openlibrary.org/works/OL46241W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12385229-L.jpg"
+      },
+      {
+        "title": "Foundation's Edge",
+        "book_url": "https://openlibrary.org/works/OL46302W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6700720-L.jpg"
+      },
+      {
+        "title": "The Currents of Space",
+        "book_url": "https://openlibrary.org/works/OL46385W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14616014-L.jpg"
+      },
+      {
+        "title": "Robot City",
+        "book_url": "https://openlibrary.org/works/OL46241W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12385229-L.jpg"
+      },
+      {
+        "title": "The Robots of Dawn",
+        "book_url": "https://openlibrary.org/works/OL46377W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14372309-L.jpg"
+      },
+      {
+        "title": "Robot Visions",
+        "book_url": "https://openlibrary.org/works/OL46337W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12003851-L.jpg"
+      },
+      {
+        "title": "The Stars Like Dust",
+        "book_url": "https://openlibrary.org/works/OL46399W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6565338-L.jpg"
+      },
+      {
+        "title": "The Rest of the Robots",
+        "book_url": "https://openlibrary.org/works/OL46336W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14616005-L.jpg"
+      },
+      {
+        "title": "Foundation",
+        "book_url": "https://openlibrary.org/works/OL46125W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14612610-L.jpg"
+      }
+    ],
+    "Marcus Aurelius": [
+      {
+        "title": "Meditations",
+        "book_url": "https://openlibrary.org/works/OL26581800W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12621889-L.jpg"
+      }
+    ],
+    "Brian Aldiss": [
+      {
+        "title": "Helliconia Spring",
+        "book_url": "https://openlibrary.org/works/OL892516W",
+        "cover_url": "https://covers.openlibrary.org/b/id/5331312-L.jpg"
+      }
+    ],
+    "Chinua Achebe": [
+      {
+        "title": "Things Fall Apart",
+        "book_url": "https://openlibrary.org/works/OL891786W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12816943-L.jpg"
+      }
+    ],
+    "Edwin A. Abbott": [
+      {
+        "title": "Flatland",
+        "book_url": "https://openlibrary.org/works/OL118388W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10069547-L.jpg"
+      }
+    ],
+    "Neal Asher": [
+      {
+        "title": "Gridlinked",
+        "book_url": "https://openlibrary.org/works/OL5737668W",
+        "cover_url": "https://covers.openlibrary.org/b/id/524262-L.jpg"
+      }
+    ],
+    "Alastair Reynolds": [
+      {
+        "title": "Galactic North",
+        "book_url": "https://openlibrary.org/works/OL5724843W",
+        "cover_url": "https://covers.openlibrary.org/b/id/380461-L.jpg"
+      },
+      {
+        "title": "Absolution Gap",
+        "book_url": "https://openlibrary.org/works/OL5724839W",
+        "cover_url": "https://covers.openlibrary.org/b/id/284155-L.jpg"
+      },
+      {
+        "title": "Diamond Dogs",
+        "book_url": "https://openlibrary.org/works/OL5724842W",
+        "cover_url": "https://covers.openlibrary.org/b/id/380244-L.jpg"
+      },
+      {
+        "title": "Shadow Captain",
+        "book_url": "https://openlibrary.org/works/OL20387787W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9063945-L.jpg"
+      },
+      {
+        "title": "Revenger",
+        "book_url": "https://openlibrary.org/works/OL17857694W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8472398-L.jpg"
+      },
+      {
+        "title": "Aurora Rising",
+        "book_url": "https://openlibrary.org/works/OL21884166W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12983727-L.jpg"
+      }
+    ],
+    "Josef Albers": [
+      {
+        "title": "Interaction of Color",
+        "book_url": "https://openlibrary.org/works/OL2286177W",
+        "cover_url": "https://covers.openlibrary.org/b/id/162815-L.jpg"
+      }
+    ]
+  },
+  "B": {
+    "Iain Banks": [
+      {
+        "title": "Transition",
+        "book_url": "https://openlibrary.org/works/OL15570296W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8114174-L.jpg"
+      },
+      {
+        "title": "Against a Dark Background",
+        "book_url": "https://openlibrary.org/works/OL8368444W",
+        "cover_url": "https://covers.openlibrary.org/b/id/908771-L.jpg"
+      },
+      {
+        "title": "The Bridge",
+        "book_url": "https://openlibrary.org/works/OL100785W",
+        "cover_url": "https://covers.openlibrary.org/b/id/44078-L.jpg"
+      },
+      {
+        "title": "Espedair Street",
+        "book_url": "https://openlibrary.org/works/OL100780W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8626913-L.jpg"
+      },
+      {
+        "title": "The Wasp Factory",
+        "book_url": "https://openlibrary.org/works/OL100784W",
+        "cover_url": "https://covers.openlibrary.org/b/id/427635-L.jpg"
+      },
+      {
+        "title": "The Player of Games",
+        "book_url": "https://openlibrary.org/works/OL100779W",
+        "cover_url": "https://covers.openlibrary.org/b/id/908810-L.jpg"
+      },
+      {
+        "title": "The State of the Art",
+        "book_url": "https://openlibrary.org/works/OL8368448W",
+        "cover_url": "https://covers.openlibrary.org/b/id/908770-L.jpg"
+      },
+      {
+        "title": "The Culture: The Drawings",
+        "book_url": "https://openlibrary.org/works/OL35726022W",
+        "cover_url": null
+      }
+    ],
+    "Janine Benyus": [
+      {
+        "title": "Biomimicry",
+        "book_url": "https://openlibrary.org/works/OL3357280W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8598259-L.jpg"
+      }
+    ],
+    "Pearl S. Buck": [
+      {
+        "title": "The Good Earth",
+        "book_url": "https://openlibrary.org/works/OL1140109W",
+        "cover_url": "https://covers.openlibrary.org/b/id/2626823-L.jpg"
+      }
+    ],
+    "Boethius": [
+      {
+        "title": "The Consolation of Philosophy",
+        "book_url": "https://openlibrary.org/works/OL266978W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14608-L.jpg"
+      }
+    ],
+    "Greg Bear": [
+      {
+        "title": "Queen of Angels",
+        "book_url": "https://openlibrary.org/works/OL16504W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4094929-L.jpg"
+      },
+      {
+        "title": "Blood Music",
+        "book_url": "https://openlibrary.org/works/OL16513W",
+        "cover_url": "https://covers.openlibrary.org/b/id/477227-L.jpg"
+      }
+    ],
+    "Charles Bukowski": [
+      {
+        "title": "Ham on Rye",
+        "book_url": "https://openlibrary.org/works/OL50453W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4274342-L.jpg"
+      }
+    ],
+    "Edgar Rice Burroughs": [
+      {
+        "title": "The Martian Tales Trilogy",
+        "book_url": "https://openlibrary.org/works/OL1417984W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4705676-L.jpg"
+      }
+    ],
+    "Stewart Brand": [
+      {
+        "title": "The Media Lab",
+        "book_url": "https://openlibrary.org/works/OL823143W",
+        "cover_url": "https://covers.openlibrary.org/b/id/94326-L.jpg"
+      }
+    ],
+    "Ray Bradbury": [
+      {
+        "title": "Dandelion Wine",
+        "book_url": "https://openlibrary.org/works/OL103118W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6484354-L.jpg"
+      },
+      {
+        "title": "The Illustrated Man",
+        "book_url": "https://openlibrary.org/works/OL103128W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9345484-L.jpg"
+      },
+      {
+        "title": "The Martian Chronicles",
+        "book_url": "https://openlibrary.org/works/OL103134W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9346537-L.jpg"
+      },
+      {
+        "title": "Fahrenheit 451",
+        "book_url": "https://openlibrary.org/works/OL17271853W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8225482-L.jpg"
+      }
+    ],
+    "Ernest Becker": [
+      {
+        "title": "The Denial of Death",
+        "book_url": "https://openlibrary.org/works/OL154572W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4506134-L.jpg"
+      }
+    ],
+    "Octavia E. Butler": [
+      {
+        "title": "Parable of the Sower",
+        "book_url": "https://openlibrary.org/works/OL35623W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10466266-L.jpg"
+      }
+    ],
+    "Anthony Burgess": [
+      {
+        "title": "A Clockwork Orange",
+        "book_url": "https://openlibrary.org/works/OL261794W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13151224-L.jpg"
+      }
+    ],
+    "Edward Bellamy": [
+      {
+        "title": "Looking Backward",
+        "book_url": "https://openlibrary.org/works/OL2981506W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8246102-L.jpg"
+      }
+    ],
+    "Jinny Beyer": [
+      {
+        "title": "Designing Tesselations",
+        "book_url": "https://openlibrary.org/works/OL3241828W",
+        "cover_url": "https://covers.openlibrary.org/b/id/593910-L.jpg"
+      }
+    ],
+    "Raymond Ballinger": [
+      {
+        "title": "Layout and Graphic Design",
+        "book_url": "https://openlibrary.org/works/OL5896541W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9303322-L.jpg"
+      }
+    ],
+    "Errol Barron": [
+      {
+        "title": "Observation: Sketchbooks, Paintings, and Architecture of Errol Barron",
+        "book_url": "https://openlibrary.org/works/OL33136666W",
+        "cover_url": null
+      }
+    ],
+    "John Berger": [
+      {
+        "title": "Ways of Seeing",
+        "book_url": "https://openlibrary.org/works/OL1980231W",
+        "cover_url": "https://covers.openlibrary.org/b/id/95272-L.jpg"
+      }
+    ]
+  },
+  "C": {
+    "Albert Camus": [
+      {
+        "title": "The Fall",
+        "book_url": "https://openlibrary.org/works/OL1230631W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8296477-L.jpg"
+      },
+      {
+        "title": "The First Man",
+        "book_url": "https://openlibrary.org/works/OL1230596W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14434985-L.jpg"
+      },
+      {
+        "title": "The Myth of Sisyphus",
+        "book_url": "https://openlibrary.org/works/OL1230690W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12726570-L.jpg"
+      },
+      {
+        "title": "The Plague",
+        "book_url": "https://openlibrary.org/works/OL1230715W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13151272-L.jpg"
+      },
+      {
+        "title": "The Stranger",
+        "book_url": "https://openlibrary.org/works/OL1230613W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13151269-L.jpg"
+      }
+    ],
+    "Karel Capek": [
+      {
+        "title": "R.U.R",
+        "book_url": "https://openlibrary.org/works/OL24485330W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11099769-L.jpg"
+      }
+    ],
+    "Orson Scott Card": [
+      {
+        "title": "Shadow Puppets",
+        "book_url": "https://openlibrary.org/works/OL49569W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10986172-L.jpg"
+      }
+    ],
+    "Amber Case": [
+      {
+        "title": "Calm Technology",
+        "book_url": "https://openlibrary.org/works/OL20488472W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9147949-L.jpg"
+      }
+    ],
+    "Ted Chiang": [
+      {
+        "title": "Exhalation",
+        "book_url": "https://openlibrary.org/works/OL20149336W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8793546-L.jpg"
+      }
+    ],
+    "Noam Chomsky": [
+      {
+        "title": "The Architecture of Language",
+        "book_url": "https://openlibrary.org/works/OL15329487W",
+        "cover_url": "https://covers.openlibrary.org/b/id/128174-L.jpg"
+      }
+    ],
+    "Emil Cioran": [
+      {
+        "title": "The Trouble with Being Born",
+        "book_url": "https://openlibrary.org/works/OL20357640W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9024270-L.jpg"
+      }
+    ],
+    "Arthur C. Clarke": [
+      {
+        "title": "Childhood's End",
+        "book_url": "https://openlibrary.org/works/OL17415W",
+        "cover_url": "https://covers.openlibrary.org/b/id/210200-L.jpg"
+      },
+      {
+        "title": "Rendezvous with Rama",
+        "book_url": "https://openlibrary.org/works/OL17417W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13472608-L.jpg"
+      }
+    ],
+    "Mihaly Csikszentmihalyi": [
+      {
+        "title": "Flow",
+        "book_url": "https://openlibrary.org/works/OL278571W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11041932-L.jpg"
+      }
+    ],
+    "Christiane Paul": [
+      {
+        "title": "Digital Art",
+        "book_url": "https://openlibrary.org/works/OL893707W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12993424-L.jpg"
+      }
+    ]
+  },
+  "D": {
+    "Paolo Davoli": [
+      {
+        "title": "Clubspotting",
+        "book_url": "https://openlibrary.org/works/OL18155095W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3337466-L.jpg"
+      },
+      {
+        "title": "Clubspotting",
+        "book_url": "https://openlibrary.org/works/OL18155095W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3337466-L.jpg"
+      }
+    ],
+    "Karl Deisseroth": [
+      {
+        "title": "Projections",
+        "book_url": "https://openlibrary.org/works/OL24607590W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11273794-L.jpg"
+      }
+    ],
+    "Philip K. Dick": [
+      {
+        "title": "Galactic Pot-Healer",
+        "book_url": "https://openlibrary.org/works/OL2172531W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9251781-L.jpg"
+      },
+      {
+        "title": "Clans of the Alphane Moon",
+        "book_url": "https://openlibrary.org/works/OL2172521W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9251846-L.jpg"
+      },
+      {
+        "title": "Minority Report",
+        "book_url": "https://openlibrary.org/works/OL2172414W",
+        "cover_url": "https://covers.openlibrary.org/b/id/499534-L.jpg"
+      },
+      {
+        "title": "Dr. Futurity",
+        "book_url": "https://openlibrary.org/works/OL21868175W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12366237-L.jpg"
+      },
+      {
+        "title": "The Penultimate Truth",
+        "book_url": "https://openlibrary.org/works/OL2172396W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3098014-L.jpg"
+      },
+      {
+        "title": "The Crack in Space",
+        "book_url": "https://openlibrary.org/works/OL2172360W",
+        "cover_url": "https://covers.openlibrary.org/b/id/380193-L.jpg"
+      },
+      {
+        "title": "Selected Literary and Philosophical Writings",
+        "book_url": "https://openlibrary.org/works/OL520035W",
+        "cover_url": "https://covers.openlibrary.org/b/id/417840-L.jpg"
+      },
+      {
+        "title": "Radio Free Albemuth",
+        "book_url": "https://openlibrary.org/works/OL2172484W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6643179-L.jpg"
+      },
+      {
+        "title": "The Three Stigmata of Palmer Eldritch",
+        "book_url": "https://openlibrary.org/works/OL2172402W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4910773-L.jpg"
+      },
+      {
+        "title": "The Exegesis of Philip K. Dick",
+        "book_url": "https://openlibrary.org/works/OL16360891W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9251952-L.jpg"
+      },
+      {
+        "title": "Time Out of Joint",
+        "book_url": "https://openlibrary.org/works/OL2172523W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9251881-L.jpg"
+      },
+      {
+        "title": "We Can Remember It for You Wholesale",
+        "book_url": "https://openlibrary.org/works/OL20437852W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9104205-L.jpg"
+      },
+      {
+        "title": "Our Friends from Frolix 8",
+        "book_url": "https://openlibrary.org/works/OL2172420W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9251953-L.jpg"
+      },
+      {
+        "title": "Deus Irae",
+        "book_url": "https://openlibrary.org/works/OL2172512W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8419508-L.jpg"
+      },
+      {
+        "title": "The Transmigration of Timothy Archer",
+        "book_url": "https://openlibrary.org/works/OL2172490W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9251885-L.jpg"
+      },
+      {
+        "title": "Counter-Clock World",
+        "book_url": "https://openlibrary.org/works/OL2172429W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3111404-L.jpg"
+      },
+      {
+        "title": "Confessions of a Crap Artist",
+        "book_url": "https://openlibrary.org/works/OL10570244W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9251970-L.jpg"
+      },
+      {
+        "title": "A Maze of Death",
+        "book_url": "https://openlibrary.org/works/OL2172352W",
+        "cover_url": "https://covers.openlibrary.org/b/id/978901-L.jpg"
+      },
+      {
+        "title": "Solar Lottery",
+        "book_url": "https://openlibrary.org/works/OL2172509W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9249829-L.jpg"
+      }
+    ],
+    "Fyodor Dostoevsky": [
+      {
+        "title": "Crime and Punishment",
+        "book_url": "https://openlibrary.org/works/OL24258326W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10744834-L.jpg"
+      },
+      {
+        "title": "Notes from Underground",
+        "book_url": "https://openlibrary.org/works/OL25571500W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12644033-L.jpg"
+      }
+    ],
+    "Dongho Kim": [
+      {
+        "title": "Space Drawing",
+        "book_url": "https://openlibrary.org/works/OL34287126W",
+        "cover_url": ""
+      }
+    ],
+    "Leonardo da Vinci": [
+      {
+        "title": "The Notebooks",
+        "book_url": "https://openlibrary.org/works/OL695407W",
+        "cover_url": "https://covers.openlibrary.org/b/id/7139836-L.jpg"
+      }
+    ]
+  },
+  "E": {
+    "Greg Egan": [
+      {
+        "title": "Schild's Ladder",
+        "book_url": "https://openlibrary.org/works/OL115338W",
+        "cover_url": "https://covers.openlibrary.org/b/id/379968-L.jpg"
+      },
+      {
+        "title": "Distress",
+        "book_url": "https://openlibrary.org/works/OL21868175W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12366237-L.jpg"
+      },
+      {
+        "title": "Quarantine",
+        "book_url": "https://openlibrary.org/works/OL115337W",
+        "cover_url": "https://covers.openlibrary.org/b/id/44117-L.jpg"
+      }
+    ],
+    "Kimberly Elam": [
+      {
+        "title": "Geometry of Design",
+        "book_url": "https://openlibrary.org/works/OL4783463W",
+        "cover_url": "https://covers.openlibrary.org/b/id/812650-L.jpg"
+      }
+    ],
+    "Rose Elliot": [
+      {
+        "title": "The complete vegetarian cuisine",
+        "book_url": "https://openlibrary.org/works/OL2433332W",
+        "cover_url": "https://covers.openlibrary.org/b/id/421107-L.jpg"
+      }
+    ],
+    "Elsworth": [
+      {
+        "title": "Watercolor Skills Workbook: Develop Your Artistic Skills in Ten Easy Lessons",
+        "book_url": "https://openlibrary.org/works/OL1800413W",
+        "cover_url": "https://covers.openlibrary.org/b/id/842773-L.jpg"
+      }
+    ],
+    "David Em": [
+      {
+        "title": "The Art of David Em",
+        "book_url": "https://openlibrary.org/works/OL137872W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9022521-L.jpg"
+      }
+    ]
+  },
+  "F": {
+    "Viktor E. Frankl": [
+      {
+        "title": "Man's Search for Meaning",
+        "book_url": "https://openlibrary.org/works/OL1268413W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8516506-L.jpg"
+      },
+      {
+        "title": "The Unheard Cry for Meaning",
+        "book_url": "https://openlibrary.org/works/OL1268450W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4436123-L.jpg"
+      }
+    ],
+    "Pat Frank": [
+      {
+        "title": "Alas, Babylon",
+        "book_url": "https://openlibrary.org/works/OL2003047W",
+        "cover_url": "https://covers.openlibrary.org/b/id/40792-L.jpg"
+      }
+    ],
+    "Masanobu Fukuoka": [
+      {
+        "title": "The One-Straw Revolution",
+        "book_url": "https://openlibrary.org/works/OL4261633W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6255962-L.jpg"
+      }
+    ],
+    "Philip Jos\u00e9 Farmer": [
+      {
+        "title": "To Your Scattered Bodies Go",
+        "book_url": "https://openlibrary.org/works/OL273080W",
+        "cover_url": "https://covers.openlibrary.org/b/id/382159-L.jpg"
+      }
+    ]
+  },
+  "G": {
+    "Raymond Gautard": [
+      {
+        "title": "The beautiful string art book",
+        "book_url": "https://openlibrary.org/works/OL6478706W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6372705-L.jpg"
+      }
+    ],
+    "Documenta (3rd 1964 Kassel, Germany)": [
+      {
+        "title": "Documenta III",
+        "book_url": "https://openlibrary.org/works/OL13356640W",
+        "cover_url": ""
+      }
+    ],
+    "William Gibson": [
+      {
+        "title": "Pattern Recognition",
+        "book_url": "https://openlibrary.org/works/OL15014715W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8373619-L.jpg"
+      },
+      {
+        "title": "Count Zero",
+        "book_url": "https://openlibrary.org/works/OL27256W",
+        "cover_url": "https://covers.openlibrary.org/b/id/284322-L.jpg"
+      },
+      {
+        "title": "Mona Lisa Overdrive",
+        "book_url": "https://openlibrary.org/works/OL27253W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3327832-L.jpg"
+      },
+      {
+        "title": "Virtual Light",
+        "book_url": "https://openlibrary.org/works/OL27257W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3932422-L.jpg"
+      }
+    ],
+    "Malcolm Gladwell": [
+      {
+        "title": "Outliers",
+        "book_url": "https://openlibrary.org/works/OL5749847W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10021591-L.jpg"
+      }
+    ],
+    "James Gleick": [
+      {
+        "title": "Chaos",
+        "book_url": "https://openlibrary.org/works/OL15899W",
+        "cover_url": "https://covers.openlibrary.org/b/id/94249-L.jpg"
+      }
+    ],
+    "Johann Wolfgang von Goethe": [
+      {
+        "title": "Faust",
+        "book_url": "https://openlibrary.org/works/OL52456W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6499459-L.jpg"
+      }
+    ],
+    "James Gurney": [
+      {
+        "title": "Color and Light",
+        "book_url": "https://openlibrary.org/works/OL17732W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12707846-L.jpg"
+      }
+    ]
+  },
+  "H": {
+    "Fiona Hackney": [
+      {
+        "title": "The Art of the World's Greatest Watercolorists",
+        "book_url": "https://openlibrary.org/works/OL8833407W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9934084-L.jpg"
+      }
+    ],
+    "Ernst Haeckel": [
+      {
+        "title": "Art Forms from the Ocean",
+        "book_url": "https://openlibrary.org/works/OL368401W",
+        "cover_url": "https://covers.openlibrary.org/b/id/1027262-L.jpg"
+      },
+      {
+        "title": "Art Forms in Nature",
+        "book_url": "https://openlibrary.org/works/OL11669W",
+        "cover_url": "https://covers.openlibrary.org/b/id/309109-L.jpg"
+      }
+    ],
+    "James Hall": [
+      {
+        "title": "Illustrated Dictionary of Symbols in Eastern and Western Art",
+        "book_url": "https://openlibrary.org/works/OL2483416W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3885172-L.jpg"
+      }
+    ],
+    "Robert A. Heinlein": [
+      {
+        "title": "Time Enough for Love",
+        "book_url": "https://openlibrary.org/works/OL59739W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12736769-L.jpg"
+      },
+      {
+        "title": "Job: A Comedy of Justice",
+        "book_url": "https://openlibrary.org/works/OL59684W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14630749-L.jpg"
+      }
+    ],
+    "Joseph Heller": [
+      {
+        "title": "Catch-22",
+        "book_url": "https://openlibrary.org/works/OL26433608W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12448429-L.jpg"
+      }
+    ],
+    "Frank Herbert": [
+      {
+        "title": "The Ascension Factor",
+        "book_url": "https://openlibrary.org/works/OL24818575W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11607494-L.jpg"
+      },
+      {
+        "title": "Heretics of Dune",
+        "book_url": "https://openlibrary.org/works/OL893502W",
+        "cover_url": "https://covers.openlibrary.org/b/id/284530-L.jpg"
+      },
+      {
+        "title": "The Jesus Incident",
+        "book_url": "https://openlibrary.org/works/OL893503W",
+        "cover_url": "https://covers.openlibrary.org/b/id/911200-L.jpg"
+      },
+      {
+        "title": "Children of Dune",
+        "book_url": "https://openlibrary.org/works/OL893516W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6976407-L.jpg"
+      },
+      {
+        "title": "God Emperor of Dune",
+        "book_url": "https://openlibrary.org/works/OL893515W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6711531-L.jpg"
+      }
+    ],
+    "Hermann Hesse": [
+      {
+        "title": "Klingsor's Last Summer",
+        "book_url": "https://openlibrary.org/works/OL16245193W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13011460-L.jpg"
+      },
+      {
+        "title": "Knulp",
+        "book_url": "https://openlibrary.org/works/OL873095W",
+        "cover_url": "https://covers.openlibrary.org/b/id/977925-L.jpg"
+      },
+      {
+        "title": "Peter Camenzind",
+        "book_url": "https://openlibrary.org/works/OL872903W",
+        "cover_url": "https://covers.openlibrary.org/b/id/1016495-L.jpg"
+      },
+      {
+        "title": "Wandering",
+        "book_url": "https://openlibrary.org/works/OL16245189W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14575390-L.jpg"
+      },
+      {
+        "title": "Stories of Five Decades",
+        "book_url": "https://openlibrary.org/works/OL20098425W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11721444-L.jpg"
+      },
+      {
+        "title": "The Glass Bead Game (Magister Ludi)",
+        "book_url": "https://openlibrary.org/works/OL872781W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3345176-L.jpg"
+      },
+      {
+        "title": "Demian",
+        "book_url": "https://openlibrary.org/works/OL872981W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12569297-L.jpg"
+      },
+      {
+        "title": "Steppenwolf",
+        "book_url": "https://openlibrary.org/works/OL872773W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3221083-L.jpg"
+      },
+      {
+        "title": "Beneath the Wheel",
+        "book_url": "https://openlibrary.org/works/OL873084W",
+        "cover_url": "https://covers.openlibrary.org/b/id/181771-L.jpg"
+      },
+      {
+        "title": "Rosshalde",
+        "book_url": "https://openlibrary.org/works/OL873091W",
+        "cover_url": "https://covers.openlibrary.org/b/id/976889-L.jpg"
+      },
+      {
+        "title": "Narcissus and Goldmund",
+        "book_url": "https://openlibrary.org/works/OL873100W",
+        "cover_url": "https://covers.openlibrary.org/b/id/1016864-L.jpg"
+      }
+    ],
+    "Armin Hofmann": [
+      {
+        "title": "Graphic design manual",
+        "book_url": "https://openlibrary.org/works/OL7068113W",
+        "cover_url": "https://covers.openlibrary.org/b/id/5385224-L.jpg"
+      }
+    ],
+    "Douglas Hofstadter": [
+      {
+        "title": "G\u00f6del, Escher, Bach",
+        "book_url": "https://openlibrary.org/works/OL716850W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14368453-L.jpg"
+      }
+    ],
+    "Claude Humbert": [
+      {
+        "title": "1000 Ornamental Designs for Artists and Craftspeople",
+        "book_url": "https://openlibrary.org/works/OL6571407W",
+        "cover_url": "https://covers.openlibrary.org/b/id/312868-L.jpg"
+      }
+    ],
+    "Aldous Huxley": [
+      {
+        "title": "The Doors of Perception",
+        "book_url": "https://openlibrary.org/works/OL64441W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6622313-L.jpg"
+      },
+      {
+        "title": "Ape and Essence",
+        "book_url": "https://openlibrary.org/works/OL64460W",
+        "cover_url": "https://covers.openlibrary.org/b/id/709794-L.jpg"
+      }
+    ]
+  },
+  "J": {
+    "James Joyce": [
+      {
+        "title": "Finnegans Wake",
+        "book_url": "https://openlibrary.org/works/OL86319W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6609259-L.jpg"
+      }
+    ],
+    "William Justema": [
+      {
+        "title": "The Pleasures of Pattern",
+        "book_url": "https://openlibrary.org/works/OL6699340W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4629969-L.jpg"
+      }
+    ]
+  },
+  "K": {
+    "Jack Kerouac": [
+      {
+        "title": "On the Road",
+        "book_url": "https://openlibrary.org/works/OL65906W",
+        "cover_url": "https://covers.openlibrary.org/b/id/34655-L.jpg"
+      }
+    ],
+    "Franz Kafka": [
+      {
+        "title": "The Trial",
+        "book_url": "https://openlibrary.org/works/OL498463W",
+        "cover_url": "https://covers.openlibrary.org/b/id/997423-L.jpg"
+      }
+    ],
+    "Ray Kurzweil": [
+      {
+        "title": "How to Create a Mind",
+        "book_url": "https://openlibrary.org/works/OL20376512W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9044058-L.jpg"
+      }
+    ],
+    "Daniel Kahneman": [
+      {
+        "title": "Thinking Fast and Slow",
+        "book_url": "https://openlibrary.org/works/OL25742643W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13214974-L.jpg"
+      }
+    ],
+    "Robert Kaupelis": [
+      {
+        "title": "Experimental Drawing",
+        "book_url": "https://openlibrary.org/works/OL5852973W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4401273-L.jpg"
+      }
+    ],
+    "Gyorgy Kepes": [
+      {
+        "title": "The Nature of Art and Motion",
+        "book_url": "https://openlibrary.org/works/OL2951157W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9273095-L.jpg"
+      },
+      {
+        "title": "The New Landscape in Art and Motion",
+        "book_url": null,
+        "cover_url": null
+      },
+      {
+        "title": "Module Proportion Symmetry Rhythm",
+        "book_url": "https://openlibrary.org/works/OL2951145W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9446349-L.jpg"
+      }
+    ],
+    "Wassily Kandinsky": [
+      {
+        "title": "Concerning the Spiritual in Art",
+        "book_url": "https://openlibrary.org/works/OL30152W",
+        "cover_url": "https://covers.openlibrary.org/b/id/309301-L.jpg"
+      }
+    ],
+    "Eduardo Kac": [
+      {
+        "title": "Telepresence & Bio Art",
+        "book_url": "https://openlibrary.org/works/OL6066838W",
+        "cover_url": "https://covers.openlibrary.org/b/id/307963-L.jpg"
+      }
+    ]
+  },
+  "L": {
+    "Stanis\u0142aw Lem": [
+      {
+        "title": "Solaris",
+        "book_url": "https://openlibrary.org/works/OL109524W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12313764-L.jpg"
+      },
+      {
+        "title": "The Star Diaries",
+        "book_url": "https://openlibrary.org/works/OL109523W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8123437-L.jpg"
+      },
+      {
+        "title": "The Futurological Congress",
+        "book_url": "https://openlibrary.org/works/OL2683552W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4904082-L.jpg"
+      },
+      {
+        "title": "The Cyberiad",
+        "book_url": "https://openlibrary.org/works/OL2683553W",
+        "cover_url": "https://covers.openlibrary.org/b/id/116079-L.jpg"
+      },
+      {
+        "title": "Fiasco",
+        "book_url": "https://openlibrary.org/works/OL2683630W",
+        "cover_url": "https://covers.openlibrary.org/b/id/116147-L.jpg"
+      }
+    ],
+    "D. H. Lawrence": [
+      {
+        "title": "Sons and Lovers",
+        "book_url": "https://openlibrary.org/works/OL81295W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8246175-L.jpg"
+      },
+      {
+        "title": "The Rainbow",
+        "book_url": "https://openlibrary.org/works/OL81293W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13028918-L.jpg"
+      }
+    ],
+    "Mario Livio": [
+      {
+        "title": "The Golden Ratio",
+        "book_url": "https://openlibrary.org/works/OL8227996W",
+        "cover_url": "https://covers.openlibrary.org/b/id/527996-L.jpg"
+      }
+    ],
+    "Tim Berners-Lee": [
+      {
+        "title": "Weaving the Web",
+        "book_url": "https://openlibrary.org/works/OL158398W",
+        "cover_url": "https://covers.openlibrary.org/b/id/48833-L.jpg"
+      }
+    ],
+    "Steven D. Levitt": [
+      {
+        "title": "Freakonomics",
+        "book_url": "https://openlibrary.org/works/OL278022W",
+        "cover_url": "https://covers.openlibrary.org/b/id/11172914-L.jpg"
+      }
+    ],
+    "Jaron Lanier": [
+      {
+        "title": "Who Owns the Future",
+        "book_url": "https://openlibrary.org/works/OL16801714W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8211733-L.jpg"
+      }
+    ],
+    "Ken Liu": [
+      {
+        "title": "The Paper Menagerie",
+        "book_url": "https://openlibrary.org/works/OL19576831W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8529206-L.jpg"
+      },
+      {
+        "title": "The Hidden Girl",
+        "book_url": "https://openlibrary.org/works/OL21868175W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12366237-L.jpg"
+      }
+    ],
+    "Thomas Ligotti": [
+      {
+        "title": "The Conspiracy Against the Human Race",
+        "book_url": "https://openlibrary.org/works/OL18818385W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8815017-L.jpg"
+      }
+    ],
+    "George Lakoff": [
+      {
+        "title": "Metaphors We Live By",
+        "book_url": "https://openlibrary.org/works/OL1952983W",
+        "cover_url": "https://covers.openlibrary.org/b/id/5265915-L.jpg"
+      }
+    ],
+    "Andrew Loomis": [
+      {
+        "title": "Figure Drawing for All It's Worth",
+        "book_url": "https://openlibrary.org/works/OL181332W",
+        "cover_url": "https://covers.openlibrary.org/b/id/7235788-L.jpg"
+      }
+    ],
+    "Jean Larcher": [
+      {
+        "title": "Geometrical Designs & Optical Art",
+        "book_url": "https://openlibrary.org/works/OL4748170W",
+        "cover_url": "https://covers.openlibrary.org/b/id/309157-L.jpg"
+      }
+    ],
+    "Golan Levin": [
+      {
+        "title": "Code as Creative Medium",
+        "book_url": "https://openlibrary.org/works/OL22021494W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12403063-L.jpg"
+      }
+    ]
+  },
+  "M": {
+    "Niccol\u00f2 Machiavelli": [
+      {
+        "title": "The Prince",
+        "book_url": "https://openlibrary.org/works/OL1089297W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12726168-L.jpg"
+      }
+    ],
+    "John Maeda": [
+      {
+        "title": "Creative Code",
+        "book_url": "https://openlibrary.org/works/OL1954560W",
+        "cover_url": "https://covers.openlibrary.org/b/id/1024452-L.jpg"
+      }
+    ],
+    "Thomas Robert Malthus": [
+      {
+        "title": "An Essay on the Principle of Population",
+        "book_url": "https://openlibrary.org/works/OL1538754W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6073470-L.jpg"
+      }
+    ],
+    "Anistatia R. Miller": [
+      {
+        "title": "Global Graphics: Designing With Symbols for an International Market",
+        "book_url": "https://openlibrary.org/works/OL18171462W",
+        "cover_url": "https://covers.openlibrary.org/b/id/801879-L.jpg"
+      }
+    ],
+    "Gustave Moreau": [
+      {
+        "title": "Magic and Symbols",
+        "book_url": "https://openlibrary.org/works/OL1973032W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3737054-L.jpg"
+      }
+    ],
+    "John Muir": [
+      {
+        "title": "Wilderness Essays",
+        "book_url": "https://openlibrary.org/works/OL20895524W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10229408-L.jpg"
+      }
+    ],
+    "Haruki Murakami": [
+      {
+        "title": "Hard-Boiled Wonderland and the End of the World",
+        "book_url": "https://openlibrary.org/works/OL2625421W",
+        "cover_url": "https://covers.openlibrary.org/b/id/1017018-L.jpg"
+      }
+    ],
+    "Gabriel Garc\u00eda M\u00e1rquez": [
+      {
+        "title": "One Hundred Years of Solitude",
+        "book_url": "https://openlibrary.org/works/OL274505W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12627383-L.jpg"
+      }
+    ]
+  },
+  "N": {
+    "Larry Niven": [
+      {
+        "title": "The Mote in God's Eye",
+        "book_url": "https://openlibrary.org/works/OL15331302W",
+        "cover_url": "https://covers.openlibrary.org/b/id/408133-L.jpg"
+      },
+      {
+        "title": "Ringworld Throne",
+        "book_url": "https://openlibrary.org/works/OL510428W",
+        "cover_url": "https://covers.openlibrary.org/b/id/207617-L.jpg"
+      }
+    ],
+    "Donald A. Norman": [
+      {
+        "title": "The Design of Everyday Things",
+        "book_url": "https://openlibrary.org/works/OL1879162W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10007224-L.jpg"
+      }
+    ],
+    "Aki Nurosi": [
+      {
+        "title": "Colorful illusions",
+        "book_url": "https://openlibrary.org/works/OL15842137W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6805473-L.jpg"
+      }
+    ]
+  },
+  "O": {
+    "Kristi O'Meara": [
+      {
+        "title": "The Pattern Base: Over 550 Contemporary Textile and Surface Designs",
+        "book_url": "https://openlibrary.org/works/OL20011189W",
+        "cover_url": null
+      }
+    ]
+  },
+  "P": {
+    "Frederik Pohl": [
+      {
+        "title": "Day Million",
+        "book_url": "https://openlibrary.org/works/OL60922W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9181012-L.jpg"
+      }
+    ],
+    "Terry Pratchett": [
+      {
+        "title": "The Color of Magic",
+        "book_url": "https://openlibrary.org/works/OL453657W",
+        "cover_url": "https://covers.openlibrary.org/b/id/980221-L.jpg"
+      }
+    ],
+    "Thomas Paine": [
+      {
+        "title": "Common Sense",
+        "book_url": "https://openlibrary.org/works/OL60358W",
+        "cover_url": "https://covers.openlibrary.org/b/id/5921030-L.jpg"
+      }
+    ],
+    "Robert M. Pirsig": [
+      {
+        "title": "Zen and the Art of Motorcycle Maintenance",
+        "book_url": "https://openlibrary.org/works/OL827357W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10673266-L.jpg"
+      }
+    ],
+    "Plato": [
+      {
+        "title": "The Works of Plato",
+        "book_url": "https://openlibrary.org/works/OL51784W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14390287-L.jpg"
+      }
+    ],
+    "Prueitt": [
+      {
+        "title": "Computer Graphics: 118 Computer-Generated Designs",
+        "book_url": "https://openlibrary.org/works/OL5606020W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4647388-L.jpg"
+      }
+    ]
+  },
+  "R": {
+    "Hannu Rajaniemi": [
+      {
+        "title": "The Quantum Thief",
+        "book_url": "https://openlibrary.org/works/OL19710455W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8576978-L.jpg"
+      }
+    ],
+    "Ronald C. Read": [
+      {
+        "title": "Tangrams: 330 Puzzles",
+        "book_url": "https://openlibrary.org/works/OL771603W",
+        "cover_url": "https://covers.openlibrary.org/b/id/308736-L.jpg"
+      }
+    ],
+    "Casey Reas": [
+      {
+        "title": "Form + Code",
+        "book_url": "https://openlibrary.org/works/OL15120449W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12906591-L.jpg"
+      }
+    ],
+    "Mitchel Resnick": [
+      {
+        "title": "Turtles, termites, and traffic jams",
+        "book_url": "https://openlibrary.org/works/OL3470750W",
+        "cover_url": "https://covers.openlibrary.org/b/id/152366-L.jpg"
+      }
+    ],
+    "Mack Reynolds": [
+      {
+        "title": "Commune 2000 A.D",
+        "book_url": "https://openlibrary.org/works/OL16044019W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6955872-L.jpg"
+      }
+    ],
+    "Howard Rheingold": [
+      {
+        "title": "The Virtual Community",
+        "book_url": "https://openlibrary.org/works/OL3452640W",
+        "cover_url": "https://covers.openlibrary.org/b/id/135346-L.jpg"
+      }
+    ],
+    "Kim Stanley Robinson": [
+      {
+        "title": "The Martians",
+        "book_url": "https://openlibrary.org/works/OL81669W",
+        "cover_url": "https://covers.openlibrary.org/b/id/373975-L.jpg"
+      },
+      {
+        "title": "Aurora",
+        "book_url": "https://openlibrary.org/works/OL20003842W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10113971-L.jpg"
+      },
+      {
+        "title": "The Ministry for the Future",
+        "book_url": "https://openlibrary.org/works/OL21680947W",
+        "cover_url": "https://covers.openlibrary.org/b/id/10477770-L.jpg"
+      }
+    ],
+    "Irvin Rock": [
+      {
+        "title": "Perception",
+        "book_url": "https://openlibrary.org/works/OL5602499W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4229776-L.jpg"
+      }
+    ]
+  },
+  "S": {
+    "Spencer Drate": [
+      {
+        "title": "Extreme Design",
+        "book_url": "https://openlibrary.org/works/OL15204299W",
+        "cover_url": "https://covers.openlibrary.org/b/id/842704-L.jpg"
+      }
+    ],
+    "Sue St. John": [
+      {
+        "title": "Journey to Abstraction",
+        "book_url": "https://openlibrary.org/works/OL17568317W",
+        "cover_url": "https://covers.openlibrary.org/b/id/7838198-L.jpg"
+      }
+    ],
+    "Oliver Sacks": [
+      {
+        "title": "Everything in Its Place",
+        "book_url": "https://openlibrary.org/works/OL20150464W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8794560-L.jpg"
+      },
+      {
+        "title": "Awakenings",
+        "book_url": "https://openlibrary.org/works/OL1811911W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8221250-L.jpg"
+      },
+      {
+        "title": "The Island of the Colorblind",
+        "book_url": "https://openlibrary.org/works/OL1811902W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8303978-L.jpg"
+      }
+    ],
+    "Jean-Paul Sartre": [
+      {
+        "title": "No Exit",
+        "book_url": "https://openlibrary.org/works/OL1161329W",
+        "cover_url": "https://covers.openlibrary.org/b/id/7227937-L.jpg"
+      },
+      {
+        "title": "The Reprieve",
+        "book_url": "https://openlibrary.org/works/OL4489243W",
+        "cover_url": "https://covers.openlibrary.org/b/id/108011-L.jpg"
+      },
+      {
+        "title": "Troubled Sleep",
+        "book_url": "https://openlibrary.org/works/OL15154804W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6571422-L.jpg"
+      },
+      {
+        "title": "The Wall",
+        "book_url": "https://openlibrary.org/works/OL1161171W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9393973-L.jpg"
+      }
+    ],
+    "John Scalzi": [
+      {
+        "title": "Old Man's War",
+        "book_url": "https://openlibrary.org/works/OL5734647W",
+        "cover_url": "https://covers.openlibrary.org/b/id/524402-L.jpg"
+      }
+    ],
+    "Doris Schattschneider": [
+      {
+        "title": "M.C. Escher",
+        "book_url": "https://openlibrary.org/works/OL4441239W",
+        "cover_url": "https://covers.openlibrary.org/b/id/13234923-L.jpg"
+      }
+    ],
+    "Clifford D. Simak": [
+      {
+        "title": "City",
+        "book_url": "https://openlibrary.org/works/OL4088358W",
+        "cover_url": "https://covers.openlibrary.org/b/id/3347783-L.jpg"
+      },
+      {
+        "title": "Out of Their Minds",
+        "book_url": "https://openlibrary.org/works/OL4088384W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6927295-L.jpg"
+      }
+    ],
+    "Dan Simmons": [
+      {
+        "title": "Hyperion",
+        "book_url": "https://openlibrary.org/works/OL1963268W",
+        "cover_url": "https://covers.openlibrary.org/b/id/380332-L.jpg"
+      }
+    ],
+    "Olaf Stapledon": [
+      {
+        "title": "Star Maker",
+        "book_url": "https://openlibrary.org/works/OL3290739W",
+        "cover_url": "https://covers.openlibrary.org/b/id/911107-L.jpg"
+      }
+    ],
+    "Neal Stephenson": [
+      {
+        "title": "Quicksilver",
+        "book_url": "https://openlibrary.org/works/OL38495W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8347528-L.jpg"
+      },
+      {
+        "title": "Readme",
+        "book_url": null,
+        "cover_url": null
+      },
+      {
+        "title": "Seveneves",
+        "book_url": "https://openlibrary.org/works/OL17829905W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9295719-L.jpg"
+      }
+    ],
+    "Mary Stewart": [
+      {
+        "title": "Launching the Imagination: A Guide to Two-Dimensional Design",
+        "book_url": "https://openlibrary.org/works/OL213264W",
+        "cover_url": "https://covers.openlibrary.org/b/id/2318227-L.jpg"
+      },
+      {
+        "title": "Launching the imagination. a comprehensive guide to basic design",
+        "book_url": "https://openlibrary.org/works/OL16011107W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9283397-L.jpg"
+      }
+    ],
+    "Theodore Sturgeon": [
+      {
+        "title": "More Than Human",
+        "book_url": "https://openlibrary.org/works/OL14868317W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4731297-L.jpg"
+      }
+    ]
+  },
+  "T": {
+    "Leo Tolstoy": [
+      {
+        "title": "The Death of Ivan Ilyich",
+        "book_url": "https://openlibrary.org/works/OL267174W",
+        "cover_url": "https://covers.openlibrary.org/b/id/419697-L.jpg"
+      },
+      {
+        "title": "A Confession",
+        "book_url": "https://openlibrary.org/works/OL21868175W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12366237-L.jpg"
+      }
+    ],
+    "Nassim Nicholas Taleb": [
+      {
+        "title": "Antifragile",
+        "book_url": "https://openlibrary.org/works/OL16726829W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9180157-L.jpg"
+      },
+      {
+        "title": "The Black Swan",
+        "book_url": "https://openlibrary.org/works/OL3295030W",
+        "cover_url": "https://covers.openlibrary.org/b/id/5721840-L.jpg"
+      }
+    ],
+    "Jacqueline B. Thurston": [
+      {
+        "title": "Optical Illusions and the Visual Arts",
+        "book_url": "https://openlibrary.org/works/OL13679947W",
+        "cover_url": "https://covers.openlibrary.org/b/id/14381866-L.jpg"
+      }
+    ],
+    "Edward Tufte": [
+      {
+        "title": "Envisioning Information",
+        "book_url": "https://openlibrary.org/works/OL2824011W",
+        "cover_url": "https://covers.openlibrary.org/b/id/7026308-L.jpg"
+      }
+    ]
+  },
+  "U": {
+    "Unknown": [
+      {
+        "title": "The Epic of Gilgamesh",
+        "book_url": "https://openlibrary.org/works/OL14908074W",
+        "cover_url": "https://covers.openlibrary.org/b/id/107543-L.jpg"
+      }
+    ]
+  },
+  "V": {
+    "Vernor Vinge": [
+      {
+        "title": "Rainbows End",
+        "book_url": "https://openlibrary.org/works/OL1975712W",
+        "cover_url": "https://covers.openlibrary.org/b/id/182444-L.jpg"
+      },
+      {
+        "title": "Children of the Sky",
+        "book_url": "https://openlibrary.org/works/OL16239463W",
+        "cover_url": "https://covers.openlibrary.org/b/id/9907912-L.jpg"
+      }
+    ],
+    "Voltaire": [
+      {
+        "title": "Candide",
+        "book_url": "https://openlibrary.org/works/OL100672W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12736044-L.jpg"
+      },
+      {
+        "title": "Micromegas",
+        "book_url": "https://openlibrary.org/works/OL2960414W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6965236-L.jpg"
+      },
+      {
+        "title": "Philosophical Dictionary",
+        "book_url": "https://openlibrary.org/works/OL1073964W",
+        "cover_url": "https://covers.openlibrary.org/b/id/5444146-L.jpg"
+      }
+    ],
+    "Kurt Vonnegut": [
+      {
+        "title": "Wampeters Foma and Granfalloons",
+        "book_url": "https://openlibrary.org/works/OL98465W",
+        "cover_url": "https://covers.openlibrary.org/b/id/239821-L.jpg"
+      },
+      {
+        "title": "Player Piano",
+        "book_url": "https://openlibrary.org/works/OL98484W",
+        "cover_url": "https://covers.openlibrary.org/b/id/280246-L.jpg"
+      },
+      {
+        "title": "Mother Night",
+        "book_url": "https://openlibrary.org/works/OL98487W",
+        "cover_url": "https://covers.openlibrary.org/b/id/239848-L.jpg"
+      },
+      {
+        "title": "A Man Without a Country",
+        "book_url": "https://openlibrary.org/works/OL98468W",
+        "cover_url": "https://covers.openlibrary.org/b/id/846930-L.jpg"
+      }
+    ],
+    "Jules Verne": [
+      {
+        "title": "Paris in the Twentieth Century",
+        "book_url": "https://openlibrary.org/works/OL15231558W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8011914-L.jpg"
+      },
+      {
+        "title": "Twenty Thousand Leagues Under the Sea",
+        "book_url": "https://openlibrary.org/works/OL25760429W",
+        "cover_url": "https://covers.openlibrary.org/b/id/12046109-L.jpg"
+      },
+      {
+        "title": "From the Earth to the Moon",
+        "book_url": "https://openlibrary.org/works/OL1099479W",
+        "cover_url": "https://covers.openlibrary.org/b/id/5943556-L.jpg"
+      }
+    ]
+  },
+  "W": {
+    "David Foster Wallace": [
+      {
+        "title": "Infinite Jest",
+        "book_url": "https://openlibrary.org/works/OL2943602W",
+        "cover_url": "https://covers.openlibrary.org/b/id/8237639-L.jpg"
+      },
+      {
+        "title": "Oblivion",
+        "book_url": "https://openlibrary.org/works/OL2943598W",
+        "cover_url": "https://covers.openlibrary.org/b/id/191073-L.jpg"
+      },
+      {
+        "title": "Consider the Lobster",
+        "book_url": "https://openlibrary.org/works/OL2943594W",
+        "cover_url": "https://covers.openlibrary.org/b/id/188471-L.jpg"
+      }
+    ],
+    "Oscar Wilde": [
+      {
+        "title": "The Picture of Dorian Gray",
+        "book_url": "https://openlibrary.org/works/OL15853206W",
+        "cover_url": "https://covers.openlibrary.org/b/id/6816209-L.jpg"
+      }
+    ],
+    "H.G. Wells": [
+      {
+        "title": "War of the Worlds",
+        "book_url": "https://openlibrary.org/works/OL52114W",
+        "cover_url": "https://covers.openlibrary.org/b/id/36314-L.jpg"
+      }
+    ],
+    "Janwillem van de Wetering": [
+      {
+        "title": "A Glimpse of Nothingness",
+        "book_url": "https://openlibrary.org/works/OL106493W",
+        "cover_url": "https://covers.openlibrary.org/b/id/4472438-L.jpg"
+      }
+    ]
+  },
+  "Z": {
+    "Roger Zelazny": [
+      {
+        "title": "Lord of Light",
+        "book_url": "https://openlibrary.org/works/OL13992W",
+        "cover_url": "https://covers.openlibrary.org/b/id/29946-L.jpg"
+      }
+    ],
+    "Robert Zubrin": [
+      {
+        "title": "The Case for Mars",
+        "book_url": "https://openlibrary.org/works/OL3281435W",
+        "cover_url": "https://covers.openlibrary.org/b/id/426076-L.jpg"
+      }
+    ]
+  }
+}

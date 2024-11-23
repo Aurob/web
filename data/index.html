@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <style>
+        #projects {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background-color: #f9f9f9;
+            color: #333;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+            text-align: center;
+
+            width: fit-content;
+            height: fit-content;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+        }
+        .card-content {
+            padding: 15px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <script src="../script.js"></script>
+    <section id="projects">
+        <div class="header">
+            <h1>Data Projects</h1>
+            <p>Projects loosely related to data</p>
+        </div>
+        <div class="card" onclick="window.location.href='lorem'">
+            <div class="card-content">
+                <h2>Lorem</h2>
+                <p>Lorem Ipsum paragraphs for styling tests.</p>
+            </div>
+        </div>
+        <div class="card" onclick="window.location.href='books'">
+            <div class="card-content">
+                <h2>Books</h2>
+                <p>An interactive snapshot of my physical bookshelf</p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

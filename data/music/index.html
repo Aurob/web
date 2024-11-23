@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Synthesizer</title>
+</head>
+
+<body>
+    <div id="header"></div>
+    <div id="controls" style="display: flex; flex-direction: column; gap: 10px;">
+        <button id="playButton">Play Music</button>
+        <button id="restartButton">Restart</button>
+        <button id="newSetButton">New Set</button>
+        <div>
+            <label for="synthVolume">Synth Volume:</label>
+            <input id="synthVolume" type="range" min="-60" max="0" value="-32">
+        </div>
+        <div>
+            <label for="bassVolume">Bass Volume:</label>
+            <input id="bassVolume" type="range" min="-60" max="0" value="-44">
+        </div>
+        <div>
+            <label for="attack">Attack:</label>
+            <input id="attack" type="range" min="0" max="1" step="0.01" value="0.05">
+        </div>
+        <div>
+            <label for="decay">Decay:</label>
+            <input id="decay" type="range" min="0" max="1" step="0.01" value="0.1">
+        </div>
+        <div>
+            <label for="sustain">Sustain:</label>
+            <input id="sustain" type="range" min="0" max="1" step="0.01" value="0.7">
+        </div>
+        <div>
+            <label for="release">Release:</label>
+            <input id="release" type="range" min="0" max="2" step="0.01" value="1.5">
+        </div>
+    </div>
+    <div id="notesDisplay"></div>
+    <script src="../../script.js"></script>
+    <script src="tone.js"></script>
+
+    <script>
+        let synth, bassSynth, loop;
+        let currentNotes = [];
+
+        const header = document.getElementById('header');
+        const playButton = document.getElementById('playButton');
+        const restartButton = document.getElementById('restartButton');
+        const newSetButton = document.getElementById('newSetButton');
+        const notesDisplay = document.getElementById('notesDisplay');
+
+        playButton.addEventListener('click', () => {
+            if (Tone.Transport.state === 'started') {
+                stopAudio();
+            } else {
+                startAudio();
+            }
+        });
+
+        restartButton.addEventListener('click', () => {
+            stopAudio();
+            startAudio();
+        });
+
+        newSetButton.addEventListener('click', () => {
+            currentNotes = generateRandomScale();
+            displayNotes();
+        });
+
+        function stopAudio() {
+            if (synth) {
+                synth.dispose();
+                bassSynth.dispose();
+                loop.stop();
+                Tone.Transport.stop();
+                synth = null;
+                bassSynth = null;
+                loop = null;
+            }
+            playButton.innerText = 'Play Music';
+        }
+
+        function startAudio() {
+            Tone.start().then(() => {
+                initializeAudio();
+                playButton.innerText = 'Stop Music';
+            });
+        }
+
+        function initializeAudio() {
+            if (!synth) {
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    volume: document.getElementById('synthVolume').value,
+                    envelope: {
+                        attack: document.getElementById('attack').value,
+                        decay: document.getElementById('decay').value,
+                        sustain: document.getElementById('sustain').value,
+                        release: document.getElementById('release').value
+                    }
+                }).toDestination();
+
+                bassSynth = new Tone.Synth({
+                    oscillator: {
+                        type: "sine"
+                    },
+                    volume: document.getElementById('bassVolume').value,
+                    envelope: {
+                        attack: document.getElementById('attack').value,
+                        decay: document.getElementById('decay').value,
+                        sustain: document.getElementById('sustain').value,
+                        release: document.getElementById('release').value
+                    }
+                }).toDestination();
+
+                loop = new Tone.Loop(time => {
+                    const notes = generateHarmony(time);
+                    synth.triggerAttackRelease(notes.harmony, "16n", time);
+                    bassSynth.triggerAttackRelease(notes.bass, "16n", time);
+                }, getRandomElement(["1n", "2n", "4n", "8n", "16n"]));
+
+                Tone.Transport.start();
+                loop.start(0);
+            }
+        }
+
+        const chords = [
+            ["C", "E", "G"],
+            ["D", "F", "A"],
+            ["E", "G", "B"],
+            ["F", "A", "C"],
+            ["G", "B", "D"],
+            ["A", "C", "E"],
+            ["B", "D", "F"]
+        ];
+        const octaves = [1.5, 2, 2.5, 3, 3.5, 4, 4];
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateRandomScale(notes) {
+            return Array.from({ length: Math.random() * 10 }, () => {
+                const note = getRandomElement(notes);
+                const octave = getRandomElement(octaves);
+                return `${note}${octave}`;
+            });
+        }
+        
+        function generateHarmony(time) {
+            let notes = currentNotes.length ? currentNotes : getRandomElement(chords);
+            const octaves = [2, 2, 3];
+
+
+            if (!currentNotes.length) {
+                currentNotes = generateRandomScale(notes);
+                displayNotes();
+            }
+
+            const scale = currentNotes;
+            const bassScale = generateRandomScale(notes);
+
+            const smoothValue1 = (Math.sin(time) + 1) / 2;
+            const smoothValue2 = (Math.cos(time) + 1) / 2;
+            const index1 = Math.floor(smoothValue1 * scale.length);
+            const index2 = Math.floor(smoothValue2 * bassScale.length);
+
+            const harmony = [
+                scale[index1],
+                scale[(index1 + Math.floor(smoothValue1 * 5)) % scale.length],
+                scale[(index1 + Math.floor(smoothValue1 * 7)) % scale.length]
+            ];
+            const bass = bassScale[index2];
+
+            return { harmony, bass };
+        }
+
+        function displayNotes() {
+            notesDisplay.innerHTML = '';
+            currentNotes.forEach((note, index) => {
+                const noteInput = document.createElement('input');
+                noteInput.type = 'text';
+                noteInput.value = note;
+                noteInput.addEventListener('change', (e) => {
+                    currentNotes[index] = e.target.value;
+                });
+                notesDisplay.appendChild(noteInput);
+            });
+        }
+    </script>
+</body>
+
+</html>

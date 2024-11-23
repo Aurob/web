@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .bookshelf {
+                display: flex;
+            }
+
+            img {
+                width: 10vw;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="../../../script.js"></script>
+        <div id="content">
+            <div id="header">
+                <h1>Bookpile</h1>
+                <pre>
+                    All the books on the bookcase in the <a href="../">Library</a>
+                </pre>
+            </div>
+            <div id="bookcase">
+            </div>
+        <script>
+            let shelf_book_len = 10;
+            document.querySelectorAll('img').forEach(img=>{
+                img.style.width = `${window.innerWidth / shelf_book_len}px`;
+            })
+            let bookshelf = `
+            <div class="bookshelf">{0}</div>
+            `;
+
+            let _book = `
+            <div class="book">
+                <a href="{3}" target="_blank">
+                    <img src="{0}" loading="lazy" />
+                </a>
+                <div class="title">{1}</div>
+                <div class="author">{2}</div>
+            </div>
+            `;
+            
+            let bookcase = document.getElementById('bookcase');
+            fetch('../links.json')
+            .then(res=>res.json())
+            .then(data=>{
+                let _shelf = '';
+                let _shelf_len = 0;
+                data.forEach(book=>{
+                    let author = book.author;
+                    let title = book.title;
+                    let cover = book.link.cover_lg;
+
+                    if(book.link && book.link.link){
+                        link = book.link.link
+                    }
+                    else link = "";
+                    
+                    if(!cover) {
+                        cover = '../404cover.bmp';
+                    }
+
+                    let __book = _book.replace('{0}', cover).replace('{1}', title).replace('{2}', author).replace('{3}', link);
+                    _shelf += __book;
+                    _shelf_len++;
+
+                    if(_shelf_len == shelf_book_len){
+                        let _bookshelf = bookshelf.replace('{0}', _shelf);
+                        bookcase.innerHTML += _bookshelf;
+                        _shelf = '';
+                        _shelf_len = 0;
+                    }
+                })
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+<script src="../../../script.js"></script>
+<div style="display: flex; justify-content: space-between;">
+    <input id="cellsize" type="range" step="1" min="5" value="53">
+    <input id="threadsize" type="range" step="1" min="2.5" value="16.5">
+</div>
+<canvas></canvas>
+<script>
+    const cellsizeInput = document.getElementById('cellsize');
+    const threadsizeInput = document.getElementById('threadsize');
+    const canvas = document.getElementsByTagName('canvas')[0];
+    const ctx = canvas.getContext('2d');
+    const voidedAreas = [];
+    const clickVoidRadius = 50; // Define the radius of the void on click
+
+    function generateRandomColorSet() {
+        const baseR = Math.floor(Math.random() * 256);
+        const baseG = Math.floor(Math.random() * 256);
+        const baseB = Math.floor(Math.random() * 256);
+        
+        const variations = [
+            [-20, -30, -40],
+            [10, 25, 21],
+            [27, 28, 30],
+            [18, 26, 21],
+            [-34, -33, -36],
+            [-31, -28, -26],
+            [-47, -44, -42],
+            [-50, -50, -52],
+            [-22, -30, -26],
+            [-38, -46, -42]
+        ];
+        
+        return variations.map(([rOffset, gOffset, bOffset]) => {
+            const r = Math.min(255, Math.max(0, baseR + rOffset));
+            const g = Math.min(255, Math.max(0, baseG + gOffset));
+            const b = Math.min(255, Math.max(0, baseB + bOffset));
+            return `rgb(${r}, ${g}, ${b})`;
+        });
+    }
+
+    let colors = generateRandomColorSet();
+    let warp_color = colors[Math.floor(Math.random() * colors.length)];
+    let weft_color = colors[Math.floor(Math.random() * colors.length)];
+                   
+    function draw(randomize=false) {
+        if (randomize) {
+            colors = generateRandomColorSet();
+            warp_color = colors[Math.floor(Math.random() * colors.length)];
+            weft_color = colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let cellsize, threadsize;
+        if (randomize) {
+            cellsize = Math.random() * (50 - 5) + 5; // Random cellsize between 5 and 50
+            threadsize = Math.random() * (20 - 2.5) + 2.5; // Random threadsize between 2.5 and 20
+        } else {
+            cellsize = parseInt(cellsizeInput.value);
+            threadsize = parseInt(threadsizeInput.value);
+        }
+        
+        ctx.fillStyle = 'grey';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let d = 0;
+
+        const numCellsX = Math.ceil(canvas.width / cellsize) + 2;
+        const numCellsY = Math.ceil(canvas.height / cellsize);
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const voidRadius = 5; // Define the radius of the void
+
+        for(let y = 0; y < numCellsY; y++) {
+            for(let x = -1; x < numCellsX; x++) {
+                let _x = Math.floor(x * cellsize);
+                let _y = Math.floor(y * cellsize);
+
+                // Calculate the distance from the center
+                const distanceFromCenter = Math.sqrt(Math.pow(_x - centerX, 2) + Math.pow(_y - centerY, 2));
+
+                // Skip drawing if within the void radius
+                if (distanceFromCenter < voidRadius) {
+                    continue;
+                }
+
+                // Skip drawing if within any voided area
+                let skip = false;
+                for (const [vx, vy] of voidedAreas) {
+                    const distanceFromVoid = Math.sqrt(Math.pow(_x - vx, 2) + Math.pow(_y - vy, 2));
+                    if (distanceFromVoid < clickVoidRadius) {
+                        skip = true;
+                        break;
+                    }
+                }
+                if (skip) {
+                    continue;
+                }
+                
+                // position weft and warp to center
+                let w = Math.floor(cellsize/4);
+                let h = Math.floor(cellsize/4);
+                _x += Math.floor(cellsize/2) - w/2;  
+                _y += Math.floor(cellsize/2) - h/2;
+                
+                let weftTempX = _x - Math.floor(cellsize/4) - w/2;
+                let weftTempW = cellsize;
+                let warpTempY = _y - Math.floor(cellsize/4) - h/2;
+                let warpTempH = cellsize;
+
+                // Determine the order of drawing based on d
+                let firstColor = d == 0 ? weft_color : warp_color;
+                let secondColor = d == 0 ? warp_color : weft_color;
+                let firstTempX = d == 0 ? weftTempX : _x;
+                let firstTempY = d == 0 ? _y : warpTempY;
+                let firstTempW = d == 0 ? weftTempW : threadsize;
+                let firstTempH = d == 0 ? threadsize : warpTempH;
+                let secondTempX = d == 0 ? _x : weftTempX;
+                let secondTempY = d == 0 ? warpTempY : _y;
+                let secondTempW = d == 0 ? threadsize : weftTempW;
+                let secondTempH = d == 0 ? warpTempH : threadsize;
+
+
+                // Render default grid
+                // ctx.strokeRect(_x, _y, cellsize, cellsize);
+                // Set border thickness
+                const borderThickness = (threadsize) / 10;
+
+                // Draw first rectangle
+                ctx.fillStyle = firstColor;
+                // Add Text to weft if threadsize is at least 20
+                if (d == 0 && threadsize >= 10) {
+                    ctx.fillStyle = 'black';
+                    const text = Array.from({length: 10}, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
+                    const maxTextWidth = weftTempW - 4; // Leave some padding
+                    const fontSize = threadsize;
+                    ctx.font = `${fontSize}px Arial`;
+                    ctx.fillText(text, firstTempX - cellsize, firstTempY + fontSize);
+                }
+                
+                // Add Text to warp if threadsize is at least 20
+                if (d == 1 && threadsize >= 10) {
+                    ctx.fillStyle = 'black';
+                    const text = Array.from({length: 10}, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
+                    const maxTextHeight = warpTempH - 4; // Leave some padding
+                    const fontSize = threadsize;
+                    ctx.font = `${fontSize}px Arial`;
+                    ctx.save();
+                    ctx.translate(secondTempX - cellsize/2 + fontSize/2, secondTempY);
+                    ctx.rotate(-Math.PI / 2);
+                    ctx.fillText(text, 0, 0);
+                    ctx.restore();
+                }
+
+                // Add borders to the first rectangle
+                ctx.fillStyle = 'black';
+                // Draw second rectangle
+                ctx.fillStyle = secondColor;
+                // Add borders to the second rectangle
+                ctx.fillStyle = 'black';
+                d = (d + 1) % 2;
+            }
+        }
+    }
+
+    canvas.addEventListener('click', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        voidedAreas.push([x, y]);
+        draw(false);
+    });
+
+    window.addEventListener('load', ()=>{
+        draw(false);
+    });
+    window.addEventListener('resize', ()=>{
+        draw(false);
+    });
+    cellsizeInput.addEventListener('input', ()=>{
+        draw(false);
+    });
+    threadsizeInput.addEventListener('input', ()=>{
+        draw(false);
+    });
+</script>
+</body>
+</html>

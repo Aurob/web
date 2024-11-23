@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body onload="generateParagraph()">
+    <script src="../../../script.js"></script>
+    <script>
+        function generateParagraph(n) {
+            const loremIpsum = `
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, 
+                est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. 
+                Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, 
+                eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum. 
+                Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. 
+                Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. 
+                Cras mollis scelerisque nunc. Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. 
+                Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst.
+            `;
+            const words = loremIpsum.split(/\s+/);
+            let paragraph = '';
+            for (let i = 0; i < n; i++) {
+                paragraph += words[Math.floor(Math.random() * words.length)] + ' ';
+            }
+            return paragraph.trim();
+        }
+        const article = document.createElement('article');
+
+        article.style.marginLeft = '25%';
+        article.style.marginRight = '25%';
+
+        const paragraph1 = document.createElement('p');
+        paragraph1.textContent = generateParagraph(230); // Generate a paragraph with 30 words
+        article.appendChild(paragraph1);
+
+        const paragraph2 = document.createElement('p');
+        paragraph2.textContent = generateParagraph(250); // Generate a paragraph with 50 words
+        article.appendChild(paragraph2);
+
+        const paragraph3 = document.createElement('p');
+        paragraph3.textContent = generateParagraph(250); // Generate a paragraph with 50 words
+        article.appendChild(paragraph3);
+
+        const paragraph4 = document.createElement('p');
+        paragraph4.textContent = generateParagraph(220); // Generate a paragraph with 20 words
+        article.appendChild(paragraph4);
+
+        document.body.appendChild(article);
+    </script>
+</body>
+</html>

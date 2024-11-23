@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+<script src="../../../script.js"></script>
+<div style="display: flex; justify-content: space-between;">
+    <input id="cellsize" type="range" step=".1" min="5" value="9">
+    <input id="threadsize" type="range" step=".1" min="2.5" value="6">
+</div>
+<canvas></canvas>
+<script>
+    const cellsizeInput = document.getElementById('cellsize');
+    const threadsizeInput = document.getElementById('threadsize');
+    const canvas = document.getElementsByTagName('canvas')[0];
+    const ctx = canvas.getContext('2d');
+    
+    const hiddenCanvas = document.createElement('canvas');
+    const hiddenCtx = hiddenCanvas.getContext('2d');
+
+    const imageUrl = 'https://img.rau.dev/random?'+Math.random();
+    const img = new Image();
+    img.crossOrigin = 'Anonymous'; // This is important if the image is from a different origin
+
+    img.onload = function() {
+        hiddenCanvas.width = img.width;
+        hiddenCanvas.height = img.height;
+        hiddenCtx.drawImage(img, 0, 0);
+        draw();
+    };
+    img.src = imageUrl;
+
+    function getAverageColor(x, y, cellsize) {
+        const imageData = hiddenCtx.getImageData(x, y, cellsize, cellsize);
+        const data = imageData.data;
+        let r = 0, g = 0, b = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+            r += data[i];
+            g += data[i + 1];
+            b += data[i + 2];
+        }
+
+        const pixelCount = data.length / 4;
+        r = Math.floor(r / pixelCount);
+        g = Math.floor(g / pixelCount);
+        b = Math.floor(b / pixelCount);
+
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function draw() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const cellsize = parseInt(cellsizeInput.value);
+        const threadsize = parseInt(threadsizeInput.value);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const numCellsX = Math.ceil(canvas.width / cellsize) + 2;
+        const numCellsY = Math.ceil(canvas.height / cellsize);
+
+        for (let y = 0; y < numCellsY; y++) {
+            for (let x = -1; x < numCellsX; x++) {
+                let _x = Math.floor(x * cellsize);
+                let _y = Math.floor(y * cellsize);
+
+                const avgColor = getAverageColor(_x, _y, cellsize);
+
+                // position weft and warp to center
+                let w = Math.floor(cellsize / 4);
+                let h = Math.floor(cellsize / 4);
+                _x += Math.floor(cellsize / 2) - w / 2;
+                _y += Math.floor(cellsize / 2) - h / 2;
+
+                // Draw weft
+                let weftTempX = _x - Math.floor(cellsize / 4) - w / 2;
+                let weftTempW = cellsize;
+                ctx.fillStyle = avgColor;
+                ctx.fillRect(weftTempX, _y, weftTempW, threadsize);
+                // ctx.strokeStyle = 'black'; // Border color
+                // ctx.strokeRect(weftTempX, _y, weftTempW, threadsize);
+
+                // Draw warp
+                let warpTempY = _y - Math.floor(cellsize / 4) - h / 2;
+                let warpTempH = cellsize;
+                ctx.fillStyle = avgColor;
+                ctx.fillRect(_x, warpTempY, threadsize, warpTempH);
+                // ctx.strokeStyle = 'black'; // Border color
+                // ctx.strokeRect(_x, warpTempY, threadsize, warpTempH);
+            }
+        }
+    }
+
+    window.addEventListener('load', () => {
+        if (img.complete) {
+            draw();
+        }
+    });
+    window.addEventListener('resize', () => {
+        draw();
+    });
+    cellsizeInput.addEventListener('input', () => {
+        draw();
+    });
+    threadsizeInput.addEventListener('input', () => {
+        draw();
+    });
+</script>
+</body>
+</html>
