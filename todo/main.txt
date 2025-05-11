@@ -1,0 +1,23 @@
+Create basic sourcehut service implementations for:
+  - lists (mailing list)
+  - paste (notes/text shortlinks)
+  - wiki (man-based instructions/info)
+
+Make it so any update made to the site is published via:
+  - mailing list
+  - rss feed
+
+Use Wiki to:
+  - explain site
+    - purpose
+    - implementation
+  - explain self
+
+Use Todo to:
+  - in-progress projects
+  - next plans
+
+Use Notes to:
+  - publish public notes
+  - create private notes with password
+  - general text shortlink service

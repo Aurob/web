@@ -1,21 +1,24 @@
 {
     ".": {},
     "art": {
-        "clock": {},
+        "window": {},
+        "screen": {},
         "fabric": {
             "img": {},
             "text": {}
         },
-        "musee": {}
+        "alpha": {},
+        "clock": {}
     },
     "game": {},
+    "todo": {},
     "data": {
+        "music": {},
         "books": {
             "bookpile": {}
         },
         "lorem": {
             "test": {}
         }
-    },
-    "game": {}
+    }
 }

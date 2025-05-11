@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <script src="../script.js"></script>
+    <script>
+        // Fetch and parse the main.txt file
+        fetch('main.txt')
+            .then(response => response.text())
+            .then(text => {
+                const lines = text.split('\n');
+                const todoStructure = {};
+                let currentCategory = null;
+                
+                lines.forEach(line => {
+                    if (line.trim() === '') return;
+                    
+                    const indentLevel = line.search(/\S/); // Find first non-whitespace character
+                    const content = line.trim();
+                    
+                    if (indentLevel === 0) {
+                        // Root category
+                        currentCategory = content;
+                        todoStructure[currentCategory] = [];
+                    } else if (indentLevel > 0 && currentCategory) {
+                        // Sub-category
+                        todoStructure[currentCategory].push(content);
+                    }
+                });
+                
+                // Display the parsed structure
+                const container = document.createElement('div');
+                container.style.fontFamily = 'monospace';
+                container.style.margin = '20px';
+                
+                for (const category in todoStructure) {
+                    const categoryHeader = document.createElement('h2');
+                    categoryHeader.textContent = category;
+                    container.appendChild(categoryHeader);
+                    
+                    const subList = document.createElement('ul');
+                    todoStructure[category].forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = item;
+                        subList.appendChild(listItem);
+                    });
+                    container.appendChild(subList);
+                }
+                
+                document.body.appendChild(container);
+            })
+            .catch(error => {
+                console.error('Error fetching or parsing main.txt:', error);
+                const errorMsg = document.createElement('p');
+                errorMsg.textContent = 'Error loading todo list. Please try again later.';
+                document.body.appendChild(errorMsg);
+            });
+    </script>
+</body>
+</html>

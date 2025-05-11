@@ -1,25 +1,17 @@
 ./index.html
 art/index.html
-<<<<<<< HEAD
-art/beta/index.html
-art/delta/index.html
-art/echo/index.html
-art/charlie/index.html
-art/alpha/index.html
-game/index.html
-=======
-art/clock/index.html
+art/window/index.html
+art/screen/index.html
 art/fabric/index.html
 art/fabric/img/index.html
 art/fabric/text/index.html
-art/musee/index.html
->>>>>>> e0127e7 (adding new art)
+art/alpha/index.html
+art/clock/index.html
+game/index.html
+todo/index.html
 data/index.html
+data/music/index.html
 data/books/index.html
 data/books/bookpile/index.html
 data/lorem/index.html
 data/lorem/test/index.html
-<<<<<<< HEAD
-=======
-game/index.html
->>>>>>> e0127e7 (adding new art)
