@@ -91,6 +91,9 @@
             <span class="cat">
                 <a href="/about">about</a>
             </span>
+            <span class="cat">
+                <a href="https://all.rau.dev">projects</a>
+            </span>
         </span>
     </div>
 
@@ -111,7 +114,7 @@
             // Set up animation
             function animateCircle() {
                 // Get current time for animation
-                const now = Date.now() / 1000; // Convert to seconds for smoother animation
+                const now = Date.now() / 900; // Convert to seconds for smoother animation
                 
                 // Create time-based variations
                 const radiusVariation = Math.sin(now * 0.2) * 0.1 + 1; // Varies between 0.9 and 1.1
@@ -124,7 +127,7 @@
                 // Position each cat in a circle with time-based variations
                 cats.forEach((cat, index) => {
                     // Calculate angle for each cat with time-based variation
-                    const baseAngle = (index / numCats) * 1.5 * Math.PI;
+                    const baseAngle = (index / numCats) * 2 * Math.PI;
                     const angle = baseAngle * spacingVariation + angleOffset;
                     
                     // Calculate position using trigonometry

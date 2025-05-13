@@ -57,6 +57,7 @@ const styles = `
             transition: width 0.3s; /* Smooth transition */
             color: transparent; /* Hide text */
             overflow: hidden; /* Hide overflow */
+            border-left:outset .01em;
         }
 
         .er:hover {
@@ -75,6 +76,7 @@ const styles = `
             height: 100vh; /* Fill the viewport height */
             align-content: center;
             z-index: -1;
+            border-right: outset .01em;
         }
 
         .el > a {
@@ -90,6 +92,7 @@ const styles = `
             width: 100%;
             height: 1em;
             z-index: 1;
+            border-bottom: outset .01em;
         }
 
 
@@ -101,6 +104,7 @@ const styles = `
             width: 100%;
             height: 1em;
             z-index: 2;
+            border-top: outset .01em;
         }
 
         .eb #year {
