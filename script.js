@@ -42,6 +42,7 @@ const styles = `
         .edge {
             width: 100%;
             height: 100%;
+            padding: .25em;
         }
 
         .er {
@@ -87,7 +88,7 @@ const styles = `
             top: 0;
             left: 0;
             width: 100%;
-            height: fit-content;
+            height: 1em;
             z-index: 1;
         }
 
@@ -98,7 +99,7 @@ const styles = `
             bottom: 0;
             left: 0;
             width: 100%;
-            height: fit-content;
+            height: 1em;
             z-index: 2;
         }
 
@@ -116,7 +117,7 @@ const styles = `
 
 const html = `
         <div class="edge et"></div>
-        <div class="eb"><a href="mailto:rau@rau.dev">rau@rau.dev</a></div>
+        <div class="edge eb"><a href="mailto:pm@rau.dev">pm@rau.dev</a></div>
         <div class="edge er"></div>
         <div class="edge el"></div>
     `;
@@ -126,7 +127,7 @@ styleSheet.type = "text/css";
 styleSheet.innerText = styles;
 document.head.appendChild(styleSheet);
 
-document.body.style.padding = '1em';
+document.body.style.padding = '2em';
 const tempDiv = document.createElement('div');
 tempDiv.innerHTML = html;
 Array.from(tempDiv.children).forEach(child => document.body.appendChild(child));
@@ -176,11 +177,21 @@ function buildUI(data) {
     er.innerHTML = '';
 
     // Function to create and append links if they don't already exist
-    const createLink = (text, href, parent) => {
+    const createLink = (text, href, parent, styles = {}) => {
         if (!Array.from(parent.children).some(child => child.href === href)) {
             const a = document.createElement('a');
             a.href = href;
             a.innerHTML = text;
+            
+            // Apply optional styles
+            if (styles.color) a.style.color = styles.color;
+            // Apply any other styles passed in the styles object
+            Object.entries(styles).forEach(([property, value]) => {
+                if (property !== 'color') { // Skip color as it's already handled
+                    a.style[property] = value;
+                }
+            });
+            
             parent.appendChild(a);
         }
     };
@@ -189,7 +200,12 @@ function buildUI(data) {
     if (rootPath.length > 1) {
         // console.log(DOMAIN_ROOT, rootPath, currentPath);
         const parentPath = rootPath.slice(0, -1).join('/');
-        createLink('back', `../`, et);
+        // Make back link stand out with bold text and a slightly different color
+        createLink('back', `../`, et, {
+            fontWeight: 'bold',
+            color: '#D4AF37',
+            textDecoration: 'underline'
+        });
     }
 
     // Add "home" link if not on the homepage

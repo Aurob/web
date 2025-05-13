@@ -32,6 +32,7 @@ def create_sitemap_with_index_paths(directory):
         # Skip any directories that start with a dot
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         # Add paths to index.html files to the list
+        dirs.sort()
         for file in files:
             if file == 'index.html':
                 relative_path = os.path.relpath(root, directory)

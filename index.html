@@ -3,24 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Other</title>
+
     <style>
-        #intro-text {
-            font-family: 'Courier New', monospace;
-            margin: 0 auto;
-            padding: 1em;
+        #center {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
+
+        #center #cencon {
+            width: 20vmin;
+            height: 20vmin;
+            background: #333;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+        }
+
+        #cencon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            img {
+                border-radius: 2.5vw;
+                width: 80%;
+            }
+        }
+        .introduction {
+            margin: 0;
+        }
+
+        .salutation  {
+            margin: 0;
+        }
+        
+        #outer {
+            position: absolute;
+            width: 50vmin;
+            height: 50vmin;
+            pointer-events: none;
+        }
+        
+        .cat {
+            position: absolute;
+            transform-origin: center;
+            pointer-events: auto;
+            text-align: center;
+            width: 10vmin; /* Fixed width for better text handling */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%); /* Center the element itself */
+        }
+
     </style>
 </head>
 <body>
-    <script src="script.js"></script>
-    <p id="intro-text">
-        I'm Rob Au. I like to write <a href="https://github.com/aurob">software</a> and make <a href="http://rau.lol/monau/art">art with software</a>
-        <br>
-        This website is just a general data dump and maybe a portfolio or <a href="https://indieweb.org/digital_garden" target="_blank">digital garden</a>.
-        <hr>
-        Home: <a href="https://rau.dev/">rau.dev</a><br>
-        Source: <a href="https://git.sr.ht/~rau/rau.dev/tree" target="_blank">https://git.sr.ht/~rau/rau.dev</a>
-    </p>
+    <script src="../script.js"></script>
+
+    <div id="center">
+        <span id="cencon">
+            <img src="sunset.png">
+            Rob Au, I code
+        </span>
+        <span id="outer">
+            <span class="cat">
+                <a href="/art">art</a>
+            </span>
+            <span class="cat">
+                <a href="https://github.com/aurob">code</a>
+            </span>
+            <span class="cat">
+            </span>
+            <span class="cat">
+                <a href="/game">game</a>
+            </span>
+            <span class="cat">
+                <a href="/other">other</a>
+            </span>
+            <span class="cat">
+                <a href="https://img.rau.dev/random" target="_blank">photos</a>
+            </span>
+            <span class="cat">
+                <a href="/about">about</a>
+            </span>
+        </span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cats = document.querySelectorAll('.cat');
+            const numCats = cats.length;
+            const outerElement = document.getElementById('outer');
+            const outerRect = outerElement.getBoundingClientRect();
+            
+            // Calculate center point of the outer container
+            const centerX = outerRect.width / 2;
+            const centerY = outerRect.height / 2;
+            
+            // Calculate base radius (slightly smaller than container to account for element size)
+            const baseRadius = Math.min(centerX, centerY) * 0.99;
+            
+            // Set up animation
+            function animateCircle() {
+                // Get current time for animation
+                const now = Date.now() / 1000; // Convert to seconds for smoother animation
+                
+                // Create time-based variations
+                const radiusVariation = Math.sin(now * 0.2) * 0.1 + 1; // Varies between 0.9 and 1.1
+                const angleOffset = Math.sin(now * 0.3) * 0.1; // Small angle variation
+                const spacingVariation = Math.sin(now * 0.15) * 0.1 + 1; // Varies spacing
+                
+                // Apply the current radius with variation
+                const radius = baseRadius * radiusVariation;
+                
+                // Position each cat in a circle with time-based variations
+                cats.forEach((cat, index) => {
+                    // Calculate angle for each cat with time-based variation
+                    const baseAngle = (index / numCats) * 1.5 * Math.PI;
+                    const angle = baseAngle * spacingVariation + angleOffset;
+                    
+                    // Calculate position using trigonometry
+                    const x = centerX + radius * Math.sin(angle);
+                    const y = centerY + radius * Math.cos(angle);
+                    
+                    // Apply the position with smooth transition
+                    cat.style.transition = 'left 0.5s ease-out, top 0.5s ease-out';
+                    cat.style.left = `${x}px`;
+                    cat.style.top = `${y}px`;
+                });
+                
+                // Continue animation
+                requestAnimationFrame(animateCircle);
+            }
+            
+            // Start the animation
+            animateCircle();
+        });
+    </script>
 </body>
 </html>

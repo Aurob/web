@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <script src="../script.js"></script>
+    <div id="content">
+        Github commit history for this websites repository
+        <div id="web_commits"></div>
+        Github commit history for <a href="/game/latest">repository
+        <div id="game_commits"></div>
+    </div>
+    <script>
+        fetch('https://api.github.com/repos/aurob/web/commits')
+            .then(res => res.json())
+            .then(data => {
+                const commits = data.map(commit => ({
+                    message: commit.commit.message,
+                    date: new Date(commit.commit.author.date).toLocaleDateString(),
+                    author: commit.commit.author.name,
+                    url: commit.html_url
+                }));
+                console.log(commits);
+                
+                // Create a section to display commits
+                const commitsSection = document.createElement('div');
+                commitsSection.id = 'commits-section';
+                commitsSection.style.margin = '20px';
+                commitsSection.style.fontFamily = 'monospace';
+                
+                const heading = document.createElement('h3');
+                heading.textContent = 'Recent Commits';
+                commitsSection.appendChild(heading);
+                
+                const commitsList = document.createElement('ul');
+                commits.forEach(commit => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `<strong>${commit.message}</strong> - ${commit.author} (${commit.date})`;
+                    commitsList.appendChild(item);
+                });
+                
+                commitsSection.appendChild(commitsList);
+                document.getElementById("web_commits").appendChild(commitsSection);
+            })
+            .catch(error => console.error('Error fetching commits:', error));
+
+            fetch('https://api.github.com/repos/aurob/augame/commits')
+            .then(res => res.json())
+            .then(data => {
+                const commits = data.map(commit => ({
+                    message: commit.commit.message,
+                    date: new Date(commit.commit.author.date).toLocaleDateString(),
+                    author: commit.commit.author.name,
+                    url: commit.html_url
+                }));
+                console.log(commits);
+                
+                // Create a section to display commits
+                const commitsSection = document.createElement('div');
+                commitsSection.id = 'commits-section';
+                commitsSection.style.margin = '20px';
+                commitsSection.style.fontFamily = 'monospace';
+                
+                const heading = document.createElement('h3');
+                heading.textContent = 'Recent Commits';
+                commitsSection.appendChild(heading);
+                
+                const commitsList = document.createElement('ul');
+                commits.forEach(commit => {
+                    const item = document.createElement('li');
+                    item.innerHTML = `<strong>${commit.message}</strong> - ${commit.author} (${commit.date})`;
+                    commitsList.appendChild(item);
+                });
+                
+                commitsSection.appendChild(commitsList);
+                document.getElementById("game_commits").appendChild(commitsSection);
+            })
+            .catch(error => console.error('Error fetching commits:', error));
+
+    </script>
+</body>
+</html>
