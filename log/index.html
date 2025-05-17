@@ -3,83 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Logs & Commits</title>
+    <style>
+        #content {
+            max-width: 700px;
+            margin: 2em auto;
+            padding: 2em;
+            background: #232323;
+            font-family: 'Fira Mono', 'Consolas', 'Menlo', 'monospace', monospace;
+            
+            a { 
+                color: #f1c40f;
+            }
+        }
+        .log-section {
+            margin-bottom: 2.5em;
+            padding: 1.2em 1em 1.5em 1em;
+            background: #333;
+        }
+        .log-section h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+            letter-spacing: 0.04em;
+        }
+        .log-section ul {
+            list-style: disc inside;
+            margin: 0.5em 0 0 0;
+            padding: 0;
+        }
+        .log-section li {
+            margin-bottom: 0.5em;
+            word-break: break-word;
+        }
+        .log-section a {
+            text-decoration: underline;
+        }
+        .log-section .repo-link {
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .log-section .empty {
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
     <script src="../script.js"></script>
     <div id="content">
-        Github commit history for this websites repository
-        <div id="web_commits"></div>
-        Github commit history for <a href="/game/latest">repository</a>
-        <div id="game_commits"></div>
+        <div class="log-section" id="pastes_section">
+            <h2>
+                My Sourcehut Pastes
+            </h2>
+            <ul id="srht_pastes">
+                <li class="empty">Loading pastes...</li>
+            </ul>
+        </div>
+        <div class="log-section" id="web_commits_section">
+            <h2>
+                Github commit history for this website's repository
+                <a href="https://github.com/aurob/web" class="repo-link" target="_blank" rel="noopener">(GitHub)</a>
+            </h2>
+            <ul id="web_commits">
+                <li class="empty">Loading commits...</li>
+            </ul>
+        </div>
+        <div class="log-section" id="game_commits_section">
+            <h2>
+                Github commit history for <a href="/game/latest" class="repo-link">/game/latest</a>
+                <a href="https://github.com/aurob/augame" class="repo-link" target="_blank" rel="noopener">(GitHub)</a>
+            </h2>
+            <ul id="game_commits">
+                <li class="empty">Loading commits...</li>
+            </ul>
+        </div>
     </div>
     <script>
+        // Helper to insert commit data into a section
+        function insertCommits(listId, commits) {
+            const ul = document.getElementById(listId);
+            ul.innerHTML = '';
+            if (!commits.length) {
+                ul.innerHTML = '<li class="empty">No commits found.</li>';
+                return;
+            }
+            commits.forEach(commit => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${commit.url}" target="_blank" rel="noopener"><strong>${commit.message}</strong></a> &mdash; ${commit.author} <span style="color:#aaa">(${commit.date})</span>`;
+                ul.appendChild(li);
+            });
+        }
+
+        // Helper to insert pastes data
+        function insertPastes(listId, pastes) {
+            const ul = document.getElementById(listId);
+            ul.innerHTML = '';
+            const keys = Object.keys(pastes);
+            if (!keys.length) {
+                ul.innerHTML = '<li class="empty">No pastes found.</li>';
+                return;
+            }
+            keys.forEach(name => {
+                const hash = pastes[name];
+                const url = `https://paste.sr.ht/blob/${hash}`;
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${url}" target="_blank" rel="noopener">${name}</a> <span style="color:#aaa">(${hash.slice(0, 8)})</span>`;
+                ul.appendChild(li);
+            });
+        }
+
+        // Fetch and display web repo commits
         fetch('https://api.github.com/repos/aurob/web/commits')
+        .then(res => res.json())
+        .then(data => {
+            const commits = Array.isArray(data) ? data.map(commit => ({
+                message: commit.commit.message,
+                date: new Date(commit.commit.author.date).toLocaleDateString(),
+                author: commit.commit.author.name,
+                url: commit.html_url
+            })) : [];
+            insertCommits('web_commits', commits);
+        })
+        .catch(error => {
+            document.getElementById('web_commits').innerHTML = '<li class="empty">Error loading commits.</li>';
+            console.error('Error fetching commits:', error);
+        });
+
+        // Fetch and display game repo commits
+        fetch('https://api.github.com/repos/aurob/augame/commits')
+        .then(res => res.json())
+        .then(data => {
+            const commits = Array.isArray(data) ? data.map(commit => ({
+                message: commit.commit.message,
+                date: new Date(commit.commit.author.date).toLocaleDateString(),
+                author: commit.commit.author.name,
+                url: commit.html_url
+            })) : [];
+            insertCommits('game_commits', commits);
+        })
+        .catch(error => {
+            document.getElementById('game_commits').innerHTML = '<li class="empty">Error loading commits.</li>';
+            console.error('Error fetching commits:', error);
+        });
+
+        // Fetch and display Sourcehut pastes
+        (function() {
+            // Check if ?refresh is in the URL params
+            const params = new URLSearchParams(window.location.search);
+            const refresh = params.has('refresh');
+            const apiUrl = refresh
+                ? 'https://rau.lol/api/pastes?refresh=1'
+                : 'https://rau.lol/api/pastes';
+
+            fetch(apiUrl)
             .then(res => res.json())
             .then(data => {
-                const commits = data.map(commit => ({
-                    message: commit.commit.message,
-                    date: new Date(commit.commit.author.date).toLocaleDateString(),
-                    author: commit.commit.author.name,
-                    url: commit.html_url
-                }));
-                console.log(commits);
-                
-                // Create a section to display commits
-                const commitsSection = document.createElement('div');
-                commitsSection.id = 'commits-section';
-                commitsSection.style.margin = '20px';
-                commitsSection.style.fontFamily = 'monospace';
-                
-                const heading = document.createElement('h3');
-                heading.textContent = 'Recent Commits';
-                commitsSection.appendChild(heading);
-                
-                const commitsList = document.createElement('ul');
-                commits.forEach(commit => {
-                    const item = document.createElement('li');
-                    item.innerHTML = `<strong>${commit.message}</strong> - ${commit.author} (${commit.date})`;
-                    commitsList.appendChild(item);
-                });
-                
-                commitsSection.appendChild(commitsList);
-                document.getElementById("web_commits").appendChild(commitsSection);
+                insertPastes('srht_pastes', data);
             })
-            .catch(error => console.error('Error fetching commits:', error));
-
-            fetch('https://api.github.com/repos/aurob/augame/commits')
-            .then(res => res.json())
-            .then(data => {
-                const commits = data.map(commit => ({
-                    message: commit.commit.message,
-                    date: new Date(commit.commit.author.date).toLocaleDateString(),
-                    author: commit.commit.author.name,
-                    url: commit.html_url
-                }));
-                console.log(commits);
-                
-                // Create a section to display commits
-                const commitsSection = document.createElement('div');
-                commitsSection.id = 'commits-section';
-                commitsSection.style.margin = '20px';
-                commitsSection.style.fontFamily = 'monospace';
-                
-                const heading = document.createElement('h3');
-                heading.textContent = 'Recent Commits';
-                commitsSection.appendChild(heading);
-                
-                const commitsList = document.createElement('ul');
-                commits.forEach(commit => {
-                    const item = document.createElement('li');
-                    item.innerHTML = `<strong>${commit.message}</strong> - ${commit.author} (${commit.date})`;
-                    commitsList.appendChild(item);
-                });
-                
-                commitsSection.appendChild(commitsList);
-                document.getElementById("game_commits").appendChild(commitsSection);
-            })
-            .catch(error => console.error('Error fetching commits:', error));
-
+            .catch(error => {
+                document.getElementById('srht_pastes').innerHTML = '<li class="empty">Error loading pastes.</li>';
+                console.error('Error fetching pastes:', error);
+            });
+        })();
     </script>
 </body>
 </html>

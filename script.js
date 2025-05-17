@@ -7,6 +7,7 @@ const styles = `
             width: 100%;
             background-color: black !important;
         }
+
         body {
             margin: 0;
             padding: 0;
@@ -14,9 +15,10 @@ const styles = `
             color: #f0f0f0;
             position: relative; /* Establish a containing block for absolute positioning */
             z-index: -3;
-            height: 100%;
+            min-height: 100vh; /* Ensures at least full viewport height */
             width: 100%;
             overflow-x: hidden;
+            height: auto; /* Let content grow, but min-height keeps at least 100% */
         }
 
         @media (max-width: 768px) {
@@ -245,7 +247,6 @@ function buildUI(data) {
         }
     });
 
-    console.log(currentPath, firstPathSegment, rootPath)
     // Populate .el with first-level children of the current path only if not at root
     if (!isRoot && currentData && typeof currentData === 'object') {
         sessionStorage.setItem('subpages', JSON.stringify(currentData));
