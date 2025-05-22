@@ -13,7 +13,9 @@ game/latest/index.html
 log/index.html
 other/index.html
 other/books/index.html
+other/books/3dshelf/index.html
 other/books/bookpile/index.html
 other/lorem/index.html
 other/lorem/test/index.html
 other/music/index.html
+topics/index.html

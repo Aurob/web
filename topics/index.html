@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topics</title>
+    <style>
+        #content {
+            max-width: 700px;
+            margin: 2em auto;
+            padding: 2em;
+            background: #232323;
+            font-family: 'Fira Mono', 'Consolas', 'Menlo', 'monospace', monospace;
+            color: #f0f0f0;
+        }
+        #content a { 
+            color: #f1c40f;
+        }
+        .topic-section {
+            margin-bottom: 2.5em;
+            padding: 1.2em 1em 1.5em 1em;
+            background: #333;
+        }
+        .topic-section h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+            letter-spacing: 0.04em;
+        }
+        .topic-section ul {
+            list-style: disc inside;
+            margin: 0.5em 0 0 0;
+            padding: 0;
+            columns: 2;
+            column-gap: 2em;
+        }
+        .topic-section li {
+            margin-bottom: 0.5em;
+            word-break: break-word;
+        }
+        .topic-section a {
+            text-decoration: underline;
+        }
+        .topic-section .empty {
+            font-style: italic;
+        }
+        @media (max-width: 600px) {
+            .topic-section ul {
+                columns: 1;
+            }
+        }
+
+        li {
+            list-style:none;
+        }
+    </style>
+</head>
+<body>
+    <script src="../script.js"></script>
+    <div id="content">
+        <div class="topic-section" id="wiki_section">
+            <h2>
+                Wikipedia Topics
+            </h2>
+            <ul id="wiki_links">
+                <li class="empty">Loading topics...</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // Fetch and display Wikipedia links
+        (function() {
+            const wikiUrl = 'https://rau.dump.garden/Dump/Bookmarks/Wikipedia.md';
+            
+            fetch(wikiUrl)
+            .then(res => res.text())
+            .then(data => {
+                const links = data.split('\n').filter(line => line.trim());
+                const ul = document.getElementById('wiki_links');
+                ul.innerHTML = '';
+                
+                if (!links.length) {
+                    ul.innerHTML = '<li class="empty">No topics found.</li>';
+                    return;
+                }
+                
+                // Sort links in reverse order
+                links.reverse().forEach(link => {
+                    const li = document.createElement('li');
+                    // Create an anchor element with the wiki link
+                    const a = document.createElement('a');
+                    a.href = link;
+                    // Format the title nicely from the URL
+                    const title = decodeURIComponent(link.split('/').pop().replace(/_/g, ' '));
+                    a.textContent = title;
+                    a.target = "_blank";
+                    a.rel = "noopener";
+                    
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+            })
+            .catch(error => {
+                document.getElementById('wiki_links').innerHTML = '<li class="empty">Error loading topics.</li>';
+                console.error('Error fetching Wikipedia links:', error);
+            });
+        })();
+    </script>
+</body>
+</html>

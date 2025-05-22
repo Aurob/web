@@ -99,10 +99,8 @@ window.addEventListener('load', function () {
     .then(response => response.json())
     .then(data => {
         books = data.boxes;
-        console.log(window.innerWidth/2506);
         const img = new Image();
         img.onload = () => {
-            console.log(window.innerWidth/2506);
             for (const canvas of [bks_canvas, ans_canvas]) {
                 canvas.width = img.width;
                 canvas.height = img.height;
@@ -111,9 +109,6 @@ window.addEventListener('load', function () {
                 canvas.style.position = 'fixed';
                 canvas.style.margin = '5vw';
             }
-
-            
-
 
             ctx.drawImage(img, 0, 0);
 
