@@ -17,11 +17,13 @@
     "log": {},
     "other": {
         "books": {
+            "3dshelf": {},
             "bookpile": {}
         },
         "lorem": {
             "test": {}
         },
         "music": {}
-    }
+    },
+    "topics": {}
 }
