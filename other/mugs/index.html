@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mug Collection</title>
+  <!-- Meta tags for image, title, and description -->
+  <meta property="og:title" content="Mug Collection" />
+  <meta property="og:description" content="Interactive Starbucks 'Been There' mug collection" />
+  <meta name="description" content="Interactive Starbucks 'Been There' mug collection" />
+  <script src="data.js"></script>
+  <style>
+    body {
+    }
+    #data {
+      text-align: center;
+    }
+    #items {
+      display:flex;
+      justify-content:center;
+    }
+
+    #item_url {
+      text-transform: capitalize;
+    }
+
+    #img_canvas {
+      border: 2em outset;
+      border-image: linear-gradient(135deg, #6a5f22, #e6d88b, #6a5f22 80%) 1;
+    }
+  </style>
+</head>
+<body>
+  <script src="../../script.js"></script>
+  <div id="data">
+    Mug Link: <a id="item_url"> <i>Select a mug</i></a>
+  </div>
+  <div id="items">
+    <canvas id="img_canvas"></canvas>
+  </div>
+  <div>
+  </div>
+  <img src="mugs.png" hidden>
+  <script src="script.js"></script>
+</body>
+</html>
