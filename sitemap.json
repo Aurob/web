@@ -23,7 +23,10 @@
         "lorem": {
             "test": {}
         },
-        "music": {}
+        "mugs": {},
+        "music": {},
+        "photos": {},
+        "tapes": {}
     },
     "topics": {}
 }

@@ -69,16 +69,6 @@ function loadEvents() {
                 er.style.animationIterationCount = '1';
             }
 
-            // Add keyframes for pulsating effect
-            const styleSheet = document.styleSheets[0];
-            styleSheet.insertRule(`
-                @keyframes pulsate {
-                    0% { border-image-source: linear-gradient(to bottom, orange, yellow); }
-                    50% { border-image-source: linear-gradient(to bottom, yellow, orange); }
-                    100% { border-image-source: linear-gradient(to bottom, orange, yellow); }
-                }
-            `, styleSheet.cssRules.length);
-
             window.onclick = function (event) {
                 if (event.target == modal) {
                     modal.style.display = "none";

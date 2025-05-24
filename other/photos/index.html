@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Photos</title>
+</head>
+<body>
+    <script src="../../script.js"></script>
+    <button id="randomize-btn" style="margin-top:1em;">Randomize</button>
+    <div id="center">
+        <span id="cencon">
+            <img id="main-photo" src="https://img.rau.dev/random">
+        </span>
+    </div>
+    <script>
+
+        // Helper to generate a random string
+        function randomString(length = 8) {
+            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        const mainPhoto = document.getElementById('main-photo');
+        const randomizeBtn = document.getElementById('randomize-btn');
+        const historyList = document.getElementById('history-list');
+        let history = [];
+
+
+        window.addEventListener('DOMContentLoaded', function() {
+            
+        });
+
+        randomizeBtn.addEventListener('click', function() {
+            const rand = randomString(8);
+            const url = "https://img.rau.dev/random?" + rand;
+            mainPhoto.src = url;
+        });
+
+        // If user clicks the image, randomize as well (optional UX)
+        mainPhoto.style.cursor = 'pointer';
+        mainPhoto.addEventListener('click', function() {
+            randomizeBtn.click();
+        });
+    </script>
+</body>
+</html>

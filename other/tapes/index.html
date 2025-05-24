@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casette Tape Collection</title>
+  <!-- Meta tags for image, title, and description -->
+  <meta property="og:title" content="Casette Tape Collection" />
+  <meta property="og:description" content="Interactive Cassette Tape collection" />
+  <meta name="description" content="Interactive Cassette Tape collection" />
+  <script src="data.js"></script>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+    }
+
+    #item_url {
+      text-transform: capitalize;
+    }
+
+    #data {
+      z-index: 1;
+    }
+
+    #embed {
+      float: right;
+      width: 25%;
+    }
+    canvas {
+      transform: scale(0.8);
+      transform-origin: top left;
+    }
+  </style>
+</head>
+<body>
+  <script src="../../script.js"></script>
+  <div>Drag a tape to the boom box to play it on Spotify.</div>
+  <div id="items">
+    <div id="message"></div>
+    <canvas id="img_canvas"></canvas>
+    <span id="embed"></span>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

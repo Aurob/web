@@ -36,41 +36,141 @@
         }
         .header {
             text-align: center;
-            margin-bottom: 20px;
+        }
+
+        
+        #outer {
+            position: absolute;
+            width: 50vmin;
+            height: 50vmin;
+            pointer-events: none;
+        }
+        
+        #center {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        #center #cencon {
+            width: 20vmin;
+            height: 20vmin;
+            background: #333;
+            display: flex;
+            flex-direction: column;
+            z-index: 1;
+        }
+
+        #cencon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            img {
+                border-radius: 2.5vw;
+                width: 80%;
+            }
+        }
+        .cat {
+            position: absolute;
+            transform-origin: center;
+            pointer-events: auto;
+            text-align: center;
+            width: 10vmin; /* Fixed width for better text handling */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%); /* Center the element itself */
         }
     </style>
 </head>
 <body>
     <script src="../script.js"></script>
-    <section id="projects">
-        <div class="header">
-            <h1>Data Projects</h1>
-            <p>Projects loosely related to data</p>
-        </div>
-        <div class="card" onclick="window.location.href='lorem'">
-            <div class="card-content">
-                <h2>Lorem</h2>
-                <p>Lorem Ipsum paragraphs for styling tests.</p>
-            </div>
-        </div>
-        <div class="card" onclick="window.location.href='books'">
-            <div class="card-content">
-                <h2>Books</h2>
-                <p>An interactive snapshot of my physical bookshelf</p>
-            </div>
-        </div>
-        <div class="card" onclick="window.location.href='music'">
-            <div class="card-content">
-                <h2>Music</h2>
-                <p>Basic interface for playing with <a href="https://tonejs.github.io/" target="_blank" rel="noopener">Tone.js</a></p>
-            </div>
-        </div>
-        <div class="card" onclick="window.location.href='mugs'">
-            <div class="card-content">
-                <h2>Mugs</h2>
-                <p>Interactive mug display</p>
-            </div>
-        </div>
-    </section>
+    <div id="center">
+        <span id="cencon">
+            <img src="./toilet_study_man.png">
+            Data Projects
+        </span>
+        <span id="outer">
+            <span class="cat" data-url="lorem">
+                <a href="lorem">lorem</a>
+                <!-- <span class="cat-desc">Lorem Ipsum paragraphs for styling tests.</span> -->
+            </span>
+            <span class="cat" data-url="books">
+                <a href="books">books</a>
+                <!-- <span class="cat-desc">An interactive snapshot of my physical bookshelf</span> -->
+            </span>
+            <span class="cat" data-url="music">
+                <a href="music">music</a>
+                <!-- <span class="cat-desc">Basic interface for playing with <a href="https://tonejs.github.io/" target="_blank" rel="noopener">Tone.js</a></span> -->
+            </span>
+            <span class="cat" data-url="mugs">
+                <a href="mugs">mugs</a>
+                <!-- <span class="cat-desc">Interactive mug display</span> -->
+            </span>
+            <span class="cat" data-url="photos">
+                <a href="photos">photos</a>
+            </span>
+            <span class="cat" data-url="tapes">
+                <a href="tapes">tapes</a>
+            </span>
+            <span class="cat">
+                <a href="https://all.rau.dev">archive</a>
+            </span>
+        </span>
+    </div>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const cats = document.querySelectorAll('.cat');
+            const numCats = cats.length;
+            const outerElement = document.getElementById('outer');
+            const outerRect = outerElement.getBoundingClientRect();
+            
+            // Calculate center point of the outer container
+            const centerX = outerRect.width / 2;
+            const centerY = outerRect.height / 2;
+            
+            // Calculate base radius (slightly smaller than container to account for element size)
+            const baseRadius = Math.min(centerX, centerY) * 0.99;
+            
+            // Set up animation
+            function animateCircle() {
+                // Get current time for animation
+                const now = Date.now() / 900; // Convert to seconds for smoother animation
+                
+                // Create time-based variations
+                const radiusVariation = Math.sin(now * 0.2) * 0.1 + 1; // Varies between 0.9 and 1.1
+                const angleOffset = Math.sin(now * 0.3) * 0.1; // Small angle variation
+                const spacingVariation = Math.sin(now * 0.15) * 0.1 + 1; // Varies spacing
+                
+                // Apply the current radius with variation
+                const radius = baseRadius * radiusVariation;
+                
+                // Position each cat in a circle with time-based variations
+                cats.forEach((cat, index) => {
+                    // Calculate angle for each cat with time-based variation
+                    const baseAngle = (index / numCats) * 2 * Math.PI;
+                    const angle = baseAngle * spacingVariation + angleOffset;
+                    
+                    const x = centerX + radius * Math.sin(angle);
+                    const y = centerY + radius * Math.cos(angle);
+                    
+                    // Apply the position with smooth transition
+                    cat.style.transition = 'left 0.5s ease-out, top 0.5s ease-out';
+                    cat.style.left = `${x}px`;
+                    cat.style.top = `${y}px`;
+                });
+                
+                // Continue animation
+                requestAnimationFrame(animateCircle);
+            }
+            
+            // Start the animation
+            animateCircle();
+        });
+    </script>
 </body>
 </html>
