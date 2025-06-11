@@ -60,7 +60,9 @@ function loadEvents() {
 
             a.href = data.link.link;
             img.src = data.link.cover_lg
-
+        let modal = document.getElementById("bookmodal");
+        let a = document.querySelector("#bookmodal a");
+        let img = document.querySelector("#bookmodal img");
             const er = document.querySelector('.er');
             if (er) {
                 er.style.border = '5px solid';

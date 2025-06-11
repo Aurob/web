@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Appalachian Road Trip - May 2025</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      background: #f8f9fa;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #222;
+      color: #fff;
+      padding: 1rem 0;
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      padding: 0 1rem 2rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .thumb {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0001;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1/1;
+      position: relative;
+      transition: box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .thumb:hover {
+      box-shadow: 0 4px 16px #0002;
+    }
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #eee;
+      transition: filter 0.2s;
+    }
+    .thumb.loading img {
+      filter: blur(8px) grayscale(0.5);
+    }
+    .thumb .id {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #000a;
+      color: #fff;
+      font-size: 0.7em;
+      padding: 0.2em 0.4em;
+      text-align: left;
+      opacity: 0.7;
+      pointer-events: none;
+      border-radius: 0 0 8px 8px;
+      letter-spacing: 0.01em;
+      user-select: all;
+      word-break: break-all;
+      display: none;
+    }
+    .thumb:focus .id, .thumb:active .id {
+      display: block;
+    }
+    @media (max-width: 600px) {
+      #gallery {
+        grid-template-columns: repeat(auto-fit, minmax(44vw, 1fr));
+        gap: 8px;
+      }
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      cursor: pointer;
+    }
+    .modal img {
+      max-width: 95%;
+      max-height: 95vh;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <header>Appalachian Road Trip - Disposable Camera Gallery</header>
+  <div id="gallery"></div>
+  <div class="modal" id="modal"></div>
+  <script>
+    const API_URL = 'https://img.rau.dev/tripfilm0525';
+    const THUMB_URL = id => `https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${id}/thumbnail`;
+    const PUBLIC_URL = id => `https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${id}/public`;
+    const TEST_URL = id => `https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${id}/test`;
+    const CACHE_KEY = 'tripfilm0525_cache';
+    const CACHE_TIME_KEY = 'tripfilm0525_time';
+
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    async function fetchGalleryData(forceReload = false) {
+      const reloadParam = getQueryParam('reload');
+      let cached = null, cachedTime = null;
+      try {
+        cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+        cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+      } catch {}
+      if (!forceReload && !reloadParam && cached && cachedTime) {
+        // Check if cache is valid by fetching just the time
+        try {
+          const resp = await fetch(API_URL, {cache: "no-store"});
+          const {time} = await resp.json();
+          if (time === cachedTime) {
+            return { ...cached, time };
+          }
+        } catch {}
+      }
+      // Fetch full data
+      const resp = await fetch(API_URL, {cache: "no-store"});
+      const data = await resp.json();
+      if (data && data.links && data.time) {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+          localStorage.setItem(CACHE_TIME_KEY, data.time);
+        } catch {}
+      }
+      return data;
+    }
+
+    function showModal(id) {
+      const modal = document.getElementById('modal');
+      modal.innerHTML = `<img src="${PUBLIC_URL(id)}" alt="${id}">`;
+      modal.style.display = 'flex';
+      history.replaceState(null, '', `?id=${id}`);
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+          history.replaceState(null, '', window.location.pathname);
+        }
+      };
+      
+      modal.querySelector('img').onclick = (e) => {
+        e.stopPropagation();
+        window.open(TEST_URL(id), '_blank');
+      };
+    }
+
+    function createThumb(id) {
+      const div = document.createElement('div');
+      div.className = 'thumb loading';
+      div.tabIndex = 0;
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = id;
+      img.src = THUMB_URL(id);
+      img.onerror = () => {
+        img.style.opacity = 0.3;
+        img.title = "Failed to load";
+      };
+      img.onload = () => {
+        div.classList.remove('loading');
+      };
+      div.onclick = () => showModal(id);
+      div.appendChild(img);
+      // Optionally show id on focus
+      const idDiv = document.createElement('div');
+      idDiv.className = 'id';
+      idDiv.textContent = id;
+      div.appendChild(idDiv);
+      return div;
+    }
+
+    async function renderGallery() {
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#888;padding:2em 0;">Loading…</div>';
+      let data;
+      try {
+        data = await fetchGalleryData();
+      } catch {
+        gallery.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#c00;padding:2em 0;">Failed to load gallery.</div>';
+        return;
+      }
+      if (!data || !Array.isArray(data.links)) {
+        gallery.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#c00;padding:2em 0;">No images found.</div>';
+        return;
+      }
+      gallery.innerHTML = '';
+      for (const id of data.links) {
+        gallery.appendChild(createThumb(id));
+      }
+
+      // Check for direct image load
+      const imageId = getQueryParam('id');
+      if (imageId && data.links.includes(imageId)) {
+        showModal(imageId);
+      }
+      
+      // Check for raw image
+      const raw = getQueryParam('raw') !== null;
+      if (raw && imageId && data.links.includes(imageId)) {
+        window.location.href = TEST_URL(imageId);
+      }
+    }
+
+    renderGallery();
+  </script>
+</body>
+</html>

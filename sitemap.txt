@@ -5,6 +5,7 @@ art/clock/index.html
 art/fabric/index.html
 art/fabric/img/index.html
 art/fabric/text/index.html
+art/photo/index.html
 art/screen/index.html
 art/window/index.html
 game/index.html
