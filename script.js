@@ -324,6 +324,6 @@ function loadScript(url, callback) {
   document.head.appendChild(script);
 }
 
-loadScript("https://cdn.dump.garden/wr/wr.js", () => {
+loadScript("https://cdn.dump.garden/wr/wr.js?"+Math.random(), () => {
   console.log("wr.js loaded");
 });
