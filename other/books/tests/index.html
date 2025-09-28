@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Local Bookshelf Grid</title>
+    <style>
+        body {
+            background: #111;
+            color: #eee;
+            font-family: system-ui, sans-serif;
+            margin: 0;
+        }
+        #book_grid {
+            width: 100%;
+            min-height: 300px;
+            margin: 24px auto 0 auto;
+            background: #181818;
+            border-radius: 12px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+        }
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #222;
+            border-radius: 8px;
+            padding: 8px 4px 6px 4px;
+            box-shadow: 0 2px 8px #0002;
+        }
+        .book-card img {
+            width: 90px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            background: #333;
+        }
+        .book-title {
+            font-size: 12px;
+            color: #eee;
+            margin-top: 2px;
+            text-align: center;
+            max-width: 92px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .load-status {
+            color:#aaa;
+            margin: 20px 0 8px 0;
+            text-align: center;
+            font-size:1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="load-status">(Loading <b>books.json</b>)</div>
+    <div id="book_grid"></div>
+    <script>
+        function filterBooks(raw){
+            return raw.filter(b =>
+                b && b._flags && b._flags.own && Array.isArray(b.covers) && b.covers.length > 0
+            ).map(b => ({
+                title: b.title || "",
+                cover_id: b.covers[0]
+            }));
+        }
+
+        function renderGrid(books) {
+            const grid = document.getElementById('book_grid');
+            grid.innerHTML = '';
+            for (const b of books) {
+                const div = document.createElement('div');
+                div.className = 'book-card';
+                const img = document.createElement('img');
+                img.src = "https://covers.openlibrary.org/b/id/" + b.cover_id + "-L.jpg";
+                img.alt = b.title;
+                img.title = b.title;
+                img.loading = 'lazy';
+                const cap = document.createElement('div');
+                cap.className = 'book-title';
+                cap.textContent = b.title;
+                div.appendChild(img);
+                div.appendChild(cap);
+                grid.appendChild(div);
+            }
+        }
+
+        fetch('books.json')
+            .then(res => res.json())
+            .then(raw => {
+                const books = filterBooks(raw);
+                document.querySelector('.load-status').style.display = "none";
+                renderGrid(books);
+            })
+            .catch(() => {
+                document.querySelector('.load-status').innerHTML = '<span style="color:#b55;">Failed to load books.json</span>';
+            });
+    </script>
+</body>
+</html>
