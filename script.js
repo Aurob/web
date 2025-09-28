@@ -123,7 +123,10 @@ const styles = `
 
 const html = `
         <div class="edge et"></div>
-        <div class="edge eb"><a href="mailto:pm@rau.dev">pm@rau.dev</a></div>
+        <div class="edge eb">
+            <script src="https://cdn.dump.garden/wr/wr.js"></script>
+            <div id="wr-widget"></div>
+        </div>
         <div class="edge er"></div>
         <div class="edge el"></div>
     `;
