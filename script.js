@@ -124,7 +124,6 @@ const styles = `
 const html = `
         <div class="edge et"></div>
         <div class="edge eb">
-            <script src="https://cdn.dump.garden/wr/wr.js"></script>
             <div id="wr-widget"></div>
         </div>
         <div class="edge er"></div>
@@ -317,3 +316,14 @@ document.head.appendChild(styleElement);
 
 // setInterval(updateBackgroundColor, 1000);
 updateBackgroundColor();
+
+function loadScript(url, callback) {
+  const script = document.createElement("script");
+  script.src = url;
+  script.onload = () => callback && callback();
+  document.head.appendChild(script);
+}
+
+loadScript("https://cdn.dump.garden/wr/wr.js", () => {
+  console.log("wr.js loaded");
+});
