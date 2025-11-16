@@ -330,17 +330,37 @@ function pointInTransformedPolygon(points, offsetX, offsetY, angle, x, y) {
 }
 
 function loadEvents(img) {
-    img_canvas.addEventListener('mousemove', function (event) {
+    // Helper function to get coordinates from mouse or touch event
+    function getEventCoordinates(event) {
         const rect = img_canvas.getBoundingClientRect();
         const scaleX = img_canvas.width / rect.width;
         const scaleY = img_canvas.height / rect.height;
-        const x = (event.clientX - rect.left) * scaleX;
-        const y = (event.clientY - rect.top) * scaleY;
+
+        let clientX, clientY;
+        if (event.touches && event.touches.length > 0) {
+            clientX = event.touches[0].clientX;
+            clientY = event.touches[0].clientY;
+        } else if (event.changedTouches && event.changedTouches.length > 0) {
+            clientX = event.changedTouches[0].clientX;
+            clientY = event.changedTouches[0].clientY;
+        } else {
+            clientX = event.clientX;
+            clientY = event.clientY;
+        }
+
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    }
+
+    // Handle move (both mouse and touch)
+    function handleMove(event) {
+        const {x, y} = getEventCoordinates(event);
 
         if (dragging && drag_item_index !== null) {
-            // Move the dragged item visually (do not update the item's offset yet)
+            event.preventDefault(); // Prevent scrolling while dragging
             drag_mouse = {x, y};
-            // Don't update hover_id while dragging
             return;
         }
 
@@ -357,16 +377,13 @@ function loadEvents(img) {
                 hover_id = index;
             }
         }
-    });
+    }
 
-    img_canvas.addEventListener('mousedown', function (event) {
-        const rect = img_canvas.getBoundingClientRect();
-        const scaleX = img_canvas.width / rect.width;
-        const scaleY = img_canvas.height / rect.height;
-        const x = (event.clientX - rect.left) * scaleX;
-        const y = (event.clientY - rect.top) * scaleY;
+    // Handle start (both mouse down and touch start)
+    function handleStart(event) {
+        const {x, y} = getEventCoordinates(event);
 
-        // Check if mouse is over any item
+        // Check if pointer is over any item
         for (let index = 0; index < items.length; index++) {
             let item = items[index];
             let points = item.points;
@@ -375,6 +392,7 @@ function loadEvents(img) {
             let angle = item.angle || 0;
 
             if (pointInTransformedPolygon(points, offsetX, offsetY, angle, x, y)) {
+                event.preventDefault(); // Prevent default touch behavior
                 dragging = true;
                 drag_item_index = index;
                 drag_start_mouse = {x, y};
@@ -383,16 +401,16 @@ function loadEvents(img) {
                     y: item.offsetY || 0
                 };
                 drag_mouse = {x, y};
-                // Set hover_id to the dragged item
                 hover_id = index;
                 break;
             }
         }
-    });
+    }
 
-    img_canvas.addEventListener('mouseup', function (event) {
+    // Handle end (both mouse up and touch end)
+    function handleEnd(event) {
         if (dragging && drag_item_index !== null && drag_mouse) {
-            // On mouseup, update the item's offset to the new position
+            event.preventDefault();
             let item = items[drag_item_index];
             let dx = drag_mouse.x - drag_start_mouse.x;
             let dy = drag_mouse.y - drag_start_mouse.y;
@@ -402,31 +420,30 @@ function loadEvents(img) {
         dragging = false;
         drag_item_index = null;
         drag_mouse = null;
-    });
+    }
 
-    img_canvas.addEventListener('mouseleave', function (event) {
-        if (dragging && drag_item_index !== null && drag_mouse) {
-            // On mouseleave, update the item's offset to the new position
-            let item = items[drag_item_index];
-            let dx = drag_mouse.x - drag_start_mouse.x;
-            let dy = drag_mouse.y - drag_start_mouse.y;
-            item.offsetX = drag_start_offset.x + dx;
-            item.offsetY = drag_start_offset.y + dy;
-        }
-        dragging = false;
-        drag_item_index = null;
-        drag_mouse = null;
-    });
-
-    img_canvas.addEventListener('click', function (event) {
-        // Only trigger click if not dragging
+    // Handle click/tap
+    function handleClick(event) {
         if (dragging) return;
         if (hover_id == null) return;
         let item = items[hover_id];
         let item_label_url = item.label.replace(' ', '-');
         document.querySelector("#item_url").href = `https://starbucks-mugs.com/mug/been-there-${item_label_url}/`;
         document.querySelector("#item_url").innerText = item.label;
-    });
+    }
+
+    // Mouse events
+    img_canvas.addEventListener('mousemove', handleMove);
+    img_canvas.addEventListener('mousedown', handleStart);
+    img_canvas.addEventListener('mouseup', handleEnd);
+    img_canvas.addEventListener('mouseleave', handleEnd);
+    img_canvas.addEventListener('click', handleClick);
+
+    // Touch events
+    img_canvas.addEventListener('touchstart', handleStart, {passive: false});
+    img_canvas.addEventListener('touchmove', handleMove, {passive: false});
+    img_canvas.addEventListener('touchend', handleEnd, {passive: false});
+    img_canvas.addEventListener('touchcancel', handleEnd, {passive: false});
 }
 
 
