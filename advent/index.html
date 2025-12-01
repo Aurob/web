@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <style>
+        table { border-collapse: collapse; }
+        th, td { 
+            border: 1px solid var(--global-white); 
+            color: var(--global-white);padding: 8px; 
+        }
+        blockquote { 
+            margin: auto; 
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <p>
+            I'm attempting the 2025 Advent of Code. I'll use this page to show my status and my solutions for each day.
+            
+            <blockquote>
+                "Advent of Code is an Advent calendar of small programming puzzles for a variety of skill levels that can be solved in any programming language you like."
+                <footer>
+                    — Eric Wastl, <a href="https://adventofcode.com/2025/about">Advent of Code</a>
+                </footer>
+            </blockquote>
+            <hr>
+            <br>
+            View my <a href="https://adventofcode.com/2025/leaderboard/private/view/5210694?view_key=477735dc">leaderboard</a><br><br>
+
+            <table id="my_stats">
+            </table>
+            <br>
+        </p>
+    </div>
+    <script>
+        const my_id = "5210694"
+        let my_stats = document.getElementById("my_stats");
+        let day_completions = {
+            '1': {'lang': 'python', 'code': 'day1/script.py'}
+        };
+
+        fetch('leaderboard.json')
+        .then(res=>res.json())
+        .then(data => {
+            let days = []
+            let aoc_days = data.members[my_id].completion_day_level;
+            let completions = Object.keys(aoc_days);
+            let aoc_status = '';
+            let table_data = []
+
+            for(let day of completions) {
+                let day_data = aoc_days[day];
+                let stars = Object.keys(day_data);
+                let link = `<a href="https://adventofcode.com/2025/day/${day}">link</a>`
+                let day_json = {day, link}
+
+                day_json.language = day_completions[day].lang;
+                day_json.code = `<a href="${day_completions[day].code}">link</a>`
+                console.log(day_json.code)
+                for(let star of stars) {
+                    let ts = parseInt(day_data[star].get_star_ts + '000')
+                    let date = new Date(ts).toLocaleString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                    
+                    if(day_data[star].star_index == 0) {
+                        day_json.s1 = date
+                    }
+                    if(day_data[star].star_index == 1) {
+                        day_json.s2 = date
+                    }
+                }
+
+
+
+                table_data.push(day_json);
+            }
+
+            my_stats.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Puzzle</th>
+                        <th>1st Star</th>
+                        <th>2nd Star</th>
+                        <th>Language</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${table_data.map(row => `
+                    <tr>
+                        <td>${row.day}</td>
+                        <td>${row.link}</td>
+                        <td>${row.s1}</td>
+                        <td>${row.s2}</td>
+                        <td>${row.language}</td>
+                        <td>${row.code}</td>
+                    </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        })
+    </script>
+    <script src="../script.js"></script>
+</body>
+</html>
