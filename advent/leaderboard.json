@@ -1,27 +1,37 @@
 {
-    "owner_id": 5210694,
-    "num_days": 12,
+    "event": "2025",
     "members": {
         "5210694": {
-            "name": "Aurob",
             "completion_day_level": {
                 "1": {
-                    "1": {
-                        "get_star_ts": 1764568114,
-                        "star_index": 0
-                    },
                     "2": {
                         "get_star_ts": 1764568823,
                         "star_index": 1
+                    },
+                    "1": {
+                        "star_index": 0,
+                        "get_star_ts": 1764568114
+                    }
+                },
+                "2": {
+                    "2": {
+                        "get_star_ts": 1764655356,
+                        "star_index": 3
+                    },
+                    "1": {
+                        "star_index": 2,
+                        "get_star_ts": 1764652889
                     }
                 }
             },
+            "name": "Aurob",
             "id": 5210694,
-            "local_score": 2,
-            "last_star_ts": 1764568823,
-            "stars": 2
+            "stars": 4,
+            "last_star_ts": 1764655356,
+            "local_score": 4
         }
     },
-    "event": "2025",
+    "owner_id": 5210694,
+    "num_days": 12,
     "day1_ts": 1764565200
 }

@@ -45,9 +45,6 @@
     <script>
         const my_id = "5210694"
         let my_stats = document.getElementById("my_stats");
-        let day_completions = {
-            '1': {'lang': 'python', 'code': 'day1/script.py'}
-        };
 
         fetch('leaderboard.json')
         .then(res=>res.json())
@@ -64,11 +61,10 @@
                 let link = `<a href="https://adventofcode.com/2025/day/${day}">link</a>`
                 let day_json = {day, link}
 
-                day_json.language = day_completions[day].lang;
-                day_json.code = `<a href="${day_completions[day].code}">link</a>`
-                console.log(day_json.code)
+                day_json.code = `<a href="day${day}">link</a>`
                 for(let star of stars) {
                     let ts = parseInt(day_data[star].get_star_ts + '000')
+                    console.log(ts)
                     let date = new Date(ts).toLocaleString('en-US', { 
                         month: 'short', 
                         day: 'numeric', 
@@ -78,16 +74,13 @@
                         hour12: true
                     });
                     
-                    if(day_data[star].star_index == 0) {
+                    if(star == "1") {
                         day_json.s1 = date
                     }
-                    if(day_data[star].star_index == 1) {
+                    if(star == "2") {
                         day_json.s2 = date
                     }
                 }
-
-
-
                 table_data.push(day_json);
             }
 
@@ -98,7 +91,6 @@
                         <th>Puzzle</th>
                         <th>1st Star</th>
                         <th>2nd Star</th>
-                        <th>Language</th>
                         <th>Solution</th>
                     </tr>
                 </thead>
@@ -109,7 +101,6 @@
                         <td>${row.link}</td>
                         <td>${row.s1}</td>
                         <td>${row.s2}</td>
-                        <td>${row.language}</td>
                         <td>${row.code}</td>
                     </tr>
                     `).join('')}
@@ -117,6 +108,6 @@
             `;
         })
     </script>
-    <script src="../script.js"></script>
+    <script src="../template.js"></script>
 </body>
 </html>

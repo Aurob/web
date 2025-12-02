@@ -6,6 +6,7 @@
 const styles = `
     :root {
         --global-blue: color(display-p3 0.231 0.309 0.355);
+        --global-dark-blue: color(display-p3 0.157 0.192 0.208);
         --global-white: color(display-p3 0.985 0.985 0.95);
         --global-orange: color(display-p3 1 0.6 0.4);
         --global-yellow: color(display-p3 0.95 0.85 0.5);
@@ -131,6 +132,11 @@ const styles = `
     .edge > a {
         padding-right: .5em;
     }
+
+    pre code {
+        white-space: pre-wrap;
+}
+
 `;
 
 
