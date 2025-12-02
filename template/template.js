@@ -3,155 +3,13 @@
 // search
 
 
-const styles = `
-    :root {
-        --global-blue: color(display-p3 0.231 0.309 0.355);
-        --global-dark-blue: color(display-p3 0.157 0.192 0.208);
-        --global-white: color(display-p3 0.985 0.985 0.95);
-        --global-orange: color(display-p3 1 0.6 0.4);
-        --global-yellow: color(display-p3 0.95 0.85 0.5);
-    }
-
-    html {
-        font-family: monospace;
-        height: 100%;
-        width: 100%;
-        background-color: black !important;
-    }
-    
-    body {
-        margin: 0;
-        padding: 0;
-        color: var(--global-white);
-        background-color: var(--global-blue);
-        position: relative; /* Establish a containing block for absolute positioning */
-        z-index: -3;
-        min-height: 100vh; /* Ensures at least full viewport height */
-        /* width: 100%; */
-        overflow-x: hidden;
-        height: auto; /* Let content grow, but min-height keeps at least 100% */
-    }
-
-    body a {
-        color: var(--global-yellow);
-    }
-        
-    
-    #content {
-        width: 65vw;
-        margin: 1em;
-    }
-        
-    @media (max-width: 768px) {
-        body {
-            min-height: 100vh; /* Ensure body takes full viewport height on mobile */
-        }
-    }
-
-    body.light {
-        background-color: #f0f0f0;
-        color: #333;
-    }
-
-    body.dark {
-        background-color: #555252;
-        color: #f0f0f0;
-    }
-
-    a {
-        color: inherit;
-    }
-    
-    .edge {
-        width: 100%;
-        height: 100%;
-        padding: .25em;
-    }
-
-    .el {
-        color: var(--global-white);
-        background-color: transparent;
-        border: solid var(--global-blue);
-        position: fixed; /* Change to fixed to ensure it fills the viewport height */
-        display: flex;
-        flex-direction: column;
-        left: 0;
-        top: 0;
-        width: fit-content;
-        height: 100vh; /* Fill the viewport height */
-        align-content: center;
-        z-index: -1;
-        border-right: outset .01em;
-    }
-
-    .el > a {
-        padding-left: .5em;
-        padding-top: 2em;
-    }
-
-    .et {
-
-        color: var(--global-white);
-        background-color: var(--global-blue);
-        border: solid var(--global-blue);
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 1em;
-        z-index: 1;
-        border-bottom: outset .01em;
-        padding-left: 1em;
-    }
-
-    et > * {
-        position: fixed;
-    }
-
-
-    .eb {
-
-        color: var(--global-white);
-        background-color: transparent;
-        border: solid var(--global-blue);
-        position: fixed; /* Fixed to bottom as footer */
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 1em;
-        z-index: 2;
-        border-top: outset .01em;
-        padding-right: 1em;
-    }
-
-    .eb #year {
-        float: right;
-        padding-right: 1em;
-    }
-
-    .edge > a {
-        padding-right: .5em;
-    }
-
-    pre code {
-        white-space: pre-wrap;
-}
-
-`;
-
-
 const html = `
     <div id="nav">
         <div class="edge et"></div>
-        <div class="edge eb"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
         <div class="edge el"></div>
     </div>
 `;
-
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);
 
 document.body.style.padding = '2em';
 const tempDiv = document.createElement('div');
@@ -296,7 +154,11 @@ function loadScript(url, callback) {
     document.head.appendChild(script);
 }
 
-window.addEventListener('load', ()=>{    // Initialize the sitemap fetch and UI build
+
+window.addEventListener('load', ()=>{
     fetchSitemap();
+    loadScript("/webring/wr.js", () => {
+        console.log("wr.js loaded");
+    });
 })
 
