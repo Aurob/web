@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../template/template.css">
+
+</head>
+<body>
+    <div id="content">
+        <p>
+            This website is a part of a custom webring system that I created. The source code can be found <a href="https://git.sr.ht/~rau/wr/tree" target="_blank">here</a>
+            <br><br>
+            Each site in this ring is a website that I control, either directly via self-hosting or through a third-party like with GitHub or NeoCities. 
+            <br><br>
+            At the footer of each page on each site in the ring, you will find a previous, random, and next button.
+            The previous and next will take you to in a loop through each of the sites.
+            The random button will take you to a random site in the ring.
+
+            <br><br>
+            Currently, these are the websites in the ring:
+            <p id="sites">
+            </p> 
+            <hr>       
+            <blockquote>
+                "A webring (or web ring) is a collection of websites linked together in a circular structure, 
+                usually organized around a specific theme, and often educational or social.
+                They were popular in the 1990s and early 2000s, particularly among amateur websites."
+                <footer>
+                    — Wikipedia, The Free Encyclopedia, <a href="https://en.wikipedia.org/w/index.php?title=Webring&oldid=1318926956" target="_blank">Webring</a>
+                </footer>
+            </blockquote>
+        </p>
+    </div>
+    <script>
+        fetch('sites.txt')
+        .then(res=>res.text())
+        .then(data=>{
+            
+            let sites = data.split('\n');
+            document.getElementById('sites').innerHTML = sites.map(site=>`<a href="${site}" target="_blank">${site}</a><br>`).join('');
+        })
+    </script>
+    <script src="../template/template.js"></script></body>
+</html>
