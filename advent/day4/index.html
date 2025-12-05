@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../template/template.css">
+    
+    <style>
+        table { border-collapse: collapse; }
+        th, td { 
+            border: 1px solid var(--global-white); 
+            color: var(--global-white);padding: 8px; 
+        }
+        blockquote { 
+            margin: auto; 
+        }
+
+        pre {
+            width: fit-content;
+            background-color: var(--global-dark-blue);
+            padding: 1em;
+            color: var(--global-dark-blue);
+        }
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="">
+
+        <div>
+            View my input file here: <a href="input">input.txt</a>
+            <br>    
+            <button id="show">Show Code</button>
+        </div>
+        <pre id="pre"><code id="solution">
+def day4_part1(input_str):
+
+    def find_forklift_spots(grid):
+        grid_size = len(grid), len(grid[0])
+
+        cell_neighbors = {}
+
+        x_count = 0
+
+        for row in range(grid_size[0]):
+            # if row != 0: continue
+
+            for col in range(grid_size[1]):
+                # if col != 0: continue
+
+                cell = grid[row][col]
+
+                nol = row == 0
+                nor = row == grid_size[0]-1
+                noa = col == 0
+                nob = col == grid_size[1]-1
+
+                neighbors = [
+                    grid[row-1][col-1] if not (nol or noa) else None, 
+                    grid[row][col-1] if not (noa) else None, 
+                    grid[row+1][col-1] if not (nor or noa) else None,
+                    grid[row-1][col] if not (nol) else None,
+                    grid[row+1][col] if not (nor) else None,
+                    grid[row-1][col+1] if not (nol or nob) else None, 
+                    grid[row][col+1] if not (nob) else None, 
+                    grid[row+1][col+1] if not (nor or nob) else None,
+                ]
+
+                # print(neighbors, [n for n in neighbors if n == '@'])
+                if cell == '@' and len([n for n in neighbors if n == '@']) < 4:
+                    # make_x.append((row, col))
+                    x_count += 1
+        
+        # for cell in make_x:
+        #     grid[cell[0]][cell[1]] = 'x'
+
+        return x_count #grid, cell_neighbors
+
+    grid = []
+    for line in input_str.split('\n'):
+        line = line.strip()
+        if not line: continue
+
+        row = [c for c in line.strip()]
+        grid.append(row)
+
+    x_count = find_forklift_spots(grid)
+    
+    return x_count
+
+        </code></pre>
+        <p>
+        </p>
+    </div>
+    <script>
+        document.getElementById("show").onclick = function() {
+            document.getElementById("pre").style.color = "var(--global-white)"
+        }
+    </script>
+    <script src="../../template/template.js"></script>
+</body>
+</html>

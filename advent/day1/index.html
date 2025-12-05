@@ -10,7 +10,7 @@
     <meta property="og:description" content="">
     <meta property="og:image" content="favicon.ico">
     <link rel="shortcut icon" href="favicon.ico">
-    <link rel="stylesheet" type="text/css" href="../template/template.css">
+    <link rel="stylesheet" type="text/css" href="../../template/template.css">
     
     <style>
         table { border-collapse: collapse; }
@@ -26,46 +26,57 @@
             width: fit-content;
             background-color: var(--global-dark-blue);
             padding: 1em;
+            color: var(--global-dark-blue);
         }
     </style>
 </head>
 <body>
-    <div id="content">
-        <pre><code id="solution"></code></pre>
-        <p>
-        <button onclick="run_challenge_input()">Run</button>
-        </p>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
     </div>
-    <script src="day1.js"></script>
+    <div id="">
+        <div>
+            View my input file here: <a href="input">input.txt</a>
+            <br>
+            <button id="show">Show Code</button>
+        </div>
+        <pre id="pre"><code id="solution">
+def day1(input_str:str):
+    position = 50
+    zero_states = 0
+    zero_clicks = 0
+
+    input_data = [l.strip().replace(' ', '') for l in input_str.replace('\n', ' ').split(' ')]
+
+    for state in input_data:
+        if not state: continue
+        direction = -1 if state[0] == 'L' else 1
+        clicks = int(state[1:])
+
+        for c in range(clicks):
+            position += direction
+            if position == 100:
+                position = 0
+            if position == -1:
+                position = 99
+            
+            if position == 0:
+                zero_clicks += 1
+
+        if position == 0:
+            zero_states += 1
+
+    return zero_states, zero_clicks
+        </code></pre>
+
+    </div>
     <script>
-
-        function run_challenge_input() {
-            fetch('input.txt')
-            .then(res=>res.text())
-            .then(input => {
-                console.log(run(input));
-            })
+        document.getElementById("show").onclick = function() {
+            document.getElementById("pre").style.color = "var(--global-white)"
         }
-
-        function run_test() {
-            const input_test = `
-            L68
-            L30
-            R48
-            L5
-            R60
-            L55
-            L1
-            L99
-            R14
-            L82`
-
-            console.log(run(input_test))
-        }
-
-        solution_html.innerHTML = run.toString();
-
     </script>
-    <script src="../template/template.js"></script>
+    <script src="../../template/template.js"></script>
 </body>
 </html>

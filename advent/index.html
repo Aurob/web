@@ -24,16 +24,15 @@
     </style>
 </head>
 <body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
     <div id="content">
         <p>
             I'm attempting the 2025 Advent of Code. I'll use this page to show my status and my solutions for each day.
-            
-            <blockquote>
-                "Advent of Code is an Advent calendar of small programming puzzles for a variety of skill levels that can be solved in any programming language you like."
-                <footer>
-                    — Eric Wastl, <a href="https://adventofcode.com/2025/about">Advent of Code</a>
-                </footer>
-            </blockquote>
+ 
             <hr>
             <br>
             View my <a href="https://adventofcode.com/2025/leaderboard/private/view/5210694?view_key=477735dc">leaderboard</a><br><br>
@@ -41,6 +40,13 @@
             <table id="my_stats">
             </table>
             <br>
+            <hr>  
+            <blockquote>
+                "Advent of Code is an Advent calendar of small programming puzzles for a variety of skill levels that can be solved in any programming language you like."
+                <footer>
+                    — Eric Wastl, <a href="https://adventofcode.com/2025/about">Advent of Code</a>
+                </footer>
+            </blockquote>
         </p>
     </div>
     <script>
@@ -60,12 +66,11 @@
                 let day_data = aoc_days[day];
                 let stars = Object.keys(day_data);
                 let link = `<a href="https://adventofcode.com/2025/day/${day}">link</a>`
-                let day_json = {day, link}
+                let day_json = {day, link, s1:"", s2:""}
 
                 day_json.code = `<a href="day${day}">link</a>`
                 for(let star of stars) {
                     let ts = parseInt(day_data[star].get_star_ts + '000')
-                    console.log(ts)
                     let date = new Date(ts).toLocaleString('en-US', { 
                         month: 'short', 
                         day: 'numeric', 

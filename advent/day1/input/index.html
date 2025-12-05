@@ -10,7 +10,7 @@
     <meta property="og:description" content="">
     <meta property="og:image" content="favicon.ico">
     <link rel="shortcut icon" href="favicon.ico">
-    <link rel="stylesheet" type="text/css" href="../template/template.css">
+    <link rel="stylesheet" type="text/css" href="../../../template/template.css">
 </head>
 <body>
     <div id="nav">
@@ -18,7 +18,19 @@
         <div class="edge eb"><div id="wr-widget"></div></div>
         <div class="edge el"></div>
     </div>
-    <div id="content"></div>
-    <script src="../template/template.js"></script>
+    <div id="content">
+        <a href="input.txt">[raw]</a>
+    </div>    <script>
+        window.onload=function(){
+            fetch('input.txt')
+            .then(res=>res.text()) 
+            .then(data=>{  
+                document.getElementById("content").innerHTML += `
+                <pre><code>${data}</code></pre>
+                `;
+            });
+        }
+    </script>
+    <script src="../../../template/template.js"></script>
 </body>
 </html>

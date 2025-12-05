@@ -40,9 +40,27 @@ function createWidget() {
 
     widget_el.style.position = 'fixed';
 
+    // Calculate prev/next indices with wrap-around
+    const prevIndex = (site_index === 0) ? sites.length - 1 : site_index - 1;
+    const nextIndex = (site_index === sites.length - 1) ? 0 : site_index + 1;
+
+    function setButtonTitle(btn, link, label, noSiteMsg) {
+        if (link) {
+            btn.title = `${label}: ${link}`;
+            btn.setAttribute('aria-label', `${label}: ${link}`);
+        } else {
+            btn.title = noSiteMsg;
+            btn.setAttribute('aria-label', noSiteMsg);
+        }
+    }
+
+
     const prevBtn = document.createElement('button');
     prevBtn.id = 'pbut';
     prevBtn.textContent = '◄';
+    // let a = document.createElement('a');
+    // a.innerText = '◄';
+    // a.href = sites[prevIndex];
 
     const randBtn = document.createElement('button');
     randBtn.id = 'rbut';
@@ -76,19 +94,6 @@ function createWidget() {
         site_index = 0;
     }
 
-    // Calculate prev/next indices with wrap-around
-    const prevIndex = (site_index === 0) ? sites.length - 1 : site_index - 1;
-    const nextIndex = (site_index === sites.length - 1) ? 0 : site_index + 1;
-
-    function setButtonTitle(btn, link, label, noSiteMsg) {
-        if (link) {
-            btn.title = `${label}: ${link}`;
-            btn.setAttribute('aria-label', `${label}: ${link}`);
-        } else {
-            btn.title = noSiteMsg;
-            btn.setAttribute('aria-label', noSiteMsg);
-        }
-    }
 
     setButtonTitle(prevBtn, sites[prevIndex], 'Previous', 'No previous site');
     randBtn.title = sites.length > 1 ? 'Random site' : 'No random site available';
