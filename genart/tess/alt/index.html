@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle</title>
+    <script src="/files/srv/code/noise.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="control-panel"
+        style="position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.5); padding: 10px; border-radius: 8px;">
+        <label for="symmetry">Symmetry:</label>
+        <input type="number" id="symmetry" name="symmetry" value=0>
+    </div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let size = 150;
+        let width = canvas.width;
+        let height = canvas.height;
+        let rows = 1, cols = 1;
+        let cellPolys = [];
+        let centerOffsetStart = false;
+        let coffX = width / 2 - size / 2;
+        let coffY = height / 2 - size / 2;
+        
+
+        let tileinfo = {
+            'symmetry': document.getElementById('symmetry').value,
+        }
+        let startx = 0;
+        let starty = 0;
+
+        function makeCell() {
+
+            rows = Math.floor(width / size);
+            cols = Math.floor(height / size);
+
+            cellPolys = [{
+                poly: [
+                    { x: 0, y: 0 },
+                    { x: size / 2, y: 0 },
+                    { x: size / 2, y: size / 2 },
+                    { x: 0, y: 0 }
+                ],
+                color: getRandomColor()
+            },
+            {
+                poly: [
+                    { x: size / 2, y: 0 },
+                    { x: size / 2, y: size / 2 },
+                    { x: size, y: size },
+                    { x: size, y: 0 },
+                    { x: size / 2, y: 0 }
+                ],
+                color: getRandomColor()
+            },
+            {
+                poly: [
+                    { x: 0, y: 0 },
+                    { x: size, y: size },
+                    { x: size / 2, y: size },
+                    { x: 0, y: size / 2 },
+                ],
+                color: getRandomColor()
+            },
+            {
+                poly: [
+                    { x: 0, y: size / 2 },
+                    { x: size / 2, y: size },
+                    { x: 0, y: size },
+                    { x: 0, y: size / 2 },
+                ],
+                color: getRandomColor()
+            },
+            {
+                poly: [{ x: size / 2.85, y: size / 8 }],
+                color: getRandomColor(),
+                type: 'dot',
+                size: size / 42
+            },
+            {
+                poly: [{ x: size / 2.85, y: size / 8 }],
+                color: 'black',
+                type: 'text',
+                text: 'R'
+            }];
+        }
+
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function drawCell(offsetX = 0, offsetY = 0) {
+
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = size / 100;
+            ctx.lineJoin = 'round';
+
+            cellPolys.forEach(cellpoly => {
+                ctx.fillStyle = cellpoly.color;
+
+                let poly = cellpoly.poly;
+                if (cellpoly.type && cellpoly.type == 'text') {
+                    const fontSize = size / 5;
+                    ctx.font = `${fontSize}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(cellpoly.text, poly[0].x + offsetX, poly[0].y + offsetY);
+                }
+
+                if (cellpoly.type && cellpoly.type == 'dot') {
+                    ctx.beginPath();
+                    ctx.arc(poly[0].x + offsetX, poly[0].y + offsetY, cellpoly.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    return;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(poly[0].x + offsetX, poly[0].y + offsetY);
+                for (let i = 1; i < poly.length; i++) {
+                    ctx.lineTo(poly[i].x + offsetX, poly[i].y + offsetY);
+                }
+                ctx.closePath();
+                // ctx.stroke();
+                ctx.fill();
+            });
+        }
+
+
+        function drawTile(x = 0, y = 0, symmetry = 1) {
+            let angle = 360 / 2;
+            let xoff = 0, yoff = 0;
+            if(symmetry == 0) {
+                drawCell(x, y);
+            }
+            else if(symmetry == 1) {
+                for(let i = 0; i < 2; i++) {
+                    if(i == 0) {
+                        xoff = 0;
+                        yoff = 0;
+                    }
+                    if(i == 1) {
+                        xoff = 2;
+                        yoff = 1;
+                    }
+                    ctx.save();
+                    ctx.translate(x + size * xoff, y + size * yoff);
+                    ctx.rotate(i * angle * Math.PI / 180);
+                    ctx.translate(-x, -y);
+                    drawCell(x, y);
+                    ctx.restore();
+                }
+            }
+            else if(symmetry == 2) {
+                for(let i = 0; i < 2; i++) {
+                    if(i == 0) {
+                        xoff = 0;
+                        yoff = 0;
+                    }
+                    if(i == 1) {
+                        xoff = 1;
+                        yoff = 2;
+                    }
+                    ctx.save();
+                    ctx.translate(x + size * xoff, y + size * yoff);
+                    ctx.rotate(i * angle * Math.PI / 180);
+                    ctx.translate(-x, -y);
+                    drawCell(x, y);
+                    ctx.restore();
+                }
+            }
+            else if(symmetry == 3) {
+                for(let i = 0; i < 4; i++) {
+                    if(i == 1) {
+                        xoff = 2;
+                        yoff = 1;
+                    }
+                    if(i == 2) {
+                        xoff = 1;
+                        yoff = 1;
+                    }
+                    if(i == 3) {
+                        xoff = 1;
+                        yoff = 2;
+                    }
+                    ctx.save();
+                    ctx.translate(x + size * xoff, y + size * yoff);
+                    ctx.rotate(i * angle * Math.PI / 180);
+                    ctx.translate(-x, -y);
+                    drawCell(x, y);
+                    ctx.restore();
+                }
+            }
+            else if(symmetry == 4) {
+                angle=90;
+                for(let i = 0; i < 4; i++) {
+
+                    ctx.save();
+                    ctx.translate(x + size * xoff, y + size * yoff);
+                    ctx.rotate(i * angle * Math.PI / 180);
+                    ctx.translate(-x, -y);
+                    drawCell(x, y);
+                    ctx.restore();
+                }
+            }
+            else if(symmetry == 5) {
+                angle = 90; // Start with -90 degrees as per instructions
+                for(let i = 0; i < 4; i++) {
+
+                    ctx.save();
+                    //p1
+                    ctx.translate(x, y - size);
+                    ctx.rotate(angle * Math.PI / 180);
+
+
+                    ctx.translate(x + size * xoff, y + size * yoff)
+                    ctx.rotate(i * angle * Math.PI / 180);
+
+                    ctx.translate(-x, -y);
+                    drawCell(x, y);
+                    ctx.restore();
+
+                    angle += 90; // Rotate 90 degrees from the current angle
+                }
+            }
+        }
+
+        function wallpaper(x = 0, y = 0, tileinfo = {}) {
+            // if tilesides is 1, tile the plain
+            // if tilesides is 2, the tile will be 2width 1height
+            // if tilesides is 4, the tile will be 2width 2height
+            // no other values are allowed
+
+            let tilesXCount = 1;
+            let tilesYCount = 1;
+            if (tileinfo.symmetry == 1) tilesXCount = 2;
+            if (tileinfo.symmetry == 2) {
+                tilesYCount = 2;
+            }
+            if (tileinfo.symmetry == 3 || tileinfo.symmetry == 4 || tileinfo.symmetry == 5) {
+                tilesXCount = 2;
+                tilesYCount = 2;
+            }
+            console.log(tileinfo.symmetry, tilesXCount, tilesYCount);
+            for (let i = 0; i < rows; i += tilesXCount) {
+                for (let j = 0; j < cols; j += tilesYCount) {
+                    drawTile(i * size, j * size, tileinfo.symmetry);
+
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            wallpaper(startx, starty, tileinfo);
+        }
+
+        makeCell();
+        requestAnimationFrame(draw);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            width = canvas.width;
+            height = canvas.height;
+            makeCell();
+            draw();
+        });
+
+        document.getElementById('symmetry').addEventListener('input', (e) => {
+            // regex match p\d
+            let _val = parseInt(e.target.value);
+            tileinfo.symmetry = _val;
+            makeCell();
+            draw();
+        });
+
+    </script>
+</body>
+
+</html>

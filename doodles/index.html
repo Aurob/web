@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../template/template.css">
+
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="content"></div>
+    <script src="images.js"></script>
+    <script>
+        let content = document.getElementById("content");
+        IMAGES.forEach(image => {
+            let img = new Image();
+            img.loading = 'lazy';
+            img.src = `https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${image}/public`;
+            content.append(img);
+        });
+    </script>
+    <script src="../template/template.js"></script>
+</body>
+</html>

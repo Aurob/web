@@ -1,0 +1,76 @@
+<label for="waveType">Wave Type:</label>
+<select id="waveType">
+  <option value="sine">Sine</option>
+  <option value="square">Square</option>
+  <option value="sawtooth">Sawtooth</option>
+  <option value="triangle">Triangle</option>
+</select>
+
+<label for="frequency">Frequency (Hz):</label>
+<input type="range" id="frequency" min="20" max="2000" value="440">
+
+<label for="detune">Detune (Cents):</label>
+<input type="range" id="detune" min="-1200" max="1200" value="0">
+
+<label for="volume">Volume:</label>
+<input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+
+<button id="play">Play</button>
+<button id="stop">Stop</button>
+<script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let oscillator, gainNode = audioCtx.createGain();
+
+    const playSound = () => {
+        oscillator = audioCtx.createOscillator();
+        oscillator.type = document.getElementById('waveType').value;
+        oscillator.frequency.setValueAtTime(document.getElementById('frequency').value, audioCtx.currentTime);
+        oscillator.detune.setValueAtTime(document.getElementById('detune').value, audioCtx.currentTime);
+
+        // Simple ADSR example
+        const now = audioCtx.currentTime;
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(document.getElementById('volume').value, now + 0.1); // Attack
+        gainNode.gain.exponentialRampToValueAtTime(0.1, now + 1.5); // Decay + Sustain
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 3); // Adding Release by stopping oscillator after 3 seconds
+    };
+
+    const stopSound = () => {
+        if (oscillator) {
+            oscillator.stop();
+            oscillator.disconnect();
+        }
+    };
+
+    document.getElementById('play').addEventListener('click', playSound);
+    document.getElementById('stop').addEventListener('click', stopSound);
+
+    // Real-time control
+    ['waveType', 'frequency', 'detune'].forEach(id => {
+        document.getElementById(id).addEventListener('change', () => {
+            if (oscillator) {
+                const value = document.getElementById(id).value;
+                switch (id) {
+                    case 'waveType':
+                        oscillator.type = value;
+                        break;
+                    case 'frequency':
+                        oscillator.frequency.setValueAtTime(value, audioCtx.currentTime);
+                        break;
+                    case 'detune':
+                        oscillator.detune.setValueAtTime(value, audioCtx.currentTime);
+                        break;
+                }
+            }
+        });
+    });
+
+    document.getElementById('volume').addEventListener('input', function () {
+        gainNode.gain.setValueAtTime(this.value, audioCtx.currentTime);
+        // Adjust ADSR in real-time if needed
+    });
+</script>

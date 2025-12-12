@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgb(44, 62, 80);
+        }
+    </style>
+    <script src="/files/srv/code/noise.js"></script>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        // const quote = `At dawn of day, when you dislike being called, have this thought ready: 'I am called to man's labour; why then do I make a difficulty if I am going out to do what I was born to do and what I was brought into the world for? Is it for this that I am fashioned, to lie in bedclothes and keep myself warm?' 'But this is more pleasant.' 'Were you born then to please yourself; in fact for feeling, not for action? Can't you see the plants, the birds, the ants, the spiders, the bees each doing his own work, helping for their part to adjust a world? And then you refuse to do a man's office and don't make haste to do what is according to your own nature.' 'But a man needs rest as well.' I agree, he does, yet Nature assigns limits to rest, as well as to eating and drinking, and you nevertheless go beyond her limits, beyond what is sufficient; in your actions only this is no longer so, there you keep inside what is in your power. The explanation is that you do not love your own self, else surely you would love both your nature and her purpose. But other men who love their own crafts wear themselves out in labours upon them, unwashed and unfed; while you hold your own nature in less honour than the smith his metal work, the dancer his art, the miser his coin, the lover of vainglory his fame. Yet they, when the passion is on them, refuse either to eat or to sleep sooner than refuse to advance the objects they care about, whereas you imagine acts of fellowship to bring a smaller return and to be deserving of less pains.`;
+
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // const phrase = 'The lazy dog jumped over the quick brown fox and the quick brown fox jumped over the lazy dog. Yes it did haha lol more words now yes more!';
+        // const phrase = quote;
+        // const characters = phrase.split('');
+
+        function makeTextRing(characters, radius = 200, centerX = 300, centerY = 300, fontSize = 20) {
+            ctx.font = `${fontSize}px Arial`;
+            const angleIncrement = (2 * Math.PI) / characters.length;
+
+            for (let i = 0; i < characters.length; i++) {
+                let charAngle = angleIncrement * i;
+                // console.log(charAngle);
+
+                let x = centerX + radius * Math.cos(charAngle);
+                let y = centerY + radius * Math.sin(charAngle);
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(charAngle + Math.PI / 2); // Rotate the character so it faces outwards
+                ctx.fillText(characters[i], 0, 0);
+                ctx.restore();
+            }
+        }
+
+
+        function startAnimation(grid_cell_size = 20, grid_width = 1, grid_height = 1, colors = []) {
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let c = 0;
+            let rgbi = 0;
+            ctx.font = `${grid_cell_size}px Arial`;
+            let previous_characters_buffer = [];
+            for (let i = 0; i < grid_width; i++) {
+                for (let j = 0; j < grid_height; j++) {
+
+                    c = (i + j) % characters.length;
+                    
+                    let time = Date.now() / 1000;
+                    let n = noise.perlin3(i / 25, j / 25, Math.sin(time));
+                    if (n > .1) {
+
+                        ctx.fillText(characters[c], i * grid_cell_size, j * grid_cell_size);
+
+                        if(characters[c] == '.') {
+                            ctx.fillStyle = colors[rgbi % colors.length];
+                        }
+                        
+                    }
+                    
+                }
+            }
+
+            // requestAnimationFrame(makeTextFlow.bind(null, characters, x, y, fontSize));
+            requestAnimationFrame(startAnimation.bind(null, grid_cell_size, grid_width, grid_height, colors));
+
+        }
+
+        function makeTextFlow(characters, x = 300, y = 300, fontSize = 20) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // console.log(characters)
+            let grid_cell_size = 20;
+            let grid_width = Math.floor(canvas.width / grid_cell_size);
+            let grid_height = Math.floor(canvas.height / grid_cell_size);
+            let colors = ['#00A4CC', '#F95700', '#FFC300', '#008744']; // A techy, complementary color palette
+            
+            startAnimation(grid_cell_size, grid_width, grid_height, colors);
+        }
+
+        function makeTextBlock(characters, x = 300, y = 300, fontSize = 20) {
+            ctx.font = `${fontSize}px Arial`;
+            const lineHeight = fontSize * 1.5;
+            let line = '';
+            let lines = [];
+            let points = [];
+
+            for (let i = 0; i < characters.length; i++) {
+                let testLine = line + characters[i] + ' ';
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+
+                if (testWidth > canvas.width && i > 0) {
+                    lines.push({ text: line, x: x, y: y });
+                    y += lineHeight; // Update y to new line's y position
+                    line = characters[i] + ' ';
+                } else {
+                    line = testLine;
+                }
+            }
+
+            lines.push({ text: line, x: x, y: y }); // Add the last line
+
+            lines.forEach(line => {
+                ctx.fillText(line.text, line.x, line.y);
+            });
+        }
+
+        let textLink = 'leonotes-part.txt';
+        let text = '';
+        // fetch(textLink)
+        //     .then(response => response.text())
+        //     .then(data => {
+        //         text = data;
+
+        //         // const fontSize = 20;
+        //         // let roffset = 100;
+        //         let characters = text.split('');
+        //         const charcount = characters.length;
+
+        //         // for(let charset = 0; charset < characters.length/charcount; charset+=charcount) {
+        //         //     // makeTextRing(characters.slice(charset, charset+charcount), roffset + charcount, canvas.width/2, canvas.height/2, fontSize);
+        //         //     makeTextBlock(characters.slice(charset, charset+charcount), 0, 0, fontSize);
+        //         // }
+                
+        //         makeTextFlow(characters);
+        //     });
+
+        text = window.location.hostname.toUpperCase();
+        let characters = text.split('');
+        makeTextFlow(characters);
+
+
+    </script>
+</body>
+</html>

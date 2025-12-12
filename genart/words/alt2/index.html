@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas></canvas>
+    <script>
+        let text = `In the morning when thou findest thyself unwilling to rise, consider with thyself presently, it is to go about a man's work that I am stirred up. 
+        Am I then yet unwilling to go about that, for which I myself was born and brought forth into this world? 
+        Or was I made for this, to lay me down, and make much of myself in a warm bed? 'O but this is pleasing.' 
+        And was it then for this that thou wert born, that thou mightest enjoy pleasure? 
+        Was it not in very truth for this, that thou mightest always be busy and in action? 
+        Seest thou not how all things in the world besides, how every tree md plant, how sparrows and ants, 
+        spiders and bees: how all in their kind are intent as it were orderly to perform whatsoever 
+        (towards the preservation of this orderly universe) naturally doth become and belong unto thin? 
+        And wilt not thou do that, which belongs unto a man to do? Wilt not thou run to do that, which thy nature doth require? 'But thou must have some rest.' 
+        Yes, thou must. 
+        Nature hath of that also, as well as of eating and drinking, allowed thee a certain stint. 
+        But thou guest beyond thy stint, and beyond that which would suffice, and in matter of action, there thou comest short of that which thou mayest. 
+        It must needs be therefore, that thou dost not love thyself, for if thou didst, thou wouldst also love thy nature, and that which thy nature doth propose unto herself as her end. 
+        Others, as many as take pleasure in their trade and profession, can even pine themselves at their works, and neglect their bodies and their food for it; and doest thou less honour thy nature, than an ordinary mechanic his trade; or a good dancer his art? than a covetous man his silver, and vainglorious man applause? 
+        These to whatsoever they take an affection, can be content to want their meat and sleep, to further that every one which he affects: and shall actions tending to the common good of human society, seem more vile unto thee, or worthy of less respect and intention? `;
+        
+        let maxLetterWidth;
+        let maxLetterHeight;
+
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        let sa = -Math.PI / 2;
+        let sr = -window.innerWidth / 10;
+
+
+        let update = false;
+
+        let fontSize = 11;
+        let alt1 = 1;
+        
+
+        function setFontSize(newSize) {
+            fontSize = newSize;
+            if(fontSize < 1) fontSize = 1;
+            ctx.font = `${fontSize}px Times New Roman`;
+
+            let metrics = ctx.measureText('M'); // 'M' typically represents the widest letter
+            maxLetterWidth = metrics.width;
+            maxLetterHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+            update = true;
+        }
+
+        let firstCharPosition = null; 
+
+        function draw(startAngle, startRadius) {
+            // Use max letter size in radius and spacing calculations
+            const spacing = fontSize / fontSize; // Set spacing based on max letter height
+            let radius = startRadius; // Set initial radius based on max letter width
+            const highlightRadius = fontSize; // Define the radius within which characters will be highlighted
+
+            for (const [index, char] of text.split('').entries()) {
+                const charMetrics = ctx.measureText(char);
+                const charWidth = charMetrics.width;
+
+                const x = centerX + Math.cos(startAngle) * radius;
+                const y = centerY + Math.sin(startAngle) * radius;
+
+                // Store the position of the first character
+                if (index === 0 && !firstCharPosition) {
+                    firstCharPosition = { x, y };
+                }
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(startAngle + Math.PI / 2); // Rotate the character so it faces outwards
+
+                // Check the distance from the current character to the first character
+                if (firstCharPosition && Math.hypot(firstCharPosition.x - x, firstCharPosition.y - y) < highlightRadius) {
+                    ctx.fillStyle = 'red'; // Set text color to red for characters within the highlight radius
+                } 
+                // Check the distance from the current character to the mouse position
+                else if (Math.hypot(mouse.x - x, mouse.y - y) < highlightRadius) {
+                    ctx.fillStyle = 'blue'; // Set text color to blue for characters within the highlight radius
+                } else {
+                    ctx.fillStyle = 'black'; // Set text color to black for all other characters
+                }
+
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+                // Calculate the circumference at the current radius
+                const circumference = 2 * Math.PI * radius;
+                // Calculate number of characters that would fit around the current circle
+                const charsThatFit = circumference / (charWidth + spacing);
+                // Calculate required angle advancement per character for consistent spacing
+                const angleIncrement = (2 * Math.PI) / charsThatFit;
+
+                startAngle += angleIncrement;
+                radius -= (charWidth + spacing) / (fontSize*alt1 * Math.PI); // Adjust radius to create spiral effect
+            }
+        }
+
+        const keys = {};
+        const mouse = {x: 0, y: 0};
+        // event, mousewheel change font
+        document.addEventListener('wheel', function (e) {
+            // setFontSize(fontSize + e.deltaY / 100);
+            // if P + scroll, adjust Font
+            if (keys['p']) {
+                setFontSize(fontSize + e.deltaY / 1000);
+            }
+            // if L + scroll adjust alt1
+            if (keys['l']) {
+                alt1 += e.deltaY / 10000;
+                update = true;
+            }
+            // if K + scroll adjust sa
+            if (keys['k']) {
+                sa += e.deltaY / 10000;
+                update = true;
+            }
+
+            // if J + scroll adjust sr
+            if (keys['j']) {
+                sr += e.deltaY / 10000;
+                update = true;
+            }
+        });
+
+        // event, any key store
+        document.addEventListener('keydown', function (e) {
+            keys[e.key] = true;
+        });
+        document.addEventListener('keyup', function (e) {
+            keys[e.key] = false;
+        });
+
+        // event, mousemove store
+        document.addEventListener('mousemove', function (e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+
+            update = true;
+        });
+
+
+        // ---------------------------
+        function animate() {
+            if (update) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                draw(sa, sr);
+                update = false;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        setFontSize(fontSize);
+        animate();
+
+    </script>
+</body>
+
+</html>

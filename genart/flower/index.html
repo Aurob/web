@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Art</title>
+</head>
+<body>
+    <canvas id="artCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('artCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Leaf
+        // ctx.beginPath();
+        // ctx.moveTo(75, 25);
+        // ctx.quadraticCurveTo(25, 100, 75, 175);
+        // ctx.quadraticCurveTo(125, 100, 75, 25);
+        // ctx.closePath();
+        // ctx.stroke();
+
+
+        const gridSpacing = 10;
+        for(let r = 0; r < width; r+=gridSpacing) {
+            for(let c = 0; c < height; c+=gridSpacing) {
+                
+            let flower = {
+                basex: (r * gridSpacing) - gridSpacing/2,
+                basey: (c * gridSpacing) - gridSpacing/2,
+                stemHeight: 100,
+                stemPoints: [],
+                leafPoints: [],
+            };
+
+            for(let i = 0; i < 30; i++) {
+                flower.stemPoints.push({
+                    x: flower.basex + Math.random() * gridSpacing*10,
+                    y: flower.basey + Math.random() * flower.stemHeight,
+                });
+            }
+
+            for(let sp of flower.stemPoints) {
+                if(Math.random() < .5) {
+                    flower.leafPoints.push(sp);
+                }
+            }
+
+            // Stem
+            ctx.beginPath();
+            ctx.moveTo(flower.basex, flower.basey);
+            for(let sp of flower.stemPoints) {
+                // ctx.lineTo(flower.basex + sp.x, flower.basey + sp.y);
+                ctx.quadraticCurveTo(sp.x, sp.y, sp.x+5, sp.y+5);
+
+            }
+            ctx.stroke();
+
+            }
+        }
+
+
+    </script>
+</body>
+</html>

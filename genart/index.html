@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../template/template.css">
+  <style>
+    #links {
+      display: flex;
+      flex-wrap: wrap;
+
+    }
+    
+    #links a {
+      padding-left: 1vw;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="nav">
+    <div class="edge et"></div>
+    <div class="edge eb">
+      <div id="wr-widget"></div>
+    </div>
+    <div class="edge el"></div>
+  </div>
+  <div id="content">
+    <p>
+      This is a collection of generative art projects I've worked on, mostly written in Javascript and meant to be viewed on a webpage. <br>
+      Note: Many of these projects are no longer functional or are not very pretty. I am actively working on cleaning, refactoring, and redesigning a number of the projects listed here.
+      <hr>
+      <div id="links"></div>
+      <hr>
+
+    <blockquote>
+      <p>
+        <b>Generative art</b> is <a href="https://wikipedia.com/wiki/Post-conceptual_art" title="Post-conceptual art">post-conceptual
+          art</a> that has been created (in whole or in part) with the use of an <a href="https://wikipedia.com/wiki/Autonomous"
+          class="mw-redirect" title="Autonomous">autonomous</a> system. An <i>autonomous system</i> in this context is
+        generally one that is non-human and can independently determine features of an artwork that would otherwise
+        require decisions made directly by the artist. In some cases the human creator may claim that the <a
+          href="https://wikipedia.com/wiki/Generative_systems" title="Generative systems">generative system</a> represents their own artistic
+        idea, and in others that the system takes on the role of the creator.</p>
+      <footer>
+        — Wikipedia, The Free Encyclopedia, <a href="https://en.wikipedia.org/wiki/Generative_art">Webring</a>
+      </footer>
+    </blockquote>
+
+    </p>
+  </div>
+  <script>
+
+    const links = document.getElementById('links');
+    
+    const paths = `404,automata,canvas,circles,clock,curves,design1,doodle1,dots,ellipse,figure,flow,flower,flowers,foreshorten,generative,genode,globe,grass,grav,home,hotel,laundry,layout,life,lines,lines2,mehretu,mosaic,mosaic2,motion,museum,museum2,music1,noise,onion,optical,orgm,p5js1,palette1,pixsym,poly,rain,rchords,scale,sdl,shaders,sounds,spin,strings,super,super2,sym,terra,tess,textured,tree,truchet1,truchet2,waves,weave,words,`
+      .split(',')
+
+    // update default sitemap with link paths
+    let SITEMAP = JSON.parse(sessionStorage.getItem('sitemap'));
+    SITEMAP['genart'] = {};
+    for (let l = 0; l < paths.length; l++) {
+      let link = paths[l];
+      SITEMAP['genart'][link] = {}
+
+      // add to links element
+      links.innerHTML += `<a href="${link}" target=_blank>${link}</a>`;
+    }
+    sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
+
+  </script>
+  <script src="../template/template.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="perlin.js"></script>
+    <title>Rain</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="toggleRain()">Toggle Rain Sound</button>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let scrollInputA = 1;
+        const mouse = {
+            x: 0,
+            y: 0
+        }
+        const rainHSL = {
+            h: 210,
+            s: 25,
+            l: 75
+        }
+        const skyHSL = {
+            h: 210,
+            s: 25,
+            l: 5
+        }
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+        class Rain {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.z = Math.random() * 25 + (Math.random() * 25 + 25)
+                this.width = Math.random() * .1 + 1;
+                this.height = Math.random() * 5 + 1;
+                this.speed = Math.sqrt(this.width * this.height) / .1;
+                this.alpha = 1; //this.speed / 10;
+                this.hsla = `hsla(${rainHSL.h}, ${rainHSL.s}%, ${rainHSL.l}%, ${this.alpha})`;
+
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = 0;
+            }
+            update() {
+
+                if (this.z < scrollInputA) {
+                    if (Math.abs(this.x - mouse.x) < 50 && Math.abs(this.y - mouse.y) < 25) {
+                        this.reset();
+                    }
+                }
+
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.reset();
+                }
+                this.draw();
+            }
+            draw() {
+                // ctx.fillStyle = this.rgba;
+                ctx.fillStyle = this.hsla;
+                ctx.beginPath();
+                ctx.ellipse(this.x, this.y, this.width, this.height, 0, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function drawUmbrellaShape() {
+            ctx.beginPath();
+            // Top arc
+            ctx.moveTo(mouse.x - 50, mouse.y); // Starting point (left) adjusted to mouse position
+            ctx.bezierCurveTo(mouse.x - 50, mouse.y - 50, mouse.x + 50, mouse.y - 50, mouse.x + 50, mouse.y); // Adjust control points to shape and mouse position
+
+            // Close path if necessary
+            ctx.closePath();
+
+            // Style (customize as needed)
+            ctx.fillStyle = 'lightblue';
+            ctx.fill();
+            ctx.stroke();
+
+        }
+
+
+        const rain = [];
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let rainSoundNode = null;
+        let isPlaying = false;
+
+
+        for (let i = 0; i < 4000; i++) {
+            rain.push(new Rain());
+        }
+
+        function animate() {
+            // clear with black background
+            // ctx.fillStyle = 'black';
+            // clear with sky hsl
+            ctx.fillStyle = `hsl(${skyHSL.h}, ${skyHSL.s}%, ${skyHSL.l}%)`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < rain.length; i++) {
+                rain[i].update();
+            }
+
+            // Lightning effect by briefly increasing sky luminance
+            if (Math.random() > .999) {
+                skyHSL.l += Math.random() * 10;
+                setTimeout(() => {
+                    skyHSL.l -= Math.random() * 10;
+                }, 100);
+            }
+
+            drawUmbrellaShape();
+            requestAnimationFrame(animate);
+        }
+        window.addEventListener('wheel', (e) => {
+            scrollInputA += e.deltaY * -.01;
+            console.log(scrollInputA);
+        });
+
+        function createRainSound() {
+            const bufferSize = 2 * audioContext.sampleRate,
+                noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate),
+                output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            rainSoundNode = audioContext.createBufferSource();
+            rainSoundNode.buffer = noiseBuffer;
+            const biquadFilter = audioContext.createBiquadFilter();
+            biquadFilter.type = "lowpass";
+
+            // Apply randomness over time to the frequency value
+            const maxFrequency = 1500;
+            const minFrequency = 500;
+            function randomizeFrequency() {
+                const perlinNoise = noise.perlin2(audioContext.currentTime, 0);
+                const range = maxFrequency - minFrequency;
+                const randomFrequency = perlinNoise * range * 0.9 + range * 0.9 + minFrequency;
+                biquadFilter.frequency.setValueAtTime(randomFrequency, audioContext.currentTime);
+            }
+            randomizeFrequency(); // Set initial random frequency
+            setInterval(randomizeFrequency, 1000); // Randomize frequency every second
+
+            rainSoundNode.connect(biquadFilter);
+            biquadFilter.connect(audioContext.destination);
+            rainSoundNode.loop = true;
+        }
+
+        function toggleRain() {
+            if (!isPlaying) {
+                createRainSound();
+                rainSoundNode.start(0);
+                isPlaying = true;
+            } else {
+                rainSoundNode.stop();
+                isPlaying = false;
+            }
+        }
+
+        animate();
+
+
+
+    </script>
+</body>
+
+</html>

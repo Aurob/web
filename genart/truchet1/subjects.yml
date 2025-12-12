@@ -1,0 +1,18 @@
+---
+header:
+  title: Template
+  nav_logo: https://1.bp.blogspot.com/---kYCY3CCRQ/WzC9YOLGN0I/AAAAAAABM4I/a26svuauOUUd5cB2VT1x-rsl-x7rMsMnwCLcBGAs/s800/book_doujinshi_copybon.png
+  media_path: ""
+  width: 100%
+data:
+
+  _global:
+    style_main: /template/styles.css
+  new:
+    subject: Template
+    id: template
+    title: Template
+    sub_title: template
+    default: true
+    width: 100%
+    content: <iframe src="test.html"></iframe>

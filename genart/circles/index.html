@@ -1,0 +1,99 @@
+<html>
+    <body>
+        <head>
+            <title>Overlapping Circles Grid</title>
+            <style>
+                html {
+                    width: 100%;
+                    height: 100%;
+                }
+        
+                body {
+                    width: 100%;
+                    height: 100%;
+                    margin: 0;
+                    text-align: center;
+                }
+                .slider-container {
+                    position: absolute;
+                    top: 10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    gap: 20px;
+                }
+                .slider-container label {
+                    margin-right: 10px;
+                }
+            </style>
+        </head>
+        <canvas></canvas>
+        <div class="slider-container">
+            <div>
+                <label for="radiusSlider">Base Radius:</label>
+                <input type="range" id="radiusSlider" min="1" max="100" value="50">
+            </div>
+            <div>
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="0.01" max="1" step="0.01" value="0.1">
+            </div>
+        </div>
+        <script>
+            let canvas = document.querySelector('canvas');
+            let ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let cellWidth = canvas.width / 10;
+            let cellHeight = canvas.height / 10;
+            let defaultBaseRadius = Math.min(cellWidth, cellHeight) / 2;
+            let baseRadius = defaultBaseRadius;
+            let radiusDelta = 0.1;
+
+            let radiusSlider = document.getElementById('radiusSlider');
+            let speedSlider = document.getElementById('speedSlider');
+
+            radiusSlider.value = defaultBaseRadius;
+            speedSlider.value = radiusDelta;
+
+            radiusSlider.oninput = function() {
+                defaultBaseRadius = parseFloat(this.value);
+                baseRadius = defaultBaseRadius;
+            }
+
+            speedSlider.oninput = function() {
+                radiusDelta = parseFloat(this.value);
+            }
+
+            let redraw = true;
+            function draw() {
+                if (redraw) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    for (let i = 0; i < 10; i++) {
+                        for (let j = 0; j < 10; j++) {
+                            ctx.beginPath();
+                            let x = i * cellWidth + cellWidth / 2;
+                            let y = j * cellHeight + cellHeight / 2;
+                            let radiusX = baseRadius;
+                            let radiusY = baseRadius;
+                            let rotation = 0;
+                            let startAngle = 0;
+                            let endAngle = 2 * Math.PI;
+                            ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle);
+                            ctx.stroke();
+                        }
+                    }
+
+                    baseRadius -= radiusDelta;
+                    if (baseRadius < 1 || baseRadius > defaultBaseRadius * 4) {
+                        radiusDelta *= -1;
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        </script>
+    </body>
+</html>

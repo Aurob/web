@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" type="image/x-icon" href="https://api.robsweb.site/image/rand_shape?as_image=1">
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
+        </script>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            text-align: center;
+        }
+
+        canvas {
+        }
+
+        #text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #word {
+            position: absolute;
+            font-size: 10em;
+            color: red;
+            opacity: 75%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="text">
+        <div id="word"></div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+
+        function load_words(count=1) {
+            return fetch(`https://api.rau.lol/words/get_random_word?n=${count}`)
+                .then(response => response.json())
+                .then(data => {return data.result})
+        }
+
+        function mapRange(value, inMin, inMax, outMin, outMax) {
+            return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+        }
+
+
+        function setup() {
+            canvas = document.getElementById("canvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx = canvas.getContext("2d");
+
+            texts = [];
+            redraw = true;
+            minFontSize = 3;
+            maxFontSize = 1000;
+            iteration = 0;
+
+            ctx.globalAlpha = .2;
+        }
+        
+        function run() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // if(redraw) {
+                texts.forEach(text => {
+                    ctx.font = `${text.size}px ${text.font}`;
+                    // ctx.fillStyle = text.color;
+                    ctx.fillText(text.text, text.x, text.y);
+
+                    text.z += Math.cos(text.dz);
+                    text.size = text.z; //mapRange(text.z, 0, canvas.width, minFontSize, maxFontSize);
+                    text.x -= text.dz;
+
+                    if(text.z > canvas.width/2 || text.z < 0) {
+                        text.dz *= -1;
+                    }
+
+                    const speak = new SpeechSynthesisUtterance(text.text);
+                    speak.onstart = () => {
+                        document.getElementById("word").innerHTML = text.text;
+                    }
+                    speak.onend = () => {
+                        document.getElementById("word").innerHTML = "";
+                    }
+                    
+                    window.speechSynthesis.speak(speak);
+                    
+                    
+                });
+
+            //     redraw = false;
+            // }
+            iteration++;
+            running = requestAnimationFrame(run);
+        }
+
+        function stop() {
+            cancelAnimationFrame(running);
+        }
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        })
+
+        window.addEventListener("load", () => {
+            setup();
+            load_words(100)
+            .then(words => {
+                words.forEach(word => {
+                    // ctx.font = "30px Arial";
+                    // ctx.fillText(word, Math.random() * canvas.width, Math.random() * canvas.height);
+                    let text = {
+                        text: word,
+                        x: Math.random() * canvas.width - canvas.width/4,
+                        y: Math.random() * canvas.height + canvas.height/4,
+                        z: Math.random() * canvas.width/2,
+                        dz: 1,
+                        color: "black",
+                        font: "Arial"
+                    };
+
+                    text.size = mapRange(text.z, 0, canvas.width, minFontSize, maxFontSize);
+
+                    texts.push(text);
+                })
+
+                running = requestAnimationFrame(run);
+            })
+        })
+    </script>
+</body>
+
+</html>

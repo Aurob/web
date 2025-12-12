@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clouds</title>
+    <script src="https://rau.dev/files/srv/code/noise.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <div class="controls">
+        <label>Points: <input type="number" id="points" value="4"></label><br>
+        <label>Poly Size: <input type="number" id="polySize" value="75"></label><br>
+        <label>Spacing: <input type="number" id="spacing" value="10"></label><br>
+        <label>Attraction Radius: <input type="number" id="radius" value="100"></label>
+    </div>
+    <script>
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width = window.innerWidth;
+        const height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        window.addEventListener('load', () => {
+            
+            let polys = [];
+            let mouseX = 0;
+            let mouseY = 0;
+
+            function createPoly(points=10, polyW=100, polyH=100, xOffset=0, yOffset=0) {
+                const poly = [];
+                const angle = Math.PI * 2 / points;
+
+                for (let i = 0; i < points; i++) {
+                    const baseX = Math.cos(angle * i) * polyW + xOffset + polyW;
+                    const baseY = Math.sin(angle * i) * polyH + yOffset + polyH;
+                    poly.push({
+                        baseX, 
+                        baseY, 
+                        default: { x: baseX, y: baseY }
+                    });
+                }
+                return poly;
+            }
+
+            function getNoiseValue(baseX, baseY, time, noiseOffset = 0) {
+                const noiseScale = 0.01;
+                const noiseMagnitude = 50;
+                return noise.perlin3(baseX * noiseScale, baseY * noiseScale, time + noiseOffset) * noiseMagnitude;
+            }
+
+            function updatePoly(poly) {
+                const time = Date.now() * 0.0001;
+                const noiseOffset = 1;
+                const radius = parseFloat(document.getElementById('radius').value);
+
+                for (let i = 0; i < poly.length; i++) {
+                    const noiseX = getNoiseValue(poly[i].baseX, poly[i].baseY, time);
+                    const noiseY = getNoiseValue(poly[i].baseX, poly[i].baseY, time, noiseOffset);
+                    const dist = Math.hypot(mouseX - poly[i].baseX, mouseY - poly[i].baseY);
+
+                    if (dist < radius) {
+                        const attractionStrength = (radius - dist) / radius;
+                        poly[i].x = poly[i].baseX + noiseX + (mouseX - poly[i].baseX) * attractionStrength;
+                        poly[i].y = poly[i].baseY + noiseY + (mouseY - poly[i].baseY) * attractionStrength;
+                    } else {
+                        poly[i].x = poly[i].baseX + noiseX;
+                        poly[i].y = poly[i].baseY + noiseY;
+                    }
+                }
+            }
+
+            function drawPoly(poly) {
+                ctx.beginPath();
+                ctx.moveTo(poly[0].x, poly[0].y);
+                for (let i = 1; i < poly.length; i++) {
+                    ctx.lineTo(poly[i].x, poly[i].y);
+                }
+                ctx.closePath();
+
+                // Create gradient
+                const gradient = ctx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)'); // mostly white
+                gradient.addColorStop(0.7, 'rgba(200, 200, 200, 0.7)'); // light grey
+                gradient.addColorStop(1, 'rgba(180, 180, 180, 0.5)'); // darker grey at the bottom
+                // Add a slight sky blue tint to the gradient
+                gradient.addColorStop(0.5, 'rgba(135, 206, 235, 0.2)'); // slight sky blue in the middle
+
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            function draw() {
+                const gradient = ctx.createLinearGradient(0, 0, 0, height);
+                gradient.addColorStop(0, 'rgba(135, 206, 235, 1)'); // sky blue
+                gradient.addColorStop(1, 'rgba(125, 106, 135, 1)'); // transparent sky blue
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                requestAnimationFrame(draw);
+
+                for (let i = 0; i < polys.length; i++) {
+                    updatePoly(polys[i]);
+                    drawPoly(polys[i]);
+                }
+            }
+
+            function initializePolys() {
+                polys = [];
+                const polySize = parseFloat(document.getElementById('polySize').value); // Size of each poly
+                const spacing = parseFloat(document.getElementById('spacing').value); // Spacing between polys
+                const points = parseFloat(document.getElementById('points').value); // Number of points per poly
+
+                // Calculate the number of polys that can fit in the canvas
+                const gridSizeX = Math.floor((width + spacing) / (polySize + spacing));
+                const gridSizeY = Math.floor((height + spacing) / (polySize + spacing));
+
+                // Calculate the offset to center the grid of polys
+                let offsetX = (width - (gridSizeX * (polySize + spacing) - spacing)) / 2;
+                let offsetY = (height - (gridSizeY * (polySize + spacing) - spacing)) / 2;
+                
+                offsetX -= polySize / 2;
+                offsetY -= polySize / 2;
+
+                for (let row = 0; row < gridSizeY; row++) {
+                    for (let col = 0; col < gridSizeX; col++) {
+                        const x = offsetX + col * (polySize + spacing);
+                        const y = offsetY + row * (polySize + spacing);
+                        polys.push(createPoly(points, polySize, polySize, x, y));
+                    }
+                }
+            }
+
+            canvas.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            document.querySelectorAll('.controls input').forEach(input => {
+                input.addEventListener('change', initializePolys);
+            });
+
+            initializePolys();
+            draw();
+        });
+    </script>
+</body>
+</html>

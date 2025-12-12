@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Random Frequency Generator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+
+        button {
+            font-size: 2rem;
+            padding: 1rem;
+            margin: 0.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: #fff;
+            color: #000;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        button:active {
+            transform: scale(0.9);
+        }
+
+        button.selected {
+            background-color: #000;
+            color: #fff;
+        }
+
+        #button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem;
+        }
+
+        #bass-control {
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="button-container">
+        <!-- Buttons will be added here by JavaScript-->
+    </div>
+    <div>
+        <label for="bass-control">Bass Incrementer:</label>
+        <input type="range" id="bass-control" min="0" max="100" value="50">
+    </div>
+
+    <script>
+        // Set up the audio context
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let globalBassValue = 50;
+        let btn_count = 100;
+
+        function randomEmoji() {
+            const emojiRanges = [
+                [0x1F601, 0x1F64F], // Emoticons
+                [0x1F300, 0x1F5FF], // Misc Symbols and Pictographs
+                [0x1F680, 0x1F6FF], // Transport and Map
+                // ... add additional ranges as needed
+            ];
+
+            const range = emojiRanges[Math.floor(Math.random() * emojiRanges.length)];
+            return String.fromCodePoint(Math.floor(Math.random() * (range[1] - range[0]) + range[0]));
+        }
+
+        // Function to play a sound with a specific frequency based on an id
+        function playRandomFrequency(id) {
+
+            // hash the id to a unique integer
+            id = id.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0);
+            // Create an oscillator node and a gain node
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            // Set the oscillator type
+            oscillator.type = 'sine'; // can be sine, square, sawtooth, triangle
+
+            // Calculate the base frequency using the id, ensuring it's within the range of 0 to btn_count
+            const baseFrequency = globalBassValue + (id % btn_count);
+
+            // Set a randomly varying frequency around the base frequency
+            let currentTime = audioContext.currentTime;
+            let frequencyVariationRange = 200;
+            let randomFrequencyVariation = Math.sin(currentTime) * (frequencyVariationRange / 2) + (frequencyVariationRange / 2);
+            let randomFrequency = baseFrequency + randomFrequencyVariation;
+            oscillator.frequency.setValueAtTime(randomFrequency, currentTime);
+
+            // Set the volume (gain) and create a fade out effect over 1 second
+            gainNode.gain.setValueAtTime(0.5, currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + 1);
+
+            // Connect the nodes together and to the destination (speakers)
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            // Start the oscillator and stop it after 1 second
+            oscillator.start();
+            setTimeout(() => {
+                oscillator.stop();
+                gainNode.disconnect(); // Disconnect the gain node to clean up
+            }, 1000); // Stop oscillator after 1 second
+        }
+
+        //
+
+        // Create 100 buttons and append to the container
+        const container = document.getElementById('button-container');
+        for (let i = 0; i < btn_count; i++) {
+            const button = document.createElement('button');
+            button.innerText = randomEmoji();
+            button.addEventListener('click', () => playRandomFrequency(button.innerText));
+            container.appendChild(button);
+        }
+
+        // Add an event listener to the bass control
+        const bassControl = document.getElementById('bass-control');
+        bassControl.addEventListener('input', () => {
+            // Get the value of the bass control
+            const bassValue = bassControl.value;
+
+            // Set the frequency range
+            const frequencyRange = 2000 - 200;
+
+            // Set the base frequency
+            const baseFrequency = 200;
+
+            // Set the frequency
+            const frequency = baseFrequency + (frequencyRange * (bassValue / 100));
+
+            // Set the global bass value
+            globalBassValue = bassValue;
+        });
+
+
+        // get all buttons
+        const buttons = document.querySelectorAll('button');
+
+        // animation to select a random button
+        function selectRandomButton() {
+
+            // remove the selected class from all buttons
+            buttons.forEach(button => button.classList.remove('selected'));
+
+            // get a random button
+            const randomButton = buttons[Math.floor(Math.random() * buttons.length)];
+
+            // highlight the button with the selected class
+            randomButton.classList.add('selected');
+
+            randomButton.click();
+        }
+
+        // run the animation every 1.5 seconds
+        setInterval(selectRandomButton, 1500);
+
+
+    </script>
+</body>
+
+</html>

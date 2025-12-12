@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="perlin.js"></script>
+    <title>Rain Sound Generator</title>
+</head>
+<body>
+    <label for="filterType">Filter Type:</label>
+    <select id="filterType">
+        <option value="lowpass">Lowpass</option>
+        <option value="highpass">Highpass</option>
+        <option value="bandpass">Bandpass</option>
+        <option value="notch">Notch</option>
+    </select>
+    <label for="filterFrequency">Filter Frequency:</label>
+    <input type="number" id="filterFrequency" value="1000" min="100" step="100" onchange="updateAudioContext()">
+    <label for="mod1">Mod 1:</label>
+    <input type="range" id="mod1" min="0" max="100" onchange="updateAudioContext()">
+    <label for="mod2">Mod 2:</label>
+    <input type="text" id="mod2" onchange="updateAudioContext()">
+    <button onclick="toggleRain()">Toggle Rain Sound</button>
+    <script>
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let rainSoundNode = null;
+        let isPlaying = false;
+        function randomValue() {
+            return noise.perlin2(Math.random(), Math.random()) * 2 - 1;
+        }
+
+        function createRainSound(filterType, filterFrequency) {
+            const bufferSize = 2 * audioContext.sampleRate,
+                noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate),
+                output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = randomValue();
+            }
+            rainSoundNode = audioContext.createBufferSource();
+            rainSoundNode.buffer = noiseBuffer;
+            const biquadFilter = audioContext.createBiquadFilter();
+            biquadFilter.type = filterType;
+            biquadFilter.frequency.setValueAtTime(filterFrequency, audioContext.currentTime);
+            rainSoundNode.connect(biquadFilter);
+            biquadFilter.connect(audioContext.destination);
+            rainSoundNode.loop = true;
+        }
+
+        function updateAudioContext() {
+            if (isPlaying) {
+                rainSoundNode.stop();
+                isPlaying = false;
+            }
+            const filterType = document.getElementById('filterType').value;
+            const filterFrequency = parseFloat(document.getElementById('filterFrequency').value);
+            createRainSound(filterType, filterFrequency);
+            rainSoundNode.start(0);
+            isPlaying = true;
+        }
+
+        function toggleRain() {
+            if (!isPlaying) {
+                updateAudioContext();
+            } else {
+                rainSoundNode.stop();
+                isPlaying = false;
+            }
+        }
+
+
+    const lowpassFilter = audioContext.createBiquadFilter();
+    lowpassFilter.type = 'lowpass';
+    lowpassFilter.frequency.setValueAtTime(300, audioContext.currentTime);
+
+    const highpassFilter = audioContext.createBiquadFilter();
+    highpassFilter.type = 'highpass';
+    highpassFilter.frequency.setValueAtTime(18000, audioContext.currentTime);
+    </script>
+</body>
+</html>

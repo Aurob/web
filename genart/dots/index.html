@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- add image meta and description -->
+    <meta property="og:image" content="https://robsweb.site/generative/projects/dots/index.png">
+    <meta property="og:description" content="Just Dots">
+    <link rel="shortcut icon" href="#">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous">
+        </script>
+    <style>
+    </style>
+    <script src="../../quicknoise/quicknoise.js"></script>
+
+</head>
+
+<body>
+    <div>
+        <canvas id="cvbg"></canvas>
+        <div>Press Spacebar to pause/play</div>
+        <div><button id="pause" onclick="pauseplay();">Pause</button></div>
+        <div><button onclick="start();">Reset</button></div>
+        <div id="options">
+            <!-- <div>Speed <input id="speed" type="number" min=1 value=7 step=".5"></div>
+            <div>Count <input id="count" type="number" min=1 value=25></div>
+            <div>Offset <input id="offset" type="number" min=1 value=250 step=10></div> -->
+            <div>
+                <button onclick="addNode()">Add Node</button>
+            </div>
+        </div>
+        <script>
+            let width = 1000, height = 750;
+
+
+            let running = true;
+
+            let runner;
+            let animate;
+
+            let canvas = $('canvas');
+            let ctx = canvas[0].getContext('2d');
+            
+            function start(startx, starty) {
+
+                if(runner) {
+                    cancelAnimationFrame(runner);
+                }
+
+                let params = new URLSearchParams(window.location.search);
+                // let speed = params.get("s");
+                //Circle wrapper
+                ctx.circle = function (x, y, r, color) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, r, 0, 2 * Math.PI);
+                    ctx.fillStyle = color;
+                    // ctx.stroke();
+                    ctx.fill();
+                }
+
+                //set canvas size
+                canvas.prop('width', width);
+                canvas.prop('height', height);
+                let nodes = [];
+                let options = { "speed": "s" }
+                let node_size = 2.5;
+                let spacing = 3;
+                let node_count = 5000;
+                let tick_rate = Math.random()/1000;
+                startx = startx || width / 2;
+                starty = starty || height / 2;
+
+                for (let n = 0; n < node_count; n++) {
+                    addNode(startx, starty);
+                }
+
+                // for(let x = 0; x < width + node_size*spacing; x += node_size*spacing) {
+                //     for(let y = 0; y < height + node_size*spacing; y += node_size*spacing) {
+                //         addNode(x, y)
+                //     }
+                // }
+
+
+                animate = function() {
+
+                    if (running) { 
+                        if(nodes.length == 0) {
+                            cancelAnimationFrame(animate)
+                        }
+                        // ctx.clearRect(0, 0, width, height);
+                        // for (let i = 0; i < nodes.length; i++) {
+                        //     let node = nodes[i];
+                        //     metabolismTick(node);
+                        // }
+
+                        for (let i = 0; i < nodes.length; i++) {
+
+                            let node = nodes[i];
+                            // if(node.metabolism.tick==node.metabolism.speed) {
+                            //     node.metabolism.tick = 0;
+                            //     metabolismTick(node);
+                            // }
+
+
+                            if (node.x > width) {
+                                node.x = 0;
+                            }
+                            if (node.x < 0) {
+                                node.x = width;
+                            }
+                            if (node.y > height) {
+                                node.y = 0;
+                            }
+                            if (node.y < 0) {
+                                node.y = height;
+                            }
+
+                            //edge collisions
+                            // if (node.x > width) {
+                            //     node.dx = -node.dx;
+                            // }
+                            // if (node.x < 0) {
+                            //     node.dx = -node.dx;
+                            // }
+                            // if (node.y > height) {
+                            //     node.dy = -node.dy;
+                            // }
+                            // if (node.y < 0) {
+                            //     node.dy = -node.dy;
+                            // }
+
+
+                            let resolution = node.rn;
+                            node.x += node.dx;
+                            node.y += node.dy;
+                            ctx.circle(node.x, node.y, node.size, formatColor(node.color));
+                            // console.log(quickNoise.noise(node.x/resolution, node.y/resolution, 0+node.t));
+                            node.t += Math.random()/tick_rate/10000;
+                            node.dx += quickNoise.noise(-node.x, node.x, 1 + node.t)
+                            node.dy += quickNoise.noise(-node.y, node.y, 2 + node.t)
+
+                            node.metabolism.tick += node.speed;
+                        }
+
+                        window.requestAnimationFrame(animate);
+                    }
+
+                }
+
+                runner = window.requestAnimationFrame(animate);
+
+                function addNode(x, y) {
+                    nodes.push({
+                        'id': nodes.length,
+                        'x': x,
+                        'y': y,
+                        'dx': 1,
+                        'dy': -1,
+                        'size': node_size,
+                        'color': randomRGB(),
+                        't': 0,
+                        'rn': 1,
+                        'metabolism': newMetabolism(),
+                        'speed': 1
+                    });
+
+                    return nodes.length - 1;
+                }
+
+                function metabolismTick(node) {
+                    // if(!node.metabolism.storage) {
+                    //     node.metabolism.storage = [256*node.size, 256*node.size, 256*node.size];
+                    //     node.step = node.size;
+                    // }
+
+                    // let temp_store = JSON.parse(JSON.stringify(node.metabolism.storage));
+                    // // console.log(node.size, node.metabolism, node.color);
+                    // node.metabolism.storage[0] -= node.metabolism.r; 
+                    // node.metabolism.storage[1] -= node.metabolism.g; 
+                    // node.metabolism.storage[2] -= node.metabolism.b; 
+
+                    // if(node.metabolism.storage[0]%256 < temp_store[0]%256 &&
+                    //     node.metabolism.storage[1]%256 < temp_store[1]%256 &&
+                    //     node.metabolism.storage[2]%256 < temp_store[2]%256) {
+                    //         node.size -=1;
+                    //         if(node.size <=0) node.size = 1;
+                    // } 
+                    node.size -= .09;
+                    if (node.size <= 0) {
+                        nodes.splice(node.id, 1);
+
+                        nodes.forEach((node, i) => {
+                            node.id = i;
+                        });
+                    }
+                }
+
+                function newMetabolism() {
+                    //Metabolism requires n% of each color (r,g,b)
+                    let r_needs = Math.random();
+                    let g_needs = Math.random();
+                    let b_needs = Math.random();
+
+                    let start_rgb = randomRGB();
+                    return {
+                        'r': r_needs,
+                        'g': g_needs,
+                        'b': b_needs,
+                        'tick': 0,
+                        'speed': 50
+                    }
+                }
+
+                //returns formatted rgb 
+                function randomRGB() {
+                    let r = Math.floor(Math.random() * 256);
+                    let g = Math.floor(Math.random() * 256);
+                    let b = Math.floor(Math.random() * 256);
+
+                    return { 'r': r, 'g': g, 'b': b };
+                }
+
+                function formatColor(color) {
+                    return `rgb(${color.r},${color.g},${color.b})`;
+                }
+               
+            }
+            $("#speed, #count, #offset, #arpeggios").on("input", (e) => {
+                    let newSpeed = parseInt($("#speed").val());
+                    let newCount = parseInt($("#count").val());
+                    let newOffset = parseInt($("#offset").val());
+                    let newArpeggio = $("#arpeggios").val();
+
+                    if ((Number.isInteger(newSpeed) && e.target.id == "speed") ||
+                        (Number.isInteger(newCount) && e.target.id == "count") ||
+                        (Number.isInteger(newOffset) && e.target.id == "offset") ||
+                        newArpeggio) {
+                        speed = newSpeed;
+                        count = newCount;
+                        offset = newOffset;
+                        console.log(newArpeggio);
+                        notes = arpeggios[newArpeggio];
+                        console.log(true);
+                    }
+
+                });
+
+
+                $('canvas').on('click', function (e) {
+                    // let new_node_index = addNode(e.originalEvent.layerX, e.originalEvent.layerY);
+                    start(e.originalEvent.layerX, e.originalEvent.layerY);
+
+                });
+                $(window).on('keyup', (e) => {
+                    switch (e.code) {
+                        case 'Space':
+                            pauseplay();
+                            break;
+                    }
+                });
+            function pauseplay() {
+                if (running) {
+                    running = false;
+                    $("#pause").html("Play");
+                }
+                else {
+                    running = window.requestAnimationFrame(animate);
+                    running = true;
+
+                    $("#pause").html("Pause");
+                }
+            }
+            start()
+
+        </script>
+</body>
+
+</html>

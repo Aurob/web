@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle</title>
+    <script src="../../files/srv/code/noise.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="gcs" value="15" type="range" min="1" max="100" step=".1" />
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let width = canvas.width;
+        let height = canvas.height;
+
+        let gcs_in = document.getElementById('gcs');
+        let gcs = width / gcs_in.value;
+
+        const gridCells = [];
+
+        function initializeGrid() {
+            gridCells.length = 0; // Clear existing cells
+            const padding = gcs / 1.2; // Define padding around each rect
+            for (let x = 0; x < width; x += gcs) {
+                for (let y = 0; y < height; y += gcs) {
+                    const translateX = x + gcs / 2;
+                    const translateY = y + gcs / 2;
+                    const noiseX = x / 100;
+                    const noiseY = y / 100;
+                    const rectX = -gcs / 2 + padding;
+                    const rectY = -gcs / 2 + padding;
+                    const rectSize = gcs - 2 * padding;
+
+                    gridCells.push({
+                        translateX,
+                        translateY,
+                        noiseX,
+                        noiseY,
+                        rectX,
+                        rectY,
+                        rectSize,
+                        angle: 0
+                    });
+                }
+            }
+        }
+
+        function grid() {
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 1.2;
+            const noiseZ = noise.simplex3(0, 0, Date.now() / 1000);
+            gridCells.forEach(cell => {
+                cell.angle += noiseZ * 0.01 + (cell.translateX/1000)
+                ctx.save();
+                ctx.translate(cell.translateX, cell.translateY);
+                ctx.rotate(cell.angle);
+                ctx.strokeRect(cell.rectX, cell.rectY, cell.rectSize, cell.rectSize);
+                ctx.restore();
+            });
+        }
+
+        let refresh = true;
+        function draw(timestamp = 0) {
+            if(refresh) {
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, width, height);
+                grid();
+                refresh = false;
+            }
+            requestAnimationFrame(draw);
+        }
+
+        initializeGrid();
+
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            width = canvas.width;
+            height = canvas.height;
+            refresh = true;
+        });
+
+        gcs_in.addEventListener('input', () => {
+            gcs = width / gcs_in.value;
+            refresh = true;
+        });
+
+        draw();
+
+
+    </script>
+</body>
+
+</html>

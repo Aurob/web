@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../template/template.css">
+    <link rel="icon" href="" type="image/x-icon">
+    <style>
+        img:hover {
+            /* cursor: grab; */
+        }
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="content">
+        These are all photos I've taken, mostly on my phone and some on disposable cameras.
+    <div id="images"></div>
+    <script src="cf_image_ids.js"></script>
+    <script>
+        function shuffle(array) {
+            let currentIndex = array.length;
+
+            // While there remain elements to shuffle...
+            while (currentIndex != 0) {
+
+                // Pick a remaining element...
+                let randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+
+                // And swap it with the current element.
+                [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+            }
+        }
+
+        const images = document.getElementById('images');
+        var track_ids = [];
+
+        shuffle(IMAGE_IDS);
+        IMAGE_IDS.forEach(img_id => {
+            let img = document.createElement('img');
+            img.loading = 'lazy';
+            img.src = `https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${img_id}/thumbsm`;
+            images.append(img);
+            img.onclick = function(){
+                if(!track_ids.includes(img_id)) {
+                    track_ids.push(img_id);
+                }                
+                window.open(`https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${img_id}/public`, '_blank');
+
+            };
+
+    })
+    </script>
+    </div>
+    <script src="../template/template.js"></script>
+</body>
+</html>

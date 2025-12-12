@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
+    <script src="https://rau.lol/libs/p5.min.js"></script>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            border: solid 1px black;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+
+        const tileSize = 25;
+        let c;
+        let redraw;
+        let _width = 500;
+        let _height = 500;
+        let csize = 250;
+        let blend = 0;
+
+        let blendModes;
+
+        function setup() {
+            createCanvas(_width, _height);
+            blendModes = [
+                BLEND,
+                ADD,
+                DARKEST,
+                LIGHTEST,
+                DIFFERENCE,
+                EXCLUSION,
+                MULTIPLY,
+                SCREEN,
+                REPLACE,
+                OVERLAY,
+                HARD_LIGHT,
+                SOFT_LIGHT,
+                DODGE,
+                BURN,
+                SUBTRACT,
+                NORMAL
+            ];
+            redraw = true;
+        }
+
+        function draw() {
+
+            if (redraw) {
+                background(222);
+
+                // redraw = false;
+
+                blendMode(blendModes[blend]);
+
+                fill('yellow')
+                rect(width / 2 - csize / 2, height / 2 - csize / 2, csize, csize)
+                
+                let angle = 15; // Angle of the angled lines
+                let offset = tan(radians(angle)) * height / 2; // Calculate the offset based on the angle
+
+                push();
+                translate((tileSize*2), -tileSize*2); // Apply the offset
+                rotate(radians(angle));
+                for (let t = 1; t < (width / tileSize) - 1; t++) {
+                    fill(255, 0, 0);
+                    rect(t * tileSize, tileSize, tileSize / 2, height - tileSize*2);
+                }
+                pop();
+
+                for (let t = 1; t < (width / tileSize) - 1; t++) {
+                    fill(0, 0, 255, 100);
+                    rect(t * tileSize, tileSize, tileSize / 2, height - tileSize*2);
+                }
+
+                redraw = false;
+            }
+        }
+
+        document.addEventListener('keydown', function (event) {
+            if (event.keyCode == 32) {
+                blend = (blend + 1) % blendModes.length;
+                redraw = true;
+            }
+        });
+
+    </script>
+</body>
+
+</html>

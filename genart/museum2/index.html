@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+    <canvas id="cq1"></canvas>
+    <script>
+        let canvases = document.querySelectorAll('canvas')[0];
+        
+        let cwidth = window.innerWidth / 1.1;
+        let cheight = window.innerHeight / 1.1;
+
+        canvases.width = cwidth;
+        canvases.height = cheight;
+        let ctx = canvases.getContext('2d');
+        
+        let colors = ['#3c529b', '#c93e21', '#3d4722', '#78607a'];
+
+        console.log(colors);
+
+        let csize = window.innerWidth / 15;
+        let ssize = window.innerWidth / 20;
+        let c = 0;
+        let rgbW = 25;
+        let rectgap = ssize/5;
+
+        // clear with 1a1613
+        ctx.fillStyle = '#1a1613';
+        ctx.fillRect(0, 0, cwidth, cheight);
+
+        // Horizontal Rect
+        for(let i = 0; i < cwidth; i++) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.translate(cwidth - ssize - 1 - i + ssize/2, cheight/2 + rectgap + ssize/2);
+            ctx.rotate(Math.PI / 4);
+            ctx.rect(-ssize/2, -ssize/2, ssize, ssize);
+            ctx.fillStyle = colors[c];
+            ctx.fill();
+            ctx.restore();
+
+
+            if(i % rgbW == 0) c += 1;
+            if(c > colors.length - 1) c = 0;
+        }
+
+        // Vertical Rect
+        for(let i = 0; i < cwidth; i++) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.translate(cwidth/2 + rectgap + ssize/2, csize/2 + 1 + i + ssize/2);
+            ctx.rotate(Math.PI / 4);
+            ctx.rect(-ssize/2, -ssize/2, ssize, ssize);
+            ctx.fillStyle = colors[c];
+            ctx.fill();
+            ctx.restore();
+
+            if(i % rgbW == 0) c += 1;
+            if(c > colors.length - 1) c = 0;
+        }
+        c = 0;
+
+        // Horizontal Circles
+        for(let i = 0; i < cwidth; i++) {
+            ctx.beginPath();
+            ctx.arc(cwidth - csize/4 - 1 - i, cheight/2 - csize/2, csize/2, 0, 2 * Math.PI);
+            ctx.fillStyle = colors[c];
+            ctx.fill();
+
+            if(i % rgbW == 0) c += 1;
+            if(c > colors.length - 1) c = 0;
+        }
+        c = 0;
+
+        // Vertical Circles
+        for(let i = 0; i < cwidth; i++) {
+            ctx.beginPath();
+            ctx.arc(cwidth/2 - csize/2, csize/2 + 1 + i, csize/2, 0, 2 * Math.PI);
+            ctx.fillStyle = colors[c];
+            ctx.fill();
+
+            if(i % rgbW == 0) c += 1;
+            if(c > colors.length - 1) c = 0;
+        }
+        c = 0;
+
+
+        // Save the bottom right quadrant
+        var bottomRightQuadrant = ctx.getImageData(cwidth/2, cheight/2, cwidth/2, cheight/2);
+        
+        // re-render the horizontal rect
+        for(let i = 0; i < cwidth; i++) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.translate(cwidth - ssize - 1 - i + ssize/2, cheight/2 + rectgap + ssize/2);
+            ctx.rotate(Math.PI / 4);
+            ctx.rect(-ssize/2, -ssize/2, ssize, ssize);
+            ctx.fillStyle = colors[c];
+            ctx.fill();
+            ctx.restore();
+
+
+            if(i % rgbW == 0) c += 1;
+            if(c > colors.length - 1) c = 0;
+        }
+        c = 0;
+
+        // reapply the bottom right quadrant
+        ctx.putImageData(bottomRightQuadrant, cwidth/2, cheight/2);
+
+
+
+
+    </script>
+</body>
+</html>

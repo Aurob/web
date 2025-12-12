@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Superformula Plant</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #35343fd2;
+        }
+
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+    <script src="/files/srv/code/noise.js"></script>
+    <!-- 
+        Collaborative project with gpt-4-turbo-2024-04-09 and github copilot
+        original prompt: all-in-one HTML with script to draw superformula-based leafs on stems of a plant
+     
+        AI Responses (without code):
+            1.
+            To create an all-in-one HTML page that uses the superformula to draw leaves on plant stems, you can embed HTML, CSS, and JavaScript directly in a single file. Here’s a concise example:
+            This code creates an HTML canvas and uses the superformula to generate leaf shapes. 
+            The `drawLeaf` function plots these shapes, while `drawStem` renders the stem. `drawPlant` puts it all together at a specified position and scale. Adjust parameters for different visual effects.
+
+            2.
+            Here's an improved version of your code to make generative plants more dynamically and with better control over the randomness and detail of the plant shapes using the Superformula:
+            ### Key Improvements:
+            1. **Increased numPoints for Leaves:** Enhanced the count to 100 for smoother, more natural leaf outlines.
+            2. **Adjustment to the Superformula Parameters:** Tweaked parameters within `superformula` calls to yield more diverse and realistic leaf shapes.
+            3. **Color and Transparency:** Changed the leaf color to a richer green with a bit of transparency for a more visually appealing, realistic look.
+            4. **Controlled Leaf Spacing:** Implemented a while-loop to generate relative angles for leaf placement, ensuring better spacing and distribution around the stem.
+            5. **Scalability Consistency:** Made scale application more consistent across leaf and stem drawing functions to simplify control over plant size.
+
+            This version provides enhanced control and better aesthetic outputs for your generative plants.
+
+    -->
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        function superformula(a, b, m, n1, n2, n3, phi) {
+            let raux1 = Math.pow(Math.abs(Math.cos(m * phi / 4) / a), n2);
+            let raux2 = Math.pow(Math.abs(Math.sin(m * phi / 4) / b), n3);
+            return Math.pow(raux1 + raux2, -1 / n1);
+        }
+
+        function drawLeaf(cx, cy, scale, rotation) {
+            ctx.beginPath();
+            const numPoints = 30 + noise.simplex2(cx, cy) * 30; // Randomize number of points for more natural look
+            let angleStep = (Math.PI * 2) / numPoints;
+            for (let i = 0; i <= numPoints; i++) {
+                let phi = i * angleStep;
+                let r = superformula(1, 1, 8, 0.3, 1.7, 1.7, phi) * scale; // Adjust superformula parameters for varied leaf shapes
+                let x = cx + r * Math.cos(phi + rotation); // Corrected rotation application
+                let y = cy + r * Math.sin(phi + rotation);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            // ctx.fillStyle = 'rgba(34, 139, 34, 0.8)'; // More natural green color with transparency
+            ctx.fill();
+        }
+
+        function drawStem(startX, startY, endX, endY, width) {
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.lineWidth = width;
+            ctx.strokeStyle = 'saddlebrown';
+            ctx.stroke();
+        }
+
+        function drawRandomPlants(cx, cy, scale, n, rgb) {
+            let angles = [];
+
+            // Create angles for leaves ensuring non-overlapping initial positions
+            while (angles.length < n) {
+                let newAngle = Math.random() * Math.PI * 2;
+                if (angles.every(angle => Math.abs(angle - newAngle) > 0.1)) { // Simple check to avoid overlapping
+                    angles.push(newAngle);
+                }
+            }
+
+            ctx.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+
+            let previousX = cx, previousY = cy;
+            for (let i = 0; i < n; i++) {
+                let angle = angles[i];
+                let distanceBetweenLeaves = Math.min(30 * scale, Math.min(canvas.width, canvas.height) / 40); // Controlled distance to keep within visible canvas and allow for 10 leaves
+                let stemEndX = previousX + Math.min(300 * scale, Math.min(canvas.width, canvas.height) / 4) * Math.cos(angle);
+                let stemEndY = previousY + Math.min(300 * scale, Math.min(canvas.width, canvas.height) / 4) * Math.sin(angle);
+
+                if (i > 0) {
+                    drawStem(previousX, previousY, stemEndX, stemEndY, scale * 2); // Consistent scale application
+                }
+
+                        
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let j = 0; j < 10; j++) { // Draw 10 leaves on each stem
+                    let leafX = previousX + distanceBetweenLeaves * (j + 1) * Math.cos(angle);
+                    let leafY = previousY + distanceBetweenLeaves * (j + 1) * Math.sin(angle);
+                    let rotation = Math.random() * Math.PI * 2;
+
+                    // drawLeaf(leafX, leafY, scale * 50, rotation); // Adjusted scale for smaller leaves
+                    setTimeout(() => {
+                        drawLeaf(leafX, leafY, scale * 50, rotation);
+                    }, i * 250);
+                }
+
+                previousX = stemEndX;
+                previousY = stemEndY;
+            }
+        }
+        const N = 100; // Number of different sets of plants
+        for (let i = 0; i < N; i++) {
+            let time = new Date().getTime(); // Get current time for noise seed
+            let rgb = [Math.random() * 255, Math.random() * 255, Math.random() * 255];
+            let stems = noise.simplex2((canvas.width / 2 + time) * 0.01, (canvas.height / 2 + time) * 0.01) * 5 + 5;
+            let scale = Math.random() * 2 + 0.1; // Random scale between 0.5 and 1
+            // drawRandomPlants(canvas.width / 2, canvas.height / 2, scale, stems, rgb);
+            setTimeout(() => {
+                drawRandomPlants(canvas.width / 2, canvas.height / 2, scale, stems, rgb);
+            }, i * 10);    
+        }
+
+    // Create a fast alternating but soothing harmonic ringing sound using the Web Audio API
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillators = [];
+    const baseFrequency = 440; // A4 note as the base frequency
+    const harmonics1 = [1, 2, 3, 4, 5]; // Harmonic series up to the 5th harmonic
+    const harmonics2 = [.75, .5]; // More dissonant series for game over indication
+    const gainNode = audioContext.createGain();
+    gainNode.connect(audioContext.destination);
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Set a low gain to avoid a loud sound
+
+    // Create oscillators for each harmonic in the soothing series
+    harmonics1.forEach((harmonic, index) => {
+        const oscillator = audioContext.createOscillator();
+        oscillator.frequency.setValueAtTime(baseFrequency * harmonic, audioContext.currentTime); // Set frequency based on harmonic
+        oscillator.type = 'sine'; // Sine wave for a smooth sound
+        oscillator.connect(gainNode);
+        oscillators.push(oscillator);
+    });
+
+    // Create oscillators for each harmonic in the dissonant series
+    harmonics2.forEach((harmonic, index) => {
+        const oscillator = audioContext.createOscillator();
+        oscillator.frequency.setValueAtTime(baseFrequency * harmonic, audioContext.currentTime); // Set frequency based on harmonic
+        oscillator.type = 'sine'; // Sine wave for a dissonant sound
+        oscillator.connect(gainNode);
+        oscillators.push(oscillator);
+    });
+    
+    // Function to create and start oscillators in an alternating pattern to create a ringing effect
+    function startRinging(harmonics) {
+        const newOscillators = harmonics.map((harmonic, index) => {
+            const oscillator = audioContext.createOscillator();
+            oscillator.frequency.setValueAtTime(baseFrequency * harmonic, audioContext.currentTime); // Set frequency based on harmonic
+            oscillator.type = 'sine'; // Sine wave for a smooth sound
+            oscillator.connect(gainNode);
+
+            const startTime = audioContext.currentTime + index * 0.1; // Stagger start times for a ringing effect
+            const stopTime = startTime + 0.5; // Each tone rings for 0.5 seconds
+            oscillator.start(startTime);
+            oscillator.stop(stopTime);
+
+            return oscillator;
+        });
+
+        // Clean up the oscillators after they have stopped playing
+        newOscillators.forEach(oscillator => {
+            oscillator.onended = () => {
+                oscillator.disconnect();
+            };
+        });
+    }
+
+    canvas.addEventListener('mousedown', (event) => {
+        if (event.button === 0) { // Left mouse button
+            startRinging(harmonics1);
+        } else if (event.button === 2) { // Right mouse button
+            startRinging(harmonics2);
+        }
+    });
+    // Stop the audio context when the user navigates away from the page to avoid unnecessary processing
+    window.addEventListener('beforeunload', () => {
+        audioContext.close();
+    });
+    </script>
+</body>
+
+</html>

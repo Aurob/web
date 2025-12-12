@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rau.lol</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <script src="perlin.js"></script>
+    <script src="nodes.js"></script>
+</head>
+
+<body>
+    <div id="test">
+        <canvas></canvas>
+        <script>
+
+            var nodes = [];
+            var mouse = {};
+            var canvas = document.querySelector('canvas')
+            var context = canvas.getContext('2d')
+            var width = canvas.width = window.innerWidth
+            var height = canvas.height = window.innerHeight
+
+            let t = 0;
+            let animator = null;
+            function draw() {
+                animator = requestAnimationFrame(draw);
+                context.fillStyle = 'rgba(0, 0, 0, 255)';
+                context.fillRect(0, 0, width, height);
+                nodes.forEach(node => {
+                    
+
+                    node.polygons.forEach(polygon => {
+                        polygon.points.forEach(point => {
+                            point.x += Math.sin(t * 0.01) * 0.1;
+                            point.y += Math.cos(t * 0.01) * 0.1;
+                        });
+                    });
+
+
+                    node.draw();
+                });
+            }
+
+            function makeNodes() {
+                nodes = [];
+                nodes.push(new node(
+                    window.innerWidth / 2, 
+                    window.innerHeight / 2, 
+                    Math.floor(Math.random() * 10) + 3, 
+                    window.innerWidth / 2));
+
+                // for(let row = 0; row < 10; row++) {
+                //     for(let col = 0; col < 10; col++) {
+                //         let timeAdjusted = t * 0.01; // Added a time variable to the noise
+                //         let sides = noise.perlin3(col * t, row * t, timeAdjusted) * 10 + 3;
+                //         nodes.push(new node(
+                //             (window.innerWidth / 10) * col + (window.innerWidth / 20),
+                //             (window.innerHeight / 10) * row + (window.innerHeight / 20),
+                //             sides,
+                //             noise.perlin3(col / 10, row / 10, timeAdjusted) * 100
+                //         ));
+                //     }
+                // }
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                makeNodes();
+                draw();
+            });
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth
+                height = canvas.height = window.innerHeight
+                
+                makeNodes();
+                cancelAnimationFrame(animator);
+                draw();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            window.addEventListener('click', (e) => {
+                makeNodes();
+                cancelAnimationFrame(animator);
+                draw();
+            });
+        </script>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+    </style>
+    <script src="/files/srv/code/noise.js"></script>
+</head>
+
+<body>
+    <div id="controls">
+        <p>Controls: WASD</p>
+    </div>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let figure_x, figure_y;
+        let horizon_y;
+        let segment_size;
+        let gridVars;
+        let mouse = {
+            x: 0,
+            y: 0
+        };
+        let redraw = true;
+
+        gridVars = {
+            "gridLines": 126.6,
+            "gridSize": 0.9425000000000163,
+            "gridPerspective": 106.2462500000002,
+            "var1": 0.9425000000000163,
+            "gridSpacing": canvas.width * 2
+        };
+
+        function drawHorizon() {
+            ctx.beginPath();
+            ctx.moveTo(0, horizon_y);
+            ctx.lineTo(canvas.width, horizon_y);
+            ctx.stroke();
+        }
+
+        function drawSky() {
+            // blue above the horizon
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(0, 0, canvas.width, horizon_y);
+
+        }
+
+        function drawGround() {
+            // green below the horizon
+            ctx.fillStyle = 'green';
+            ctx.fillRect(0, horizon_y, canvas.width, canvas.height - horizon_y);
+        }
+
+
+        // Events
+        //  Resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            reset();
+            draw();
+        });
+
+        // WASD veritcal and horizontal movement
+        let keys = {};
+
+        function processKeys() {
+            const delta = .1 * segment_size / 10;
+            let anyKeyActive = false;
+            if (keys['w'] && segment_size > 1) { segment_size -= delta; anyKeyActive = true; }
+            if (keys['s']) { segment_size += delta; anyKeyActive = true; }
+            if (keys['a']) { figure_x -= delta * 10; anyKeyActive = true; }
+            if (keys['d']) { figure_x += delta * 10; anyKeyActive = true; }
+            if (keys['o']) { gridVars.gridPerspective -= delta * 10; anyKeyActive = true; }
+            if (keys['p']) { gridVars.gridPerspective += delta * 10; anyKeyActive = true; }
+            if (keys['k']) { gridVars.gridSize -= delta * 10; anyKeyActive = true; }
+            if (keys['l']) { gridVars.gridSize += delta * 10; anyKeyActive = true; }
+            if (keys['j']) { gridVars.gridSpacing -= 1; anyKeyActive = true; }
+            if (keys['h']) { gridVars.gridSpacing += 1; anyKeyActive = true; }
+            if (keys['y']) { figure_y -= 1; anyKeyActive = true; }
+            if (keys['u']) { figure_y += 1; anyKeyActive = true; }
+            if (keys['n']) { gridVars.var1 -= .1; anyKeyActive = true; }
+            if (keys['m']) { gridVars.var1 += .1; anyKeyActive = true; }
+
+            redraw = anyKeyActive;
+            return anyKeyActive;
+        }
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function draw() {
+
+            processKeys();
+
+            requestAnimationFrame(draw);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawSky();
+            drawGround();
+
+            ctx.lineWidth = 1;
+            drawHorizon();
+
+
+            ctx.lineCap = 'butt'; // Resets lineCap to default to avoid affecting other drawings
+            redraw = false;
+        }
+
+        // mousemove
+        window.addEventListener('mousemove', (e) => {
+            // figure_x = e.clientX;
+            // segment_size = e.clientY - figure_y;
+            // redraw = true;
+        });
+
+        reset();
+        draw();
+
+
+    </script>
+</body>
+
+</html>

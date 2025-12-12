@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+    </style>
+    <script src="/files/srv/code/noise.js"></script>
+</head>
+
+<body>
+    <div id="controls">
+        <p>Controls: WASD</p>
+    </div>
+    <canvas></canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let figure_x, figure_y;
+        let horizon_y;
+        let segment_size;
+        let gridVars;
+        let mouse = {
+            x: 0,
+            y: 0
+        };
+        let redraw = true;
+
+        gridVars = {
+            "gridLines": 126.6,
+            "gridSize": 0.9425000000000163,
+            "gridPerspective": 106.2462500000002,
+            "var1": 0.9425000000000163,
+            "gridSpacing": canvas.width * 2
+        };
+
+        function reset() {
+            figure_x = canvas.width / 2;
+            figure_y = canvas.height / 3;
+            segment_size = (canvas.height - figure_y * 2) / 8;
+            horizon_y = figure_y;// + segment_size;
+            gridVars.gridSpacing = canvas.width * 2;
+        }
+
+        function startingCentralLine() {
+            ctx.beginPath();
+            ctx.moveTo(figure_x, figure_y);
+            ctx.lineTo(figure_x, canvas.height - figure_y);
+            ctx.stroke();
+        }
+
+        function figureSegmentLines() {
+            // Split the figure into 8 equal segments
+            for (let i = 1; i < 8; i++) {
+                ctx.beginPath();
+                ctx.moveTo((canvas.width / 2) - 10, figure_y + (segment_size * i));
+                ctx.lineTo((canvas.width / 2) + 10, figure_y + (segment_size * i));
+                ctx.stroke();
+            }
+        }
+
+        function figureSegmentCircles() {
+            // Split the figure into 8 equal segments
+            for (let i = 1; i < 9; i++) {
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, figure_y + (segment_size * i) - (segment_size / 2), segment_size / 2, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function figureHead() {
+            // Oval/egg shape on first segment, same size
+            ctx.beginPath();
+            ctx.ellipse(figure_x, figure_y + (segment_size / 2), segment_size / 3, segment_size / 2, 0, 0, Math.PI * 2);
+            // ctx.stroke();
+            ctx.fill();
+        }
+
+        function figureTorso() {
+            // Oval/egg shape spanning the 2nd to 4th segment
+            ctx.beginPath();
+            ctx.ellipse(figure_x, figure_y + (segment_size * 2.5), segment_size / 1.4, segment_size * 1.5, 0, 0, Math.PI * 2);
+            // ctx.stroke();
+            ctx.fill();
+        }
+
+        function figureArms() {
+            function drawArm(side) {
+                let direction = side === 'left' ? -1 : 1;
+
+                // Target position relative to the figure
+                let targetX = mouse.x - figure_x - direction * segment_size / 2;
+                let targetY = mouse.y - figure_y - (segment_size + segment_size / 2.5);
+
+                // Inverse Kinematics
+                let dx = targetX;
+                let dy = targetY;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Ensure the target is within reach
+                let maxArmLength = segment_size + segment_size * 0.8; // Combine lengths of both arm segments
+                distance = Math.min(distance, maxArmLength - 0.1); // Subtract slightly to prevent full extension
+
+                // Calculate upper arm angle using law of cosines
+                let a = (segment_size * segment_size + distance * distance - (segment_size * 0.8) * (segment_size * 0.8)) / (2 * segment_size * distance);
+                let angleToUpperArm = Math.atan2(dy, dx) - Math.acos(a) * direction;
+
+                let upperArmEndX = figure_x + direction * segment_size / 2 + Math.cos(angleToUpperArm) * segment_size;
+                let upperArmEndY = figure_y + (segment_size + segment_size / 2.5) + Math.sin(angleToUpperArm) * segment_size;
+
+                // Draw upper arm...
+                ctx.beginPath();
+                ctx.moveTo(figure_x + direction * segment_size / 2, figure_y + (segment_size + segment_size / 2.5));
+                ctx.lineTo(upperArmEndX, upperArmEndY);
+                ctx.stroke();
+
+                // Adjust lower arm angle based on upper arm and remaining distance
+                let lowerArmToTargetAngle = Math.atan2(mouse.y - upperArmEndY, mouse.x - upperArmEndX) - angleToUpperArm;
+                // Apply joint constraints here if necessary
+
+                let lowerArmEndX = upperArmEndX + Math.cos(angleToUpperArm + lowerArmToTargetAngle) * segment_size * 0.8;
+                let lowerArmEndY = upperArmEndY + Math.sin(angleToUpperArm + lowerArmToTargetAngle) * segment_size * 0.8;
+
+                // Draw lower arm and hand...
+                ctx.beginPath();
+                ctx.moveTo(upperArmEndX, upperArmEndY);
+                ctx.lineTo(lowerArmEndX, lowerArmEndY);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.ellipse(lowerArmEndX, lowerArmEndY, segment_size / 6, segment_size / 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+
+            }
+
+            drawArm('left');
+            drawArm('right');
+        }
+
+        function figureLegs() {
+            // 2 lines starting at the 4th segment, ending at the 8th segment
+
+            // Left leg
+            ctx.beginPath();
+            ctx.moveTo(figure_x - segment_size / 2, figure_y + (segment_size * 3.5));
+            ctx.lineTo(figure_x - segment_size, figure_y + (segment_size * 8));
+            ctx.stroke();
+
+            // Right leg
+            ctx.beginPath();
+            ctx.moveTo(figure_x + segment_size / 2, figure_y + (segment_size * 3.5));
+            ctx.lineTo(figure_x + segment_size, figure_y + (segment_size * 8));
+            ctx.stroke();
+
+            // Left foot
+            ctx.beginPath();
+            ctx.ellipse(figure_x - segment_size - (segment_size / 4), figure_y + (segment_size * 8), segment_size / 3, segment_size / 6, 0, 0, Math.PI * 2);
+            // ctx.stroke();
+            ctx.fill();
+
+            // Right foot
+            ctx.beginPath();
+            ctx.ellipse(figure_x + segment_size + (segment_size / 4), figure_y + (segment_size * 8), segment_size / 3, segment_size / 6, 0, 0, Math.PI * 2);
+            // ctx.stroke();
+            ctx.fill();
+        }
+
+        function drawHorizon() {
+            ctx.beginPath();
+            ctx.moveTo(0, horizon_y);
+            ctx.lineTo(canvas.width, horizon_y);
+            ctx.stroke();
+        }
+
+        function drawSky() {
+            // blue above the horizon
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(0, 0, canvas.width, horizon_y);
+
+        }
+
+        function drawGround() {
+            // green below the horizon
+            ctx.fillStyle = 'green';
+            ctx.fillRect(0, horizon_y, canvas.width, canvas.height - horizon_y);
+        }
+
+        function drawShadow(shadowIntensity = 1) {
+            const shadowOffsetY = segment_size * 8; // Relative to the figure's feet
+            const shadowRadiusX = segment_size * 1.5 * shadowIntensity;
+            const shadowRadiusY = segment_size * (mouse.y / canvas.height) * shadowIntensity; // Relative to the mouse position as the 'z' height above the ground
+            const shadowColor = `rgba(0, 0, 0, ${0.5 * shadowIntensity})`; // Shadow color with configurable opacity based on intensity
+
+            ctx.fillStyle = shadowColor;
+            ctx.beginPath();
+            ctx.ellipse(figure_x, figure_y + shadowOffsetY, shadowRadiusX, shadowRadiusY, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function moveFigureWithRope() {
+            // move figure with rope
+            let dx = mouse.x - figure_x;
+            let dy = mouse.y - figure_y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance > segment_size * 2) {
+                figure_x += dx * 0.1;
+                figure_y += dy * 0.1;
+            }
+        }
+
+        // Events
+        //  Resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            reset();
+            draw();
+        });
+
+        // WASD veritcal and horizontal movement
+        let keys = {};
+
+        function processKeys() {
+            const delta = .1 * segment_size / 10;
+            let anyKeyActive = false;
+            if (keys['w'] && segment_size > 1) { segment_size -= delta; anyKeyActive = true; }
+            if (keys['s']) { segment_size += delta; anyKeyActive = true; }
+            if (keys['a']) { figure_x -= delta * 10; anyKeyActive = true; }
+            if (keys['d']) { figure_x += delta * 10; anyKeyActive = true; }
+            if (keys['o']) { gridVars.gridPerspective -= delta * 10; anyKeyActive = true; }
+            if (keys['p']) { gridVars.gridPerspective += delta * 10; anyKeyActive = true; }
+            if (keys['k']) { gridVars.gridSize -= delta * 10; anyKeyActive = true; }
+            if (keys['l']) { gridVars.gridSize += delta * 10; anyKeyActive = true; }
+            if (keys['j']) { gridVars.gridSpacing -= 1; anyKeyActive = true; }
+            if (keys['h']) { gridVars.gridSpacing += 1; anyKeyActive = true; }
+            if (keys['y']) { figure_y -= 1; anyKeyActive = true; }
+            if (keys['u']) { figure_y += 1; anyKeyActive = true; }
+            if (keys['n']) { gridVars.var1 -= .1; anyKeyActive = true; }
+            if (keys['m']) { gridVars.var1 += .1; anyKeyActive = true; }
+
+            redraw = anyKeyActive;
+            return anyKeyActive;
+        }
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function draw() {
+
+            processKeys();
+
+            requestAnimationFrame(draw);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // startingCentralLine();
+            // figureSegmentLines();
+            // figureSegmentCircles();
+
+            drawSky();
+            drawGround();
+
+            ctx.lineWidth = 1;
+            drawHorizon();
+
+            // ctx.lineWidth = 1;
+            // drawGrid();
+
+            ctx.lineWidth = 2;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            drawShadow();
+            ctx.fillStyle = 'rgba(40, 40, 40, 1)';
+            figureHead();
+            figureTorso();
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round'; // Makes the ends of the lines rounded, giving a smoother appearance
+            figureArms();
+            figureLegs();
+            moveFigureWithRope();
+
+
+            ctx.lineCap = 'butt'; // Resets lineCap to default to avoid affecting other drawings
+            redraw = false;
+        }
+
+        // mousemove
+        window.addEventListener('mousemove', (e) => {
+            // figure_x = e.clientX;
+            // segment_size = e.clientY - figure_y;
+            // redraw = true;
+        });
+
+        reset();
+        draw();
+
+
+    </script>
+</body>
+
+</html>

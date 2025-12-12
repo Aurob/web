@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="test">
+    </div>
+    <script>
+        var canvas = document.createElement('canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+
+        var position = {
+            x: canvas.width / 2,
+            y: canvas.height / 2
+        };
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(position.x, position.y, 50, 0, Math.PI * 2);
+            ctx.fill();
+        
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            position.x = canvas.width / 2;
+            position.y = canvas.height / 2;
+        });
+
+        draw();
+    </script>
+</body>
+
+</html>

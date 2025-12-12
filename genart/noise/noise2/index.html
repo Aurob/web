@@ -1,0 +1,83 @@
+<script>
+    class BassMetronome {
+        constructor(tempo = 60) {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.tempo = tempo; // BPM (beats per minute)
+            this.isPlaying = false; // Is the metronome currently playing?
+        }
+
+        start() {
+            if (this.isPlaying) {
+                return;
+            }
+            this.isPlaying = true;
+            this.nextNoteTime = this.audioContext.currentTime;
+            this.timerID = setInterval(() => this.playTick(), this.calculateInterval());
+        }
+
+        stop() {
+            this.isPlaying = false;
+            clearInterval(this.timerID);
+        }
+
+        playTick() {
+            const osc = this.audioContext.createOscillator();
+            osc.frequency.value = 55; // Set frequency for 'A1' bass sound
+            osc.type = 'triangle'; // Triangle wave for a softer bass sound
+
+            const envelope = this.audioContext.createGain();
+            osc.connect(envelope);
+            envelope.connect(this.audioContext.destination);
+
+            envelope.gain.setValueAtTime(0.5, this.nextNoteTime); // Initial volume
+            envelope.gain.exponentialRampToValueAtTime(0.001, this.nextNoteTime + 0.5);
+
+            osc.start(this.nextNoteTime);
+            osc.stop(this.nextNoteTime + 0.5); // Stop the oscillator after half a second
+
+            this.nextNoteTime += this.calculateInterval(); // Schedule the next tick
+        }
+
+        calculateInterval() {
+            return 60.0 / this.tempo;
+        }
+    }
+
+    window.addEventListener('load', () => {
+        const metronome = new BassMetronome(60);
+        const startButton = document.createElement('button');
+        startButton.innerText = 'Start';
+        const stopButton = document.createElement('button');
+        stopButton.innerText = 'Stop';
+        const tempoInput = document.createElement('input');
+        tempoInput.type = 'number';
+        tempoInput.value = metronome.tempo;
+
+        document.body.appendChild(startButton);
+        document.body.appendChild(stopButton);
+        document.body.appendChild(tempoInput);
+
+        startButton.addEventListener('click', () => {
+            const tempo = parseInt(tempoInput.value, 10);
+            if (!isNaN(tempo)) {
+                metronome.tempo = tempo;
+            }
+            metronome.start();
+        });
+
+        stopButton.addEventListener('click', () => {
+            metronome.stop();
+        });
+
+        tempoInput.addEventListener('input', () => {
+            const tempo = parseInt(tempoInput.value, 10);
+            if (!isNaN(tempo)) {
+                metronome.tempo = tempo;
+                if (metronome.isPlaying) {
+                    metronome.stop();
+                    metronome.start();
+                }
+            }
+        });
+    });
+</script>

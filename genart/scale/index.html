@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width = window.innerWidth;
+        const height = canvas.height = window.innerHeight;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        var scales = [1, 10, 100, 1000, 10000];
+        var currentScaleIndex = 3;
+
+        function randomColor() {
+            return '#' + Math.floor(Math.random() * 16777215).toString(16);
+        }
+
+        ctx.fillStyle = randomColor();
+        var padding = 1;
+        var rectSize = 10;
+        var sd = 1;
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, width, height);
+            ctx.save();
+            // for (let i = 0; i < scales[currentScaleIndex]; i++) {
+            //     for (let j = 0; j < scales[currentScaleIndex]; j++) {
+            //         ctx.fillRect(i * (rectSize + padding), j * (rectSize + padding), rectSize, rectSize);
+            //     }
+            // }
+            for (let x = 0; x < width; x += rectSize + padding) {
+                for (let y = 0; y < height; y += rectSize + padding) {
+                    ctx.fillRect(x, y, rectSize, rectSize);
+                }
+            }
+            ctx.restore();
+            // currentScaleIndex = (currentScaleIndex + 1) % scales.length;
+
+            rectSize += .01 * sd;
+            if (rectSize > 100 || rectSize < .01) {
+                sd *= -1;
+            }
+
+        }
+
+        function changeScale(d) {
+            currentScaleIndex = Math.max(0, Math.min(currentScaleIndex + d, scales.length - 1));
+            animate();
+        }
+
+        animate();
+
+    </script>
+</body>
+</html>

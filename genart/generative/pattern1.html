@@ -1,0 +1,32 @@
+<div id="test">
+    <canvas></canvas>
+    <script>
+
+        function randrgb() {
+            return Math.floor(Math.random() * 255)
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.querySelector('canvas')
+            const context = canvas.getContext('2d')
+            const width = canvas.width = window.innerWidth
+            const height = canvas.height = window.innerHeight
+
+            for(let x = 0; x < width; x += 20) {
+                for(let y = 0; y < height; y += 20) {
+                    context.fillStyle = 'rgba(0, 0, 0, 0.5)'
+                    let w = 10 + Math.random() * 10;
+                    let h = 10 + Math.random() * 10;
+
+                    if(Math.random() > 0.5) {
+                        // context.fillStyle = 'rgba(255, 0, 0, 0.5)'
+                        context.fillStyle = `rgba(${randrgb()}, ${randrgb()}, ${randrgb()}, 0.5)`
+                    }
+
+
+                    context.fillRect(x, y,  w, h)
+                }
+            }
+        })
+    </script>
+</div>

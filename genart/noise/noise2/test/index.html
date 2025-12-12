@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metronome Timing Chart</title>
+</head>
+<body>
+
+<script>
+
+  // Create a new AudioContext
+  const audioContext = new AudioContext();
+
+  // Create the first oscillator and configure it
+  const oscillator1 = audioContext.createOscillator();
+  oscillator1.type = 'sine'; // Oscillator 1 type
+  oscillator1.frequency.value = 440; // Frequency in Hz (A4)
+  const gainNode1 = audioContext.createGain(); // Create a gain node for oscillator 1
+  oscillator1.connect(gainNode1); // Connect oscillator 1 to its gain node
+  gainNode1.connect(audioContext.destination); // Connect gain node to the audio context's destination
+
+  // Create the second oscillator and configure it
+  const oscillator2 = audioContext.createOscillator();
+  oscillator2.type = 'square'; // Oscillator 2 type
+  oscillator2.frequency.value = 220; // Frequency in Hz (A3)
+  const gainNode2 = audioContext.createGain(); // Create a gain node for oscillator 2
+  oscillator2.connect(gainNode2); // Connect oscillator 2 to its gain node
+  gainNode2.connect(audioContext.destination); // Connect gain node to the audio context's destination
+
+  let btn = document.createElement('button');
+  btn.innerText = 'Start';
+  document.body.appendChild(btn);
+
+  btn.addEventListener('click', () => {
+    
+    // Schedule the oscillators to start playing simultaneously
+    const startTime = audioContext.currentTime + 0.1; // Start after a small delay to ensure precise timing
+    oscillator1.start(startTime);
+    oscillator2.start(startTime);
+
+    // Schedule the oscillators to stop after some time
+    const duration = 2; // Play for 2 seconds
+    oscillator1.stop(startTime + duration);
+    oscillator2.stop(startTime + duration);
+  });
+
+</script>
+</body>
+</html>

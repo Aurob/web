@@ -38,7 +38,8 @@ function createWidget() {
         widget_el.innerHTML = "";
     }
 
-    widget_el.style.position = 'fixed';
+    // widget_el.style.position = 'fixed';
+    widget_el.style.width = 'fit-content';
 
     // Calculate prev/next indices with wrap-around
     const prevIndex = (site_index === 0) ? sites.length - 1 : site_index - 1;
@@ -52,6 +53,8 @@ function createWidget() {
             btn.title = noSiteMsg;
             btn.setAttribute('aria-label', noSiteMsg);
         }
+
+        btn.style.fontSize = 'clamp(12px, 4vw, 16px)';
     }
 
 
@@ -99,6 +102,8 @@ function createWidget() {
     randBtn.title = sites.length > 1 ? 'Random site' : 'No random site available';
     randBtn.setAttribute('aria-label', randBtn.title);
     setButtonTitle(nextBtn, sites[nextIndex], 'Next', 'No next site');
+
+    setButtonTitle(randBtn);
 
     prevBtn.disabled = false;
     nextBtn.disabled = false;

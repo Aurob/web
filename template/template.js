@@ -117,14 +117,14 @@ function buildUI(data) {
         }
 
         for (let i = 0; i < sub_keys.length; i++) {
-            const childKey = sub_keys[i];
+            let childKey = sub_keys[i];
             let childHref = '';
             // console.log(is_sibling, parentHref, childKey, current_path)
             if(is_sibling) {
                 childHref = '../'+childKey
             }
             else {
-                childHref = `${parentHref}${childKey}/`;
+                childHref = `${parentHref}${childKey}`;
             }
 
             createLink(childKey, childHref, el);
@@ -138,12 +138,16 @@ function buildUI(data) {
     }
 
     const eb = document.querySelector(`.${classMap.Bottom}`);
+
+    const other_site_links = document.createElement('span');
+    eb.appendChild(other_site_links);
     // add copyright notice with year and link to license
     const year = new Date().getFullYear();
     const copyrightSpan = document.createElement('span');
     copyrightSpan.id = 'year';
-    copyrightSpan.innerHTML = `&copy; ${year}`;
+    copyrightSpan.innerHTML = `&nbsp;&copy; ${year}`;
     eb.appendChild(copyrightSpan);
+    
 
 }
 
@@ -169,7 +173,11 @@ window.addEventListener('load', ()=>{
                 "day3": {},
                 "day4": {}
             },
-            "webring": {}
+            "webring": {},
+            "photo": {},
+            "links": {},
+            "genart": {},
+            "doodles": {}
         };
         sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
     }

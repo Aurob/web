@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../template/template.css">
+    
+    <style>
+        table { border-collapse: collapse; }
+        th, td { 
+            border: 1px solid var(--global-white); 
+            color: var(--global-white);padding: 8px; 
+        }
+        blockquote { 
+            margin: auto; 
+        }
+
+        pre {
+            width: fit-content;
+            background-color: var(--global-dark-blue);
+            padding: 1em;
+            color: var(--global-dark-blue);
+        }
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="">
+
+        <div>
+            View my input file here: <a href="input">input.txt</a>
+            <br>    
+            <button id="show">Show Code</button>
+        </div>
+        <pre id="pre"><code id="solution">
+# Advent of Code Day 7
+# https://adventofcode.com/2025/day/7
+
+def day7_part1(input_str):
+    lines = []
+
+    split_map = {}
+    split_count = 0
+
+    # get a clean list of lines 
+    for l, line in enumerate(input_str.split('\n')):
+        line = line.strip()
+        if not line: continue
+        lines.append(line)
+
+        # pre-populate the split_map with all split character positions
+        for i, char in enumerate(line):
+            if char == '^':
+                split_map[(len(lines)-1, i)] = {
+                    'source': (None, None),
+                    'left': (None, None),
+                    'right': (None, None)
+                }
+
+    _lines = []
+    start = lines[0].index('S')
+    for l, line in enumerate(lines):
+
+        _line = list(line)
+
+        # The first line will always be unchangd
+        if l > 0:
+            # if on the second line, there will always be 1 beam under the start index
+            if l == 1:
+                _line[start] = '|'
+
+            # if the current character is "^"
+            for i, char in enumerate(line):
+                prev_line_val = _lines[l-1][i]
+
+                if char == '^':
+                    # if the same index on the previous line is a beam
+                    # then set the source, left, and right beam positions in the split_map
+                    if prev_line_val == '|':
+                        split_count += 1
+
+                        split_map[(l, i)]['source'] = (l-1, i)
+                        split_map[(l, i)]['left'] = (l+1, i-1)
+                        split_map[(l, i)]['right'] = (l+1, i+1)
+
+
+
+            # if the current character is "."
+            for i, char in enumerate(line):
+                prev_line_val = _lines[l-1][i]
+                if char == '.':
+                    
+                    # if the same index on the previous line is a beam
+                    # then this character becomes a beam
+                    if prev_line_val == '|':
+                        _line[i] = '|'
+
+                    # if the value at index-1 or index+1 on the previous line is a splitter
+                    # and it has a source beam
+                    # then this character becomes a beam
+                    if i > 0:
+                        if _line[i-1] == '^':
+                            left_split = split_map[(l, i-1)]
+                            if left_split['source'] != (None, None):
+                                _line[i] = '|'
+
+                    if i < len(_line)-1:
+                        if _line[i+1] == '^':
+                            right_split = split_map[(l, i+1)]
+                            if right_split['source'] != (None, None):
+                                _line[i] = '|'
+
+        _lines.append(''.join(_line))
+
+    return split_count
+        </code></pre>
+        <p>
+        </p>
+    </div>
+    <script>
+        document.getElementById("show").onclick = function() {
+            document.getElementById("pre").style.color = "var(--global-white)"
+        }
+    </script>
+    <script src="../../template/template.js"></script>
+</body>
+</html>

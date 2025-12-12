@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rau.lol</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="test">
+        <h1>Click anywhere</h1>
+        <canvas></canvas>
+        <script>
+    
+            class node {
+                #polygons = [];
+                constructor(x, y) {
+                    this.#init(x, y);
+                }
+    
+                #init(startx, starty) {
+                    const sides = Math.floor(Math.random() * 10) + 3;
+                    const radius = 100;
+                    const points = [];
+                    
+                    for (let a = 0; a < 360; a += 360 / sides) {
+                        const x = Math.cos(a * Math.PI / 180) * radius + startx;
+                        const y = Math.sin(a * Math.PI / 180) * radius + starty;
+                        points.push({x: x, y: y});
+                    }
+
+                    const polygon = {
+                        points: points,
+                        color: `hsl(${Math.random() * 360},100%, 70%)`
+                    };
+    
+                    this.#polygons.push(polygon);
+                }
+    
+                draw() {
+                    this.#polygons.forEach(polygon => {
+                        const context = document.querySelector('canvas').getContext('2d');
+                        context.beginPath();
+                        context.moveTo(polygon.points[0].x, polygon.points[0].y);
+                        polygon.points.forEach(point => context.lineTo(point.x, point.y));
+                        context.closePath();
+                        context.fillStyle = polygon.color;
+                        context.fill();
+                    });
+                }
+            }
+    
+            var nodes = [];
+            var mouse = {};
+    
+            function draw() {
+                const canvas = document.querySelector('canvas')
+                const context = canvas.getContext('2d')
+                const width = canvas.width = window.innerWidth
+                const height = canvas.height = window.innerHeight
+                
+                context.clearRect(0, 0, width, height);
+                console.log(nodes);
+                nodes.forEach(node => {
+                    node.draw();
+                });
+            }
+    
+            window.addEventListener('DOMContentLoaded', () => {
+                // let node1 = new node();
+                // nodes.push(node1);
+                draw();
+            });
+    
+            window.addEventListener('resize', () => {
+                draw();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            window.addEventListener('click', (e) => {
+                let node1 = new node(mouse.x, mouse.y);
+                console.log(mouse.x, mouse.y)
+                nodes.push(node1);
+                draw();
+            });
+        </script>
+    </div>
+</body>
+</html>

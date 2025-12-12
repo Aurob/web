@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="artCanvas" width="800" height="600"></canvas>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+        <div style="margin-bottom: 10px;">
+            <label for="startX">Start X:</label>
+            <input type="range" id="startX" min="0" max="100" value=50>
+            <span id="startXValue">50</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="startY">Start Y:</label>
+            <input type="range" id="startY" min="0" max="100" value=50>
+            <span id="startYValue">50</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="polyWidth">Polygon Width:</label>
+            <input type="range" id="polyWidth" min="5" max="50" value=50>
+            <span id="polyWidthValue">10</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="polyHeight">Polygon Height:</label>
+            <input type="range" id="polyHeight" min="5" max="50" value=50>
+            <span id="polyHeightValue">10</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="gap">Gap:</label>
+            <input type="range" id="gap" min="0" max="50" value=10>
+            <span id="gapValue">10</span>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <button id="refreshButton">Refresh</button>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <label for="methodSelect">Select Method:</label>
+            <select id="methodSelect">
+                <option value="method1">Method 1</option>
+                <option value="method2">Method 2</option>
+            </select>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById('artCanvas');
+        const context = canvas.getContext('2d');
+
+        let startX = document.getElementById('startX').value;
+        let startY = document.getElementById('startY').value;
+        let polyWidth = document.getElementById('polyWidth').value;
+        let polyHeight = document.getElementById('polyHeight').value;
+        let gap = document.getElementById('gap').value;
+
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+
+        function updateValues() {
+            startX = parseInt(document.getElementById('startX').value);
+            startY = parseInt(document.getElementById('startY').value);
+            polyWidth = parseInt(document.getElementById('polyWidth').value);
+            polyHeight = parseInt(document.getElementById('polyHeight').value);
+            gap = parseInt(document.getElementById('gap').value);
+
+            document.getElementById('startXValue').innerText = startX;
+            document.getElementById('startYValue').innerText = startY;
+            document.getElementById('polyWidthValue').innerText = polyWidth;
+            document.getElementById('polyHeightValue').innerText = polyHeight;
+            document.getElementById('gapValue').innerText = gap;
+
+            draw();
+        }
+
+        document.getElementById('startX').addEventListener('input', updateValues);
+        document.getElementById('startY').addEventListener('input', updateValues);
+        document.getElementById('polyWidth').addEventListener('input', updateValues);
+        document.getElementById('polyHeight').addEventListener('input', updateValues);
+        document.getElementById('gap').addEventListener('input', updateValues);
+        document.getElementById('methodSelect').addEventListener('change', draw);
+        document.getElementById('refreshButton').addEventListener('click', draw);
+
+        function polygon(points, color = 'black') {
+            context.beginPath();
+            context.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                context.lineTo(points[i].x, points[i].y);
+            }
+            context.fillStyle = color;
+            context.fill();
+            context.closePath();
+        }
+
+        function method2() {
+            const createPoly = (xOffset, yOffset, width) => [
+                { x: xOffset, y: yOffset },
+                { x: xOffset + width, y: yOffset },
+                { x: xOffset + width, y: yOffset + polyHeight },
+                { x: xOffset, y: yOffset + polyHeight }
+            ];
+
+
+            const adjustedGridWidth = Math.floor((canvasWidth - startX) / (2 * polyWidth + gap)) - polyWidth;
+            const adjustedGridHeight = Math.floor((canvasHeight - startY) / (2 * polyHeight + gap));
+            console.log(polyWidth, polyHeight, gap, adjustedGridWidth, adjustedGridHeight)
+            for (let row = 0; row < adjustedGridHeight; row++) {
+                const rowWidth = adjustedGridWidth * (2 * polyWidth + gap + 10);
+                const startXOffset = (canvasWidth - rowWidth) / 2; // Center the row
+
+                for (let col = 0; col < adjustedGridWidth; col++) {
+                    const offsetX = startXOffset + col * (2 * polyWidth + gap + 10); // Added extra space between each group
+                    const offsetY = startY + row * (2 * polyHeight + gap + 10); // Added extra space between each group
+
+                    const polys = [
+                        createPoly(offsetX, offsetY, polyWidth),
+                        createPoly(offsetX + polyWidth, offsetY + (row % 2 === 0 ? 1 : -1), polyWidth),
+                        createPoly(offsetX + polyWidth * 2, offsetY + (row % 2 === 0 ? 2 : -2), polyWidth),
+                    ];
+                    console.log(polys)
+
+                    polys.forEach(poly => polygon(poly, (row + col) % 2 === 0 ? 'rgb(100, 100, 100)' : 'rgb(200, 200, 200)'));
+                }
+
+            }
+        }
+
+        function method1() {
+            const adjustedGridWidth = Math.floor(canvasWidth / polyWidth);
+            const adjustedGridHeight = Math.floor(canvasHeight / polyHeight);
+
+            const lineWidth = (polyWidth + polyHeight)/6;
+            const radius = 12; // Adjust the radius as needed
+            let polys = [];
+
+            for (let row = 0; row < adjustedGridHeight; row++) {
+                for (let col = 0; col < adjustedGridWidth; col++) {
+                    const offsetX = col * polyWidth;
+                    const offsetY = row * polyHeight;
+                    const color = (row + col) % 2 === 0 ? 'rgb(100, 100, 100)' : 'rgb(200, 200, 200)';
+
+                    polys.push({ offsetX, offsetY, color });
+                    const timeFactor = (new Date().getTime() % 10000) / 10000; // Adjust based on current time in seconds
+                    const smoothFactor = 0.5 + 0.5 * Math.sin(2 * Math.PI * timeFactor); // Smooth transition between 0 and 1
+                    if (Math.abs(Math.sin(row + smoothFactor) * Math.cos(col + smoothFactor)) < 0.9) continue;
+
+                    context.strokeStyle = 'black';
+                    context.lineWidth = lineWidth;
+                    context.beginPath();
+                    context.moveTo(offsetX - lineWidth, offsetY - lineWidth);
+                    context.lineTo(offsetX + polyWidth + lineWidth, offsetY + polyHeight + lineWidth);
+                    context.stroke();
+                    context.closePath();
+                }
+            }
+
+            polys.forEach(({ offsetX, offsetY, color }) => {
+                context.fillStyle = color;
+                context.strokeStyle = 'black';
+                context.lineWidth = lineWidth;
+
+                let adjustedOffsetX = offsetX;
+                let adjustedOffsetY = offsetY;
+                let adjustedWidth = polyWidth;
+                let adjustedHeight = polyHeight;
+
+                if (offsetY === 0) { // First row
+                    adjustedOffsetY -= radius;
+                    adjustedHeight += radius;
+                }
+                if (offsetX + polyWidth >= canvasWidth) { // Last column
+                    adjustedWidth += radius;
+                }
+                if (offsetX === 0) { // First column
+                    adjustedOffsetX -= radius;
+                    adjustedWidth += radius;
+                }
+                if (offsetY + polyHeight >= canvasHeight) { // Last row
+                    adjustedHeight += radius;
+                }
+
+                context.beginPath();
+                context.roundRect(adjustedOffsetX, adjustedOffsetY, adjustedWidth, adjustedHeight, radius);
+                context.fill();
+                context.closePath();
+            });
+        }
+        function draw() {
+            context.clearRect(0, 0, canvasWidth, canvasHeight);
+            const methodSelect = document.getElementById('methodSelect').value;
+            if (methodSelect === 'method1') {
+                method1();
+            } else if (methodSelect === 'method2') {
+                method2();
+            }
+            requestAnimationFrame(draw);
+        }
+
+        updateValues();
+        draw();
+    </script>
+</body>
+
+</html>

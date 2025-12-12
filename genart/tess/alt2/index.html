@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle</title>
+    <script src="/files/srv/code/noise.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let width = canvas.width;
+        let height = canvas.height;
+
+        let gcs = 8;
+
+        let tcell = {
+            points: [
+                [0, 0], [1, 0], [2, 0],
+                [0, 1], [1, 1], [2, 1],
+                [0, 2], [1, 2], [2, 2]
+            ],
+            colors: [
+                'yellow', 'yellow', 'yellow',
+                'yellow', 'blue', 'yellow',
+                'yello', 'blue', 'blue'
+            ]
+        };
+
+        // Test - 4x4
+        let pcell = {
+            points: [
+                [0, 0], [1, 0], [2, 0], [3, 0],
+                [0, 1], [1, 1], [2, 1], [3, 1],
+                [0, 2], [1, 2], [2, 2], [3, 2],
+                [0, 3], [1, 3], [2, 3], [3, 3]
+            ],
+            colors: [
+                'blue', 'yellow', 'red', 'green',
+                'yellow', 'yellow', 'blue', 'red',
+                'green', 'red', 'yellow', 'blue',
+                'yellow', 'green', 'yellow', 'yellow'
+            ]
+        };
+
+        // Test - 5x5
+        let p2cell = {
+            points: [
+                [0, 0], [1, 0], [2, 0], [3, 0], [4, 0],
+                [0, 1], [1, 1], [2, 1], [3, 1], [4, 1],
+                [0, 2], [1, 2], [2, 2], [3, 2], [4, 2],
+                [0, 3], [1, 3], [2, 3], [3, 3], [4, 3],
+                [0, 4], [1, 4], [2, 4], [3, 4], [4, 4]
+            ],
+            colors: [
+                'blue', 'yellow', 'red', 'green', 'blue',
+                'yellow', 'yellow', 'blue', 'red', 'green',
+                'green', 'red', 'yellow', 'blue', 'yellow',
+                'yellow', 'green', 'yellow', 'yellow', 'red',
+                'blue', 'yellow', 'red', 'green', 'blue'
+            ]
+        };
+
+        // Test - 6x6
+        let p3cell = {
+            points: [
+                [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0],
+                [0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1],
+                [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2],
+                [0, 3], [1, 3], [2, 3], [3, 3], [4, 3], [5, 3],
+                [0, 4], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4],
+                [0, 5], [1, 5], [2, 5], [3, 5], [4, 5], [5, 5]
+            ],
+            colors: [
+                'blue', 'yellow', 'red', 'green', 'blue', 'yellow',
+                'yellow', 'yellow', 'blue', 'red', 'green', 'blue',
+                'green', 'red', 'yellow', 'blue', 'yellow', 'red',
+                'yellow', 'green', 'yellow', 'yellow', 'red', 'green',
+                'blue', 'yellow', 'red', 'green', 'blue', 'yellow',
+                'yellow', 'yellow', 'blue', 'red', 'green', 'blue'
+            ]
+        };
+
+        let cell = p3cell;
+        let randrgb = true;
+
+        if (randrgb) {
+            cell.colors = cell.colors.map(() => getRandomColor());
+        }
+
+        let cellsize = Math.sqrt(cell.points.length);
+
+        const p2_trans = [
+            { translate: [0, 0], rotate: 0 },
+            { translate: [cellsize * gcs * 2, 0], rotate: Math.PI / 2 }
+        ];
+
+        const p4_trans = [
+            { translate: [0, 0], rotate: 0 },
+            { translate: [cellsize * gcs * 2, 0], rotate: Math.PI / 2 },
+            { translate: [0, cellsize * gcs * 2], rotate: -Math.PI / 2 },
+            { translate: [cellsize * gcs * 2, cellsize * gcs * 2], rotate: Math.PI }
+        ];
+
+        const pg_trans = [
+            { translate: [0, 0], scale: [1, 1] }, // Original position
+            { translate: [cellsize * gcs, cellsize * gcs], scale: [1, -1] }
+        ];
+
+        const pgg_trans = [
+            { translate: [0, 0], scale: [1, 1] }, // Original position
+            { translate: [cellsize * gcs, cellsize * gcs], scale: [1, -1] },
+            { translate: [cellsize * gcs, cellsize * gcs], scale: [-1, 1] },
+            { translate: [cellsize * gcs * 2, cellsize * gcs * 2], scale: [-1, -1] }
+        ];
+
+        const pm_trans = [
+            { translate: [0, 0], scale: [1, 1] },
+            { translate: [0, 0], scale: [-1, 1] }
+        ]
+
+        const cm_trans = [
+            { translate: [0, 0], scale: [1, 1] },
+            { translate: [cellsize * gcs * 2, 0], scale: [-1, 1] },
+            { translate: [cellsize * gcs, cellsize * gcs], scale: [-1, 1] },
+            { translate: [cellsize * gcs, cellsize * gcs], scale: [1, 1] }
+        ];
+
+        const pmg_trans = [
+            { translate: [0, 0], scale: [1, 1] },
+            { translate: [cellsize * gcs * 2, 0], scale: [-1, 1] },
+            { translate: [cellsize * gcs, cellsize * gcs * 2], scale: [-1, -1] },
+            { translate: [cellsize * gcs, cellsize * gcs * 2], scale: [1, -1] }
+        ];
+
+        const pmm_trans = [
+            { translate: [0, 0], scale: [1, 1] },
+            { translate: [cellsize * gcs * 2, 0], scale: [-1, 1] },
+            { translate: [0, cellsize * gcs * 2], scale: [1, -1] },
+            { translate: [cellsize * gcs * 2, cellsize * gcs * 2], scale: [-1, -1] }
+        ];
+
+        const notation_data = {
+            'p1': { iterX: cellsize * gcs, iterY: cellsize * gcs, transformations: [] },
+            'p2': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs, transformations: p2_trans },
+            'p4': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs * 2, transformations: p4_trans },
+            'pg': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs, transformations: pg_trans },
+            'pgg': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs * 2, transformations: pgg_trans },
+            'pm': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs, transformations: pm_trans },
+            'cm': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs * 2, transformations: cm_trans },
+            'pmg': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs * 2, transformations: pmg_trans },
+            'pmm': { iterX: cellsize * gcs * 2, iterY: cellsize * gcs * 2, transformations: pmm_trans }
+        };
+
+
+        let defaultNotation = 'p4';
+
+
+        function getRandomColor(use_noise=false) {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function grid() {
+            for (let x = 0; x < width; x += gcs) {
+                for (let y = 0; y < height; y += gcs) {
+                    ctx.beginPath();
+                    ctx.rect(x, y, gcs, gcs);
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+            }
+        }
+
+        function primaryCell(x = 0, y = 0) {
+            for (let p = 0; p < cell.points.length; p++) {
+                let point = cell.points[p];
+                ctx.fillStyle = cell.colors[p];
+                ctx.fillRect(x + (point[0] * gcs), y + (point[1] * gcs), gcs, gcs);
+            }
+        }
+
+        function wallpaper(notation = 'p1') {
+
+            const { iterX, iterY, transformations } = notation_data[notation];
+
+            for (let x = 0; x < width; x += iterX) {
+                for (let y = 0; y < height; y += iterY) {
+                    if (transformations.length === 0) {
+                        primaryCell(x, y);
+                    } else {
+                        transformations.forEach(({ translate = [0, 0], rotate = 0, scale = [1, 1] }) => {
+                            ctx.save();
+                            ctx.translate(x + translate[0], y + translate[1]);
+                            if (rotate) ctx.rotate(rotate);
+                            ctx.scale(scale[0], scale[1]);
+                            primaryCell();
+                            ctx.restore();
+                        });
+                    }
+
+                    // return;
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            wallpaper(defaultNotation);
+            // grid();
+        }
+
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            width = canvas.width;
+            height = canvas.height;
+            draw();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            let _dn = defaultNotation;
+            if (e.key == '1') defaultNotation = 'p1';
+            if (e.key == '2') defaultNotation = 'p2';
+            if (e.key == '3') defaultNotation = 'p4';
+            if (e.key == '4') defaultNotation = 'pg';
+            if (e.key == '5') defaultNotation = 'pgg';
+            if (e.key == '6') defaultNotation = 'pm';
+            if (e.key == '7') defaultNotation = 'cm';
+            if (e.key == '8') defaultNotation = 'pmg';
+            if (e.key == '9') defaultNotation = 'pmm';
+
+
+            if (_dn != defaultNotation) draw();
+        });
+
+        draw();
+
+
+    </script>
+</body>
+
+</html>

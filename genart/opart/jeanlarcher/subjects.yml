@@ -1,0 +1,52 @@
+---
+header:
+  title: Generative Art
+  nav_logo: gd_oa_jeanlarcher.jpg
+  script: >
+    $('#logo').click(() => {
+      window.open("https://archive.org/details/geometricaldesig0000larc", "_blank");
+    });
+  media_path: ""
+  width: 50%
+data:  
+  home:
+    subject: Back
+    id: back
+    script: window.location = "/generative/"
+  _global:
+
+    style: >
+      #paths {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin: 0 auto;
+          width: 50%;
+      }
+      
+    script: >
+      var paths = [];
+      fetch('paths.php')
+        .then(res=>res.json())
+        .then(data => {
+            data.forEach((path, i) => {
+              paths.push(path);
+              load_subject(path, {
+                  "subject": path,
+                  "title": path,
+                  "sub_title": `Open Direct: <a href="pages/${path}" target="_blank">${path}</a>`,
+                  "content": `<iframe src="pages/${path}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`,
+                  "default": (i == 0) ? true : false,
+                  "width": "100%"
+                }
+              )
+            });
+        })
+        .then(final => {
+          loadLinkEvents();
+          setTimeout(()=>{
+            let hash = window.location.hash.replace('#', '');
+            load_page((hash) ? hash : paths[0]);
+          }, 10)
+        })

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html, body{
+        margin: 0;
+        width: 100%;
+        background-color: #b8968b;
+        font-family: "Roboto";
+      }
+      #content{
+        width: 25em;
+        height: 25em;
+        margin: auto;
+        border: solid;
+        border-radius: 10px;
+        background-color: #87a99e;
+      }
+    </style>  
+  </head>
+  <body>
+    <div id="content"> 
+      <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+      <button onclick="init()">RESET</button>
+    </div>
+    <script>
+      let content = document.getElementById('content');
+      let canvas = document.getElementById("canvas");
+      let ctx = canvas.getContext("2d");
+
+      var width, height;
+      resize_canvas();
+      
+      var objects;
+      var highest_mass = 0;
+      var size = 4;
+      var count = 10000;
+      var mouse_pos;
+      var rect = canvas.getBoundingClientRect();
+      var r256 = ()=>{return Math.floor(Math.random() * 256)};
+      function random_color(){
+          let r = r256();
+          let g = r256();
+          let b = r256();
+          return "rgb("+r+","+g+","+b+")";
+      }
+      init();
+      render();
+
+      //
+      function init(){
+        objects = [];
+        mouse_pos = {x: width/2, y: height/2, size: 10, color: random_color()};
+        //objects.push({x : width/2, y : height/2, size: 100});
+        for(let i = 0; i < count; i++){
+          let x = rand(0, width);
+          let y = rand(0, height);
+          let mass = rand(1, 10);
+          if(mass > highest_mass){
+            highest_mass = i;
+          }
+          objects.push({ x : x, y : y, size : size, color: random_color() });
+          ctx.fillRect(x, y, size, size);
+        }
+      }
+      function render(){
+        ctx.clearRect(0, 0, width, height);
+        for(var obj in objects){
+          let object = objects[obj];
+
+          let x1 = (object.x+object.size/2);
+          let y1 = (object.y+object.size/2);
+          // for(var alt_obj in objects){
+          //   if(alt_obj != obj){
+          let alt_object = mouse_pos;//objects[alt_obj];
+          let x2 = (alt_object.x+alt_object.size/2);
+          let y2 = (alt_object.y+alt_object.size/2);
+
+          let sideA = Math.abs(x1 - x2);
+          let sideB = Math.abs(y1 - y2);
+          let h = Math.sqrt( Math.pow(sideA, 2) + Math.pow(sideB, 2)); //distance
+
+          let angleA = Math.atan2(sideA, h);
+          let angleB = Math.atan2(sideB, h);
+
+          if(x1 >= x2) object.x -= angleA;
+          else object.x += angleA;
+
+          if(y1 >= y2) object.y -= angleB;
+          else object.y += angleB;
+              //}
+            //}
+            ctx.fillStyle = object.color;
+            ctx.fillRect(object.x, object.y, object.size, object.size);
+          //}else{
+          //   ctx.beginPath();
+          //   ctx.rect(object.x, object.y, object.size, object.size);
+          //   ctx.stroke();
+          // }
+          
+          }
+          setTimeout(()=>{
+            renderer = window.requestAnimationFrame(render);
+          }, 1);
+      
+      }
+      
+      
+
+      function rand(min, max){
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+
+      function resize_canvas(){
+        canvas.setAttribute("width", content.clientWidth);
+        canvas.setAttribute("height", content.clientHeight);
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+      }
+      window.addEventListener("resize",()=>{
+        resize_canvas();
+      });
+
+      canvas.addEventListener('mousemove', (e)=>{
+        x = parseInt((e.clientX - rect.left));
+        y = parseInt((e.clientY - rect.top));
+        mouse_pos.x = x;
+        mouse_pos.y = y;
+      });
+    </script>
+  </body>
+</html>
+  
+  

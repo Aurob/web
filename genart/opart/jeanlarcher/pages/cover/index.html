@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
+    <style>
+        canvas {
+            border: solid 1px black;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div>
+        <canvas id="cvbg"></canvas>
+        <div id="options">
+            <label for="scaleOption">Scale</label>
+            <input class="option" id="scaleOption" type="range" min=0.5 max=2 value=1.3 step=0.01>
+
+        </div>
+        <script>
+            let width = 1000, height = 1000;
+            let canvas = document.getElementById('cvbg');
+            let ctx = canvas.getContext('2d');
+            //set canvas size
+            canvas.width = width;
+            canvas.height = height;
+            
+
+            function drawRoundedRect(ctx, x, y, width, height, borderRadius=5, offsetX=0, offsetY=0) {
+                // Ensure that the borderRadius is not greater than the dimensions of the rectangle
+                borderRadius = Math.min(borderRadius, width / 2, height / 2);
+                
+                ctx.save();
+                // ctx.translate(offsetX, offsetY);
+                ctx.beginPath();
+                // Start point is the beginning of the top-left arc
+                ctx.moveTo(x + borderRadius, y);
+                // Top side
+                ctx.lineTo(x + width - borderRadius, y);
+                // Top-right corner
+                ctx.arcTo(x + width, y, x + width, y + borderRadius, borderRadius);
+                // Right side
+                ctx.lineTo(x + width, y + height - borderRadius);
+                // Bottom-right corner
+                ctx.arcTo(x + width, y + height, x + width - borderRadius, y + height, borderRadius);
+                // Bottom side
+                ctx.lineTo(x + borderRadius, y + height);
+                // Bottom-left corner
+                ctx.arcTo(x, y + height, x, y + height - borderRadius, borderRadius);
+                // Left side
+                ctx.lineTo(x, y + borderRadius);
+                // Top-left corner
+                ctx.arcTo(x, y, x + borderRadius, y, borderRadius);
+
+                ctx.closePath();
+                // You can style the rectangle with fill or stroke, or both.
+                ctx.fill(); // If you want a filled rectangle
+                // ctx.stroke(); // If you want only the border of the rectangle
+                ctx.restore();
+            }
+
+            function renderArt(_x, _y, w) {
+                // Generate a random RGB color
+                let r = Math.floor(Math.random() * 256);
+                let g = Math.floor(Math.random() * 256);
+                let b = Math.floor(Math.random() * 256);
+                
+                let cells = 50;
+                let cellSize = (w / cells);
+                let radius = 0;
+                let distanceToCenter = 0;
+                // ctx.strokeStyle = '#000';
+                ctx.fillStyle = '#fff';
+                        
+                // Gradually set radius based on the x/y position of the rectangle
+                // More rounded the closer to the center, less towards the edges
+                // The "scale" attribute controls the rate of change from circle to rect
+                let scale = parseFloat(document.getElementById('scaleOption').value);
+                let centerX = cells / 2;
+                let centerY = cells / 2;
+
+                for (let y = 0; y < cells; y++) {
+                    for (let x = 0; x < cells; x++) {
+                        // Calculate the distance from the current cell to the center
+                        let deltaX = x - centerX;
+                        let deltaY = y - centerY;
+                        distanceToCenter = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+                        // Calculate the maximum possible distance from center to a corner
+                        let maxDistance = Math.sqrt(Math.pow(centerX, 2) + Math.pow(centerY, 2));
+                        // Apply the scale to the radius change rate
+                        radius = (1 - Math.pow((distanceToCenter / maxDistance), 1));
+
+
+                        // Save the current context state
+                        ctx.save();
+                        // Translate the canvas to the rectangle's position
+                        ctx.translate(_x + x * cellSize + cellSize / 2, _y + y * cellSize + cellSize / 2);
+                        // Rotate the canvas by 45 degrees
+                        ctx.rotate(Math.PI / 4);
+                        // Calculate the side length of the square that fits within the rotated rectangle
+                        let sideLength = cellSize / Math.sqrt(2);
+                        // Adjust the side length based on position, larger closer to the center, smaller closer to the edge
+                        distanceToCenter = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+                        let scaleFactor = (cells - distanceToCenter) / cells;
+                        sideLength *= scaleFactor;
+
+                        // Adjust the radius for roundedness based on the distance to the center
+                        // More rounded at the center, gradually becoming less rounded towards the edges
+                        let edgeRadius = cellSize / 4;
+                        let quarterPoint = maxDistance / 12;
+                        if (distanceToCenter < quarterPoint) {
+                            // Interpolate radius between square and round closer to the center
+                            let interpolation = (quarterPoint - distanceToCenter) / quarterPoint;
+                            radius = edgeRadius * (1 - interpolation);
+                        } else if (distanceToCenter > maxDistance - quarterPoint) {
+                            radius = edgeRadius; // Completely round at the edges
+                        } else {
+                            // Interpolate radius between square and round
+                            let interpolation = (distanceToCenter - quarterPoint) / (maxDistance - 2 * quarterPoint);
+                            radius = interpolation * edgeRadius;
+                        }
+
+                        // Draw a rounded rectangle with the rotation applied
+                        drawRoundedRect(ctx, -sideLength / 2, -sideLength / 2, sideLength*scale, sideLength*scale, radius, _x, _y);
+                        // Restore the context to its original state
+                        ctx.restore();
+                    }
+                }
+            }
+
+            function make() {
+                ctx.fillStyle = '#000'; // Set fill color to black
+                ctx.fillRect(0, 0, width, height); // Fill the canvas with black
+                renderArt(0, 0, width/2);
+                renderArt(width/2, 0, width/2);
+                renderArt(0, height/2, width/2);
+                renderArt(width/2, height/2, width/2);
+            }
+
+            window.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.option').forEach(function(el) {
+                    el.addEventListener('input', function() {
+                        make();
+                    });
+                });
+                make();
+            });
+
+        </script>
+</body>
+
+</html>

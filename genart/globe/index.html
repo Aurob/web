@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Orthographic Map</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://unpkg.com/topojson@3/dist/topojson.min.js"></script>
+  <style>
+    body,
+    html {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #141116;
+    }
+
+    .stroke {
+      fill: none;
+      stroke: #000;
+      stroke-width: 3px;
+    }
+
+    .fill {
+      fill: #fff;
+    }
+
+    .graticule {
+      fill: none;
+      stroke: #777;
+      stroke-width: .5px;
+      stroke-opacity: .5;
+    }
+
+    .land {
+      fill: #222;
+    }
+
+    .dot {
+      fill: red;
+      stroke: white;
+      stroke-width: .5px;
+    }
+    
+    .glow {
+      fill: none;
+      stroke: #8ad9ff54;
+      stroke-width: 2em;
+      filter: url(#glow);
+    }
+    /* a {
+      pointer-events: none;
+    } */
+  </style>
+</head>
+
+<body>
+  <div id="nav">
+      <div class="edge et"></div>
+      <div class="edge eb"><div id="wr-widget"></div></div>
+      <div class="edge el"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>

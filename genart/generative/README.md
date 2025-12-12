@@ -1,0 +1,1 @@
+This directory is a general collection of any kind of generative project.

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Art Canvas</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="artCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('artCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // Rendering mode tests
+        let modes = ['source-over', 'source-in', 'source-out', 'source-atop', 'destination-over', 'destination-in', 'destination-out', 'destination-atop', 'lighter', 'copy', 'xor'];
+        let modeIndex = 0;
+
+        function changeMode() {
+            ctx.globalCompositeOperation = modes[modeIndex];
+            modeIndex = (modeIndex + 1) % modes.length;
+        }
+        canvas.addEventListener('click', changeMode);
+
+        window.addEventListener('resize', resizeCanvas, false);
+        resizeCanvas();
+
+        function clearCanvas() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 255)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        let a_offset = 0;
+        let fillColor = `rgba(40, 140, 27, 0.1)`;
+        function drawPolygon(points, fillColor) {
+            // ctx.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.1)`;
+            ctx.fillStyle = fillColor;
+                
+            if (points.length < 3) return; // A polygon must have at least 3 points
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+
+
+        let points1 = [];
+        function draw() {
+            let temp_points = JSON.parse(JSON.stringify(points1));
+            // fillColor = `hlsla(${Math.sin(Date.now() / 100000) * 360}, 100%, 100%, 1)`;
+            fillColor = 'green';
+            drawPolygon(temp_points, fillColor);
+        }
+
+        let t = 0;
+        function loop() {
+            requestAnimationFrame(loop);
+            clearCanvas();
+
+            points1 = [];
+
+            // ----------------------------
+            let start = { x: window.innerWidth / 2, y: window.innerHeight  };
+            let trunk_height = 25;
+            let nodes = 200;
+
+            // Left side of stem
+            let a = 0;
+            for (let i = 0; i < nodes; i++) {
+                let xroffset = Math.sin(a) * t;
+                let x = start.x + xroffset + (a);
+                let y = start.y - (i * trunk_height);
+                points1.push({ x: x, y: y });
+
+                a += (360 / nodes) / t;
+            }
+
+            // Right side of stem
+            for (let i = nodes - 1; i > -1; i--) {
+                let x = points1[i].x;
+                let y = points1[i].y + 240;
+                points1.push({ x: x, y: y });
+            }
+
+
+            draw();
+
+            t += .01 ;//Math.PI / 180;
+        }
+
+
+        loop();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,584 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style>
+            html, body{
+                background-color: rgb(59, 24, 18);
+            }
+            #content{
+                width: 89%;
+                height: 90%;
+                margin: auto;
+                border: solid;
+                background-color: rgb(196, 231, 237);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="content">
+            <canvas id="c"></canvas>
+            <span><a target="_blank" href="https://robauis.me/editor/?zlq1v20q3g">Notes</a></span>
+        </div>
+    </body>
+
+    <script>
+        var content = document.getElementById('content');
+        var canvas = document.getElementById('c');
+        var ctx = canvas.getContext('2d');
+        ctx.font = "30px Arial";
+        var width, height;
+        resize_canvas();
+
+        const door_size = 50;
+        const MIN_ROOM_WIDTH = 50;
+        const MIN_ROOM_HEIGHT = 50;
+        const MAX_ROOM_WIDTH = 300;
+        const MAX_ROOM_HEIGHT = 300;
+        var Floor = [];
+        var key = Math.random().toString(34);
+        var room_select = '';
+        function random(min, max){
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+        
+        function newRoom(minx, miny, maxx, maxy) {
+
+            let w = random(MIN_ROOM_WIDTH, maxx - minx);
+            if(w > MAX_ROOM_WIDTH) w = MAX_ROOM_WIDTH;
+            let h = random(MIN_ROOM_HEIGHT, maxy - miny);
+            if(h > MAX_ROOM_HEIGHT) h = MAX_ROOM_HEIGHT;
+
+            let x = random(minx, maxx - w);
+            let y = random(miny, maxy- h);
+
+            let room = new Room(x, y, w, h);
+            return room;
+        }
+
+        function printRooms(i = 0){
+            for(let f = 0; f < Floor.length; ++f){
+                
+            }
+        }
+        
+        class Room {
+            constructor(x, y, width, height) {
+                this.id = Math.random().toString(36);
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.north = true;
+            }
+            //TODO
+            //door size offsets
+            //make a check to see if the generated side room's starting position minus the parent rooms ending position is less than the door size, if so then adjust accordingly
+            getSide(side, flush, floor){
+                let room;
+                let above = -1;
+                let start = 0;
+                let open = [];
+                let open_end = -1;
+                let floor_copy = [];
+                let errors = [];
+                switch(side){
+                    case "north":                        
+                        //filter the rooms to only rooms above the parent
+                        for(let i = 0; i < floor.length; ++i){
+                            if(floor[i].id != this.id && floor[i].y < this.y){
+                                floor_copy.push(floor[i]);
+                            }
+                        }
+                        
+                        //sort the rooms by x position
+                        floor_copy.sort(function(x1, x2){
+                            return x1.x - x2.x
+                        });
+
+                        //If there are no rooms above the parent room, less checks are required
+                        if(floor_copy.length == 0){
+                            room = newRoom(0, 0, width, this.y);
+                            //shift the room down to be flush with the parent
+                            room.height += (this.y - (room.y + room.height));
+
+                            //If the rightmost edge of the room is less than the parent's starting position shift the room over
+                            if(room.x + room.width < this.x){
+                                room.x = this.x;
+                            }
+                            //If the leftmost edge is greater than the parent's rightmost shift it back
+                            else if(room.x > this.x + this.width){
+                                room.x = this.x + this.width - MIN_ROOM_WIDTH;
+                            }
+                        }
+
+                        //Get available open positions for a new room
+                        for(let r = 0; r <  floor_copy.length; ++r){
+                            let f = floor_copy[r];
+                            
+                            if(f.x >= start){
+                                
+                                open_end = start + (f.x - start);
+                                if(f.x - start > MIN_ROOM_WIDTH && f.x - this.x > MIN_ROOM_WIDTH){
+                                    if(open_end >= this.x && open_end <= this.x + this.width || start >= this.x && start <= this.x + this.width)
+                                        open.push([start, f.x]);
+                                }
+                                //if the current room being checked is the last room, check for open space after it
+                                if(r ==  floor_copy.length - 1 && f.x + f.width < width){
+                                    start = f.x + f.width;
+                                    if(width - start > MIN_ROOM_WIDTH){
+                                        open_end = start + (width - start);
+                                        if(open_end >= this.x && open_end <= this.x + this.width || start >= this.x && start <= this.x + this.width)
+                                            open.push([start, width]);
+                                    }
+                                }
+                                else start = f.x + f.width;
+                            }
+                        }                        
+                        
+                        if(open.length == 0){
+                            console.log("No open areas to the " + side + " of this room");
+                        }
+                        //Reduce the open positions to only wide enough positions
+                        else{  
+
+                            //Pick a random open space
+                            let area = open[random(0, open.length)];
+
+                            //Generate a room with random sizes that fit in the space size
+                            room = newRoom(area[0], 0, (area[0] + (area[1] - area[0])), this.y);
+                            //adjust the height to be flush with the parent room
+                            room.height = room.height + (this.y - (room.y + room.height));
+
+                            //Force the room to be flush with the left most room;
+                            let left_rooms = 0;
+                            let right_rooms = 0;
+                            for(let f = 0; f < floor_copy.length; ++f){
+                                if(floor_copy[f].x + floor_copy[f].width < room.x) left_rooms++;
+                                if(floor_copy[f].x > room.x + room.width) right_rooms++;
+                            }
+
+                            let anchor;
+                            if(left_rooms == 0) anchor = 1;
+                            else if(right_rooms == 0) anchor = 0;
+                            else anchor = random(0, 1);
+                            
+                            if(anchor == 0){
+                                room.x = area[0];
+                            }else{
+                                let offset = area[1] - (room.x + room.width);
+                                room.width += offset;
+                                //room.x -= offset;
+                            }
+                        }
+                        
+                        break;
+
+                    case "east":
+                        for(let i = 0; i < floor.length; ++i){
+                            if(floor[i].id != this.id && floor[i].x + floor[i].width > this.x + this.width){
+                                floor_copy.push(floor[i]);
+                            }
+                        }
+                        //sort the rooms by height
+                        floor_copy.sort(function(x1, x2){
+                            return x1.y - x2.y
+                        });
+
+                        //If there are no rooms above the parent room, less checks are required
+                        if(floor_copy.length == 0){
+                            room = newRoom(0, 0, this.x + this.width, height);
+                            //shift the room up to be flush with the parent
+                            room.x = this.x + this.width;
+
+                            //If the bottom edge of the room is less than the parent's starting y position
+                            //shift the room over
+                            if(room.y + room.height < this.y){
+                                room.y += (this.y - (room.y + room.height)) + MIN_ROOM_HEIGHT;
+                            }
+                            //If the top edge is greater than the parent's bottom edge
+                            //shift it back
+                            else if(room.y > this.y + this.height){
+                                room.y = (this.y + this.height) - MIN_ROOM_HEIGHT;
+                            }
+
+                            return room;
+                        }    
+
+                        //Get available adjacent x positions
+                        for(let r = 0; r <  floor_copy.length; ++r){
+                            let f = floor_copy[r];
+                            if(f.y >= start){
+                                open_end = start + (f.y - start);
+                                if(f.y - start > MIN_ROOM_HEIGHT && f.y - this.y > MIN_ROOM_HEIGHT){
+                                    if(open_end >= this.y && open_end <= this.y + this.height || start >= this.y && start <= this.y + this.height)
+                                        open.push([start, f.y]);
+                                }
+                                start = f.y + f.height;
+                                //if the current room being checked is the last room, check for open space after it
+                                if(r ==  floor_copy.length - 1 && f.y + f.height < height){
+                                    if(height - (f.y + f.height) > MIN_ROOM_HEIGHT){
+                                        open_end = start + (height - start);
+                                        if(open_end >= this.y && open_end <= this.y + this.height || start >= this.y && start <= this.y + this.height)
+                                            open.push([f.y + f.height, height]);
+                                    }
+                                }
+                            }
+                        } 
+                        if(open.length == 0){
+                            console.log("No open areas to the " + side + " of this room");
+                        }
+                        //Reduce the open positions to only wide enough positions
+                        else{               
+
+                            //Pick a random valid space
+                            let area = open[random(0, open.length)];
+                            //Generate a room with random sizes that fit in the space size
+                            room = newRoom(0, area[0], this.x + this.width, (area[0] + (area[1] - area[0])));
+                            
+                            //shift the room over to be flush with the parent room
+                            room.x = this.x + this.width;
+
+                            //Force the room to be flush with the left most room;
+                            let top_rooms = 0;
+                            let bottom_rooms = 0;
+                            for(let f = 0; f < floor_copy.length; ++f){
+                                if(floor_copy[f].y + floor_copy[f].height < room.y) top_rooms++;
+                                if(floor_copy[f].y > room.y + room.height) bottom_rooms++;
+                            }
+
+                            let anchor;
+                            if(top_rooms == 0) anchor = 1;
+                            else if(bottom_rooms == 0) anchor = 0;
+                            else anchor = random(0, 1);
+                            
+                            if(anchor == 0){
+                                room.y = area[0];
+                            }else{
+                                let offset = area[1] - (room.y + room.height);
+                                room.height += offset;
+                                //room.y -= offset;
+                            }
+                        }
+                        break;
+
+                    case "south":
+                        //filter the rooms to only rooms below the parent
+                        for(let i = 0; i < floor.length; ++i){
+                            if(floor[i].id != this.id && (floor[i].y >= this.y + this.height || floor[i].y + floor[i].height >= this.y + this.height)){
+                                floor_copy.push(floor[i]);
+                            }
+                        }
+                        //sort the rooms by x position
+                        floor_copy.sort(function(x1, x2){
+                            return x1.x - x2.x
+                        });
+                        //If there are no rooms above the parent room, less checks are required
+                        if(floor_copy.length == 0){
+                            
+                            room = newRoom(0, this.y + this.height, width, height);
+                            //shift the room up to be flush with the parent
+                            room.y = this.y + this.height;
+                            
+                            //If the rightmost edge of the room is less than the parent's starting position
+                            //shift the room over
+                            if(room.x + room.width < this.x){
+                                //room.width += (this.x - (room.x + room.width)) + MIN_ROOM_WIDTH;
+                                room.x = this.x;
+                            }
+                            //If the leftmost edge is greater than the parent's rightmost
+                            //shift it back
+                            else if(room.x > this.x + this.width){
+                                //room.x -= (room.x - (this.x + this.width)) - MIN_ROOM_WIDTH;
+                                room.x = this.x + this.width - MIN_ROOM_WIDTH;
+                            }
+                        }  
+                        
+                        //Get available open positions for a new room
+                        for(let r = 0; r <  floor_copy.length; ++r){
+                            let f = floor_copy[r];
+                            if(f.x >= start){
+                                
+                                open_end = start + (f.x - start);
+                                if(f.x - start > MIN_ROOM_WIDTH && f.x - this.x > MIN_ROOM_WIDTH){
+                                    if(open_end >= this.x && open_end <= this.x + this.width || start >= this.x && start <= this.x + this.width)
+                                        open.push([start, f.x]);
+                                }
+                                //if the current room being checked is the last room, check for open space after it
+                                if(r ==  floor_copy.length - 1 && f.x + f.width < width){
+                                    start = f.x + f.width;
+                                    if(width - start > MIN_ROOM_WIDTH){
+                                        open_end = start + (width - start);
+                                        if(open_end >= this.x && open_end <= this.x + this.width || start >= this.x && start <= this.x + this.width)
+                                            open.push([start, width]);
+                                    }
+                                }
+                                else start = f.x + f.width;
+                            }
+                        }                    
+                        
+                        if(open.length == 0){
+                            console.log("No open areas to the " + side + " of this room");
+                        }
+                        //Reduce the open positions to only wide enough positions
+                        else{          
+
+                            //Pick a random valid space
+                            let area = open[random(0, open.length)];
+                            //Generate a room with random sizes that fit in the space size
+                            room = newRoom(area[0], height - (this.y + this.height), (area[0] + (area[1] - area[0])), this.y + this.height);
+                            
+                            //shift the room up to be flush with the parent room
+                            room.y = this.y + this.height;
+
+                            //Force the room to be flush with the left most room;
+                            let left_rooms = 0;
+                            let right_rooms = 0;
+                            for(let f = 0; f < floor_copy.length; ++f){
+                                
+                                if(floor_copy[f].x + floor_copy[f].width < room.x) left_rooms++;
+                                if(floor_copy[f].x > room.x + room.width) right_rooms++;
+                            }
+
+                            let anchor;
+                            if(left_rooms == 0) anchor = 1;
+                            else if(right_rooms == 0) anchor = 0;
+                            else anchor = random(0, 1);
+                            
+                            if(anchor == 0){
+                                room.x = area[0];
+                            }else{
+                                let offset = area[1] - (room.x + room.width);
+                                room.width += offset;
+                                //room.x -= offset;
+                            }
+                        }
+
+                        break;
+
+                    case "west":
+                        for(let i = 0; i < floor.length; ++i){
+                            if(floor[i].id != this.id && floor[i].x < this.x){
+                                floor_copy.push(floor[i]);
+                            }
+                        }
+                        //sort the rooms by height
+                        floor_copy.sort(function(x1, x2){
+                            return x1.y - x2.y
+                        });
+
+                        //If there are no rooms above the parent room, less checks are required
+                        if(floor_copy.length == 0){
+                            room = newRoom(0, 0, this.x, height);
+                            //shift the room up to be flush with the parent
+                            room.x += this.x - (room.x + room.width);
+                            //If the bottom edge of the room is less than the parent's starting y position
+                            //shift the room over
+                            if(room.y + room.height < this.y){
+                                room.y += (this.y - (room.y + room.height)) + MIN_ROOM_HEIGHT;
+                            }
+                            //If the top edge is greater than the parent's bottom edge
+                            //shift it back
+                            else if(room.y > this.y + this.height){
+                                room.y = (this.y + this.height) - MIN_ROOM_HEIGHT;
+                            }
+
+                            return room;
+                        }    
+
+                        //Get available adjacent x positions
+                        for(let r = 0; r <  floor_copy.length; ++r){
+                            let f = floor_copy[r];
+                            if(f.y >= start){
+                                open_end = start + (f.y - start);
+                                if(f.y - start > MIN_ROOM_HEIGHT && f.y - this.y > MIN_ROOM_HEIGHT){
+                                    if(open_end >= this.y && open_end <= this.y + this.height || start >= this.y && start <= this.y + this.height)
+                                        open.push([start, f.y]);
+                                }
+                                start = f.y + f.height;
+                                //if the current room being checked is the last room, check for open space after it
+                                if(r ==  floor_copy.length - 1 && f.y + f.height < height){
+                                    if(height - (f.y + f.height) > MIN_ROOM_HEIGHT){
+                                        open_end = start + (height - start);
+                                        if(open_end >= this.y && open_end <= this.y + this.height || start >= this.y && start <= this.y + this.height)
+                                            open.push([f.y + f.height, height]);
+                                    }
+                                }
+                            }
+                        } 
+                        if(open.length == 0){
+                            console.log("No open areas to the " + side + " of this room");
+                        }
+                        //Reduce the open positions to only wide enough positions
+                        else{               
+
+                            //Pick a random valid space
+                            let area = open[random(0, open.length)];
+                            //Generate a room with random sizes that fit in the space size
+                            room = newRoom(0, area[0], this.x, (area[0] + (area[1] - area[0])));
+                            
+                            //shift the room up to be flush with the parent room
+                            room.x += this.x - (room.x + room.width);
+
+                            //Force the room to be flush with the left most room;
+                            let top_rooms = 0;
+                            let bottom_rooms = 0;
+                            for(let f = 0; f < floor_copy.length; ++f){
+                                if(floor_copy[f].y + floor_copy[f].height < room.y) top_rooms++;
+                                if(floor_copy[f].y > room.y + room.height) bottom_rooms++;
+                            }
+
+                            let anchor;
+                            if(top_rooms == 0) anchor = 1;
+                            else if(bottom_rooms == 0) anchor = 0;
+                            else anchor = random(0, 1);
+                            
+                            if(anchor == 0){
+                                room.y = area[0];
+                            }else{
+                                let offset = area[1] - (room.y + room.height);
+                                room.height += offset;
+                                //room.y -= area[1] - (room.y + room.height);
+                            }
+                        }
+
+                        break;
+                    default:
+                        return null;
+                        break;
+                }
+
+                return room;
+            }
+            draw(){
+
+                let r_color = [random(0, 255), random(0, 255), random(0, 255)];
+                let r_color_c = [255 - r_color[0], 255 - r_color[1], 255 - r_color[2]];
+
+                ctx.fillStyle = "rgb(" + r_color[0] + "," + r_color[1] + "," + r_color[2] + ", .5)";
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                // ctx.beginPath();
+                // ctx.rect(this.x, this.y, this.width, this.height);
+                // ctx.stroke();
+            }
+        }
+
+        
+
+        let room;
+        if(Floor == false){
+            room = new Room(width/2 - 25, height/2 - 25, 50, 50);
+            room.id = "init";
+            room.draw();
+            Floor.push(room);
+        }
+
+        let sides = ["north", "east", "south", "west"];
+        // for(let i = 0; i < 10; ++i){
+        //     let rand_room = Floor[random(0, Floor.length - 1)];
+        //     let rand_side = sides[random(0, 4)];
+
+        //     let sideRoom = rand_room.getSide(rand_side, true, Floor);
+        //     if(sideRoom){
+        //         Floor.push(sideRoom);
+        //     }
+        // }
+
+        Floor.forEach((f)=>{
+            f.draw();
+        });
+
+        //Adjust the canvas to fit the size of the window
+        function resize_canvas(){
+            canvas.setAttribute('width', content.clientWidth);
+            canvas.setAttribute('height', content.clientHeight);
+            width = content.clientWidth;
+            height = content.clientHeight;
+        }
+        window.addEventListener('resize',()=>{
+            resize_canvas();
+        });
+
+        var options = ["1", "2", "3", "4"];
+        canvas.addEventListener('click', function(e){
+            if(room_select != ''){
+                let option = prompt("North: 1\nEast: 2\nSouth: 3\nWest: 4\nCancel: 5");
+                let optionRoom = false;
+                switch(option){
+                    case "1":
+                        optionRoom = room_select.getSide("north", true, Floor);
+                        console.log(optionRoom);
+                        break;
+                    case "2":
+                        optionRoom = room_select.getSide("east", true, Floor);
+                        console.log(optionRoom);
+                        break;
+                    case "3":
+                        optionRoom = room_select.getSide("south", true, Floor);
+                        console.log(optionRoom);
+                        break;
+                    case "4":
+                        optionRoom = room_select.getSide("west", true, Floor);
+                        console.log(optionRoom);
+                        break;
+                    default:
+                        alert("Invalid option");
+                        break;
+                }
+                console.log(optionRoom);
+                if(optionRoom){
+                    optionRoom.draw();
+                    Floor.push(optionRoom);
+                }
+                else if(options.indexOf(option) > -1){
+                    alert("No available space");
+                }
+            }
+        });
+        canvas.addEventListener('mousemove', function(e){
+            let rect = canvas.getBoundingClientRect();
+            let x = e.x - rect.left;
+            let y = e.y - rect.top;
+            let valid = false;
+            for(let r = 0; r < Floor.length; ++r){
+                let room = Floor[r];
+                if(x > room.x && x < room.x + room.width && y > room.y && y < room.y + room.height){
+                    room_select = room;
+                    valid = true;
+                    break;
+                }
+            }
+            if(!valid && room_select != '') room_select = '';
+        });
+    </script>
+</html>
+
+<!--
+    let random_bg = [random(0, 255), random(0, 255), random(0, 255)];
+    let bg_complement = [255 - random_bg[0], 255 - random_bg[1], 255 - random_bg[2]];
+
+    body.style.backgroundColor = "rgb(" + random_bg[0] + "," + random_bg[1] + "," + random_bg[2] + ")";
+    content.style.backgroundColor = "rgb(" + bg_complement[0] + "," + bg_complement[1] + "," + bg_complement[2] + ")";
+    function sideRoom(this, side){
+            let room;
+            switch(side){
+                case "north":
+                    room = newRoom(width, this.y);
+                    break;
+                case "east":
+                    room = newRoom(width - (this.x + this.width), height, this.x + this.width);
+                    break;
+                case "south":
+                    room = newRoom(width, height - (this.y + this.height), 0, this.y + this.height);
+                    break;
+                case "west":
+                    room = newRoom(this.x, height);
+                    break;
+                default:
+                    return null;
+            }
+
+            return room;
+        }
+-->

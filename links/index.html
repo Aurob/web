@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../template/template.css">
+    <link rel="icon" href="" type="image/x-icon">
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="content">
+        These are website links that I've saved, essentially bookmarks. <br>
+        Instead of bookmarking websites in my browser, I add them to text files so that I can more easily access them programmatically, like on this webpage.
+        
+        <div id="links">
+
+        </div>
+    </div>
+    <script>
+        const link_paths = [
+            'Art.md',    'Read.md',      
+            'Wikipedia.md',
+            'Learn.md',  'Watch.md',     
+            'Xcom.md',
+            'Other.md',  'WebInspo.md',  
+        ];
+
+        let links = document.getElementById('links');
+        link_paths.forEach(path=>{
+            fetch('https://data.dump.garden/Links/'+path)
+            .then(res=>res.text())
+            .then(data=>{
+                data = data.split('\n');
+                let link_group = document.createElement('div');
+                path = path.replace('.md', '');
+                link_group.id = path;
+                link_group.innerHTML =`<h1>${path}</h1>`;
+                link_group.style.display = 'flex';
+                link_group.style.flexDirection = 'column';
+                
+                data.forEach(link=>{
+                    let a_link = document.createElement('a');
+                    a_link.href = link;
+                    a_link.target = '_blank';
+                    a_link.innerHTML = link;
+                    link_group.append(a_link)
+                });
+
+                links.append(link_group);
+            })
+        })
+
+        // update default sitemap with link paths
+        let SITEMAP = JSON.parse(sessionStorage.getItem('sitemap'));
+        console.log(SITEMAP)
+        SITEMAP['links'] = {};
+        for(let l = 0; l < link_paths.length; l++) {
+            let link = link_paths[l].replace('.md', '');
+            SITEMAP['links']['#'+link] = {}
+        }
+        sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
+
+    </script>
+    <script src="../template/template.js"></script>
+</body>
+</html>

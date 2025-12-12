@@ -19,12 +19,16 @@ html {
     font-family: monospace;
     height: 100%;
     width: 100%;
-    background-color: black !important;
+    background-color: var(--global-blue);
+    box-sizing: border-box;
+    font-size: clamp(12px, 4vw, 16px);
+
 }
 
 body {
     margin: 0;
     padding: 2em;
+    box-sizing: border-box;
     color: var(--global-white);
     background-color: var(--global-blue);
     position: relative; /* Establish a containing block for absolute positioning */
@@ -38,12 +42,23 @@ body {
 body a {
     color: var(--global-yellow);
 }
+body a:hover {
+    color: var(--global-orange);
+}
+
+#home_link {
+    color: var(--global-white);
+}
+#home_link:hover {
+    color: var(--global-orange);
+}
+
     
 
 #content {
-    width: 65vw;
+    /* width: 65vw; */
     margin: 1em;
-    /* position: fixed; */
+    word-wrap: break-word;
 }
     
 @media (max-width: 768px) {
@@ -74,7 +89,7 @@ a {
 
 .el {
     color: var(--global-white);
-    background-color: transparent;
+    background-color: var(--global-blue);
     border: solid var(--global-blue);
     position: fixed; /* Change to fixed to ensure it fills the viewport height */
     display: flex;
@@ -85,7 +100,9 @@ a {
     height: 100vh; /* Fill the viewport height */
     align-content: center;
     z-index: -1;
+    box-sizing: border-box;
     border-right: outset .01em;
+    overflow: scroll;
 }
 
 .el > a {
@@ -102,8 +119,9 @@ a {
     top: 0;
     left: 0;
     width: 100%;
-    height: 1em;
+    height: fit-content;
     z-index: 1;
+    box-sizing: border-box;
     border-bottom: outset .01em;
     padding-left: 1em;
 }
@@ -114,16 +132,18 @@ et > * {
 
 
 .eb {
-
+    display: flex;
+    justify-content: space-between;
     color: var(--global-white);
-    background-color: transparent;
-    border: solid var(--global-blue);
+    background-color: var(--global-blue);
+    /* border: solid var(--global-white); */
     position: fixed; /* Fixed to bottom as footer */
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 1em;
+    height: fit-content;
     z-index: 2;
+    box-sizing: border-box;
     border-top: outset .01em;
     padding-right: 1em;
 }
@@ -137,12 +157,7 @@ et > * {
     padding-right: .5em;
 }
 
-pre code {
-    white-space: pre-wrap;
-}
-
 .tbd {
     text-decoration: line-through;
     text-decoration-color: var(--global-white-dark-blue);    /* Specifies the color of the strikethrough */
-
 }

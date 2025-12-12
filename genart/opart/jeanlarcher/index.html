@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Optical Artwork JS Showcase</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="shortcut icon" href="images/favicon.ico">
+</head>
+
+<body>
+    <header>
+        <h1>Optical Illusion Artwork Showcase</h1>
+    </header>
+    <main>
+        <section class="book-showcase">
+            <img src="gd_oa_jeanlarcher.jpg" alt="Optical Artwork Book Cover">
+            <p>Generative recreations of optical illusions found in Jean Larcher's Geometric Designs and Optical art</p>
+            <p>Created with vanilla JavaScript and HTML Canvas</p>
+        </section>
+        <section class="project-list">
+            <h2>Completed Pages</h2>
+            <ul id="projectList">
+                <!-- Projects will be populated here -->
+            </ul>
+        </section>
+    </main>
+    <script>
+        const completedPages = [
+            'cover',
+            'page15_16',
+            'page19',
+            'page21',
+            'page70',
+        ]; // Populate with page names
+        const projectListElement = document.getElementById('projectList');
+
+        completedPages.forEach(project => {
+            const a = document.createElement('a');
+            a.href = `pages/${project}/index.html`;
+            a.target = '_blank';
+            a.textContent = project;
+            const li = document.createElement('li');
+            li.appendChild(a);
+            projectListElement.appendChild(li);
+        });
+    </script>
+</body>
+</html>

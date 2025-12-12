@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous">
+        </script>
+    <style>
+        canvas {
+            border: solid 1px black;
+        }
+    </style>
+    <script src="beep.js"></script>
+</head>
+
+<body>
+    <div>
+        <canvas id="cvbg"></canvas>
+        <div>Press Spacebar to pause/play</div>
+        <div><button id="pause" onclick="pauseplay();">Pause</button></div>
+        <div><button onclick="start();">Reset</button></div>
+        <div id="options">
+            <div>Speed <input id="speed" type="number" min=1 value=7 step=".5"></div>
+            <div>Count <input id="count" type="number" min=1 value=25></div>
+            <div>Offset <input id="offset" type="number" min=1 value=250 step=10></div>
+        <div>
+            <select id="arpeggios">
+            </select>
+        </div>
+    </div>
+    <script>
+        let width = 1000, height = 750;
+        let canvas = $('canvas');
+        let ctx = canvas[0].getContext('2d');
+
+        let notes = {
+            "c": 32.75,
+            "c#": 34.625,
+            "d": 36.75,
+            "d#": 39,
+            "e": 41.25,
+            "f": 43.75,
+            "f#": 46.25,
+            "g": 49,
+            "g#": 52,
+            "a": 55,
+            "a#": 58.25,
+            "b": 61.75
+        }
+        
+        let C_major_arpeggio = [
+            notes["c"] * 8, notes["e"] * 4, notes["g"] * 4, notes["c"] * 4
+        ]
+
+        let D_major_arpeggio = [
+            notes["d"] * 8, notes["f#"] * 4, notes["a"] * 4, notes["d"] * 4
+        ]
+
+        let E_major_arpeggio = [
+            notes["e"] * 8, notes["g#"] * 4, notes["b"] * 4, notes["e"] * 4
+        ]
+
+        let F_major_arpeggio = [
+            notes["f"] * 8, notes["a"] * 4, notes["c"] * 4, notes["f"] * 4
+        ]
+        const arpeggios = {
+            "C_major_arpeggio" : C_major_arpeggio,
+            "D_major_arpeggio" : D_major_arpeggio,
+            "E_major_arpeggio" : E_major_arpeggio,
+            "F_major_arpeggio" : F_major_arpeggio,
+            
+        }
+
+
+        let nodes = [];
+        let params = new URLSearchParams(window.location.search);
+        let speed = params.get("s");
+        if (!speed) speed = 7;
+        let offset = params.get("o");
+        if (!offset) offset = 250;
+        let count = params.get("c");
+        if (!count) count = 25;
+        let arpeggio = params.get("a");
+        if (!arpeggio) arpeggio = C_major_arpeggio;
+
+
+        
+        Object.keys(arpeggios).forEach(a => {
+            $("#arpeggios").append(`<option name=${a}>${a}</option>`);
+        });
+
+        //Circle wrapper
+        ctx.circle = function (x, y, r, color) {
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI);
+            ctx.fillStyle = color;
+            ctx.stroke();
+            ctx.fill();
+        }
+
+        let baseLine1 = [{ x: 0, y: height / 2 }, { x: width / 2, y: height }];
+        let baseLine2 = [{ x: width / 2, y: height }, { x: width, y: height / 2 }]
+
+        //Base line wrapper
+        ctx.drawBaseLines = function () {
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width / 2, height);
+            ctx.lineTo(width, height / 2);
+            ctx.stroke();
+
+        }
+
+        //set canvas size
+        canvas.prop('width', width);
+        canvas.prop('height', height);
+
+        let running = false;
+        
+        notes = C_major_arpeggio;
+        let default_nodes = start();
+        let runner;
+        
+        let options = {"speed":"s","count":"c","offset":"o","arpeggios":"a"}
+        function animate() {
+            if(running) {
+                ctx.clearRect(0, 0, width, height);
+                // speed = $("#speed").val();
+                ctx.drawBaseLines();
+                nodes.forEach(node => {
+                    node.x += node.dx * speed;
+                    node.y += node.dy * speed;
+
+                    if (node.x == width / 2) node.dy *= -1;
+                    else if (node.x <= node.ix1 || node.x >= node.ix2) {
+                        node.dx *= -1;
+                        node.dy *= -1;
+                        beep(100, node.note, .2);
+                    }
+                    ctx.circle(node.x, node.y, node.size, node.color);
+                });    
+
+                window.requestAnimationFrame(animate);
+            }
+
+        }
+        runner = window.requestAnimationFrame(animate);
+
+        function start() {
+            nodes = [];
+            let step = 0;
+            let mod = 1;
+            for (let i = 0; i < count; i++) {
+                let note = notes[step];
+                if (step == 3) {
+                    mod *= 2;
+                    step = 0;
+                }
+                step++;
+                addNode(i * ((((height - offset) / 2) / count)), note * mod);
+            }
+
+            running = true;
+            return JSON.parse(JSON.stringify(nodes));
+        }
+
+        function addNode(y, note = false) {
+            let pathLine = [{ x: 0, y: height / 2 + y }, { x: width, y: height / 2 + y }];
+            let intersectionPoint1 = calculateIntersection(
+                baseLine1[0], baseLine1[1],
+                pathLine[0], pathLine[1]
+            );
+
+            let intersectionPoint2 = calculateIntersection(
+                baseLine2[0], baseLine2[1],
+                pathLine[0], pathLine[1]
+            );
+
+            if (!note) note = randomNote();
+
+            nodes.push({
+                'x': intersectionPoint1.x,
+                'y': height / 2 + y,
+                'dx': 1,
+                'dy': .0,
+                'ix1': intersectionPoint1.x,
+                'ix2': intersectionPoint2.x,
+                'size': 5,
+                'color': randomRGB(),
+                'note': note
+            });
+        }
+
+        function randomNote() {
+            let n = Math.floor(Math.random() * Object.keys(notes).length);
+            return notes[Object.keys(notes)[n]];
+        }
+
+        //returns formatted rgb 
+        function randomRGB() {
+            let r = Math.floor(Math.random() * 256);
+            let g = Math.floor(Math.random() * 256);
+            let b = Math.floor(Math.random() * 256);
+
+            return `rgb(${r},${g},${b})`;
+        }
+
+
+        //https://dirask.com/posts/JavaScript-calculate-intersection-point-of-two-lines-for-given-4-points-VjvnAj
+        function calculateIntersection(p1, p2, p3, p4) {
+
+            var c2x = p3.x - p4.x; // (x3 - x4)
+            var c3x = p1.x - p2.x; // (x1 - x2)
+            var c2y = p3.y - p4.y; // (y3 - y4)
+            var c3y = p1.y - p2.y; // (y1 - y2)
+
+            // down part of intersection point formula
+            var d = c3x * c2y - c3y * c2x;
+
+            if (d == 0) {
+                throw new Error('Number of intersection points is zero or infinity.');
+            }
+
+            // upper part of intersection point formula
+            var u1 = p1.x * p2.y - p1.y * p2.x; // (x1 * y2 - y1 * x2)
+            var u4 = p3.x * p4.y - p3.y * p4.x; // (x3 * y4 - y3 * x4)
+
+            // intersection point formula
+
+            var px = (u1 * c2x - c3x * u4) / d;
+            var py = (u1 * c2y - c3y * u4) / d;
+
+            var p = { x: px, y: py };
+
+            return p;
+        }
+
+
+        $("#speed, #count, #offset, #arpeggios").on("input", (e) => {
+            let newSpeed = parseInt($("#speed").val());
+            let newCount = parseInt($("#count").val());
+            let newOffset = parseInt($("#offset").val());
+            let newArpeggio = $("#arpeggios").val();
+
+            if ((Number.isInteger(newSpeed) && e.target.id == "speed") ||
+                (Number.isInteger(newCount) && e.target.id == "count") ||
+                (Number.isInteger(newOffset) && e.target.id == "offset") ||
+                newArpeggio) {
+                speed = newSpeed;
+                count = newCount;
+                offset = newOffset;
+                console.log(newArpeggio);
+                notes = arpeggios[newArpeggio];
+                console.log(true);
+                start();
+            }
+
+        });
+
+        function pauseplay() {
+            if (running) {
+                        running = false;
+                        $("pause").html("Play");
+                    }
+            else {
+                running = window.requestAnimationFrame(animate);
+                running = true;
+                
+                $("#pause").html("Pause");
+            }
+        }
+
+        $(window).on('keyup', (e) => {
+            switch (e.code) {
+                case 'Space':
+                    pauseplay();
+                    break;
+            }
+        });
+
+    </script>
+</body>
+
+</html>

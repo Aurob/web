@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../template/template.css">
+    
+    <style>
+        table { border-collapse: collapse; }
+        th, td { 
+            border: 1px solid var(--global-white); 
+            color: var(--global-white);padding: 8px; 
+        }
+        blockquote { 
+            margin: auto; 
+        }
+
+        pre {
+            width: fit-content;
+            background-color: var(--global-dark-blue);
+            padding: 1em;
+            color: var(--global-dark-blue);
+        }
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="">
+
+        <div>
+            View my input file here: <a href="input">input.txt</a>
+            <br>    
+            <button id="show">Show Code</button>
+        </div>
+        <pre id="pre"><code id="solution">
+# Advent of Code Day 6
+# https://adventofcode.com/2025/day/6
+
+import re
+
+def day6_part1(input_str):
+    _rows = input_str.split('\n')
+
+    col_rows = []
+    for r, row in enumerate(_rows):
+        if not row: continue
+        col_vals = re.findall('\d+|[\*|\+]+', row)
+
+        col_rows.append([])
+        for col in range(len(col_vals)):
+            col_rows[len(col_rows)-1].append(col_vals[col])
+            
+    col_set = []
+    for r in col_rows:
+        s = []
+        for c in range(len(r)):
+            s.append(r[c])
+        col_set.append(s)
+    
+    rotated = []
+    for row in range(len(col_set[0])):
+        col_vals = []
+        for r in range(len(col_set)-1):
+            col_vals.append(col_set[r][row])
+        rotated.append(col_vals)
+        
+
+    op_results = []
+    for i in range(len(rotated)):
+        col = rotated[i]
+        op = col[-1]
+        val = 0
+        match op:
+            case '*':
+                val = int(col[0])
+                for r in range(1, len(col)-1):
+                    val *= int(col[r])
+            case '+':
+                val = int(col[0])
+                for r in range(1, len(col)-1):
+                    val += int(col[r])
+                pass
+            case _:
+                pass
+        
+        op_results.append(val)
+
+    return op_results
+        </code></pre>
+        <p>
+        </p>
+    </div>
+    <script>
+        document.getElementById("show").onclick = function() {
+            document.getElementById("pre").style.color = "var(--global-white)"
+        }
+    </script>
+    <script src="../../template/template.js"></script>
+</body>
+</html>

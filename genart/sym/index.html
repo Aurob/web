@@ -1,0 +1,29 @@
+<body></body>
+<script>
+
+    function ellipse(x, y, r, a, b, c, d) {
+        ctx.beginPath();
+        ctx.ellipse(x, y, r, r, a, b, c, d);
+        ctx.stroke();
+    }
+    let canvas = document.createElement('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    document.body.appendChild(canvas);
+
+    let ctx = canvas.getContext('2d');
+
+    ctx.beginPath();
+    ctx.ellipse(canvas.width/2, canvas.height/2, canvas.width/2, canvas.height/2, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    for(let i = 0; i < 2; i++) {
+        let x = i * canvas.width/2;
+        x += canvas.width/4;
+        for(let ii = 0; ii < 2; ii++) {
+            let y = ii * canvas.height/2;
+            y += canvas.height/4;
+            ellipse(x, y, canvas.width/2, 0, 0, 2 * Math.PI);
+        }
+    }
+</script>

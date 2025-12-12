@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: grey;
+        }
+
+        canvas {
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="artCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('artCanvas');
+        const ctx = canvas.getContext('2d');
+        const partLength = 100;
+        const partHeight = 25;
+
+        ctx.fillStyle = 'grey';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let path = [
+            [0, 0],
+            [partLength, 0],
+            [partLength, partHeight]
+        ];
+
+        function drawPath(thickness, color) {
+            ctx.lineWidth = thickness || 1;
+            ctx.strokeStyle = color || 'black';
+            ctx.beginPath();
+            ctx.moveTo(path[0][0], path[0][1]);
+            for (let i = 1; i < path.length; i++) {
+                ctx.lineTo(path[i][0], path[i][1]);
+            }
+            ctx.stroke();
+        }
+
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        let currentX = 0;
+        let currentY = 0;
+        let scaleY = 1;
+
+        let isBlack = true;
+
+        const rows = Math.ceil(canvasHeight / partHeight);
+        const cols = Math.ceil(canvasWidth / partLength);
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                drawPath(3, isBlack ? 'black' : 'white');
+                ctx.translate(partLength, partHeight);
+                ctx.scale(1, -1);
+                currentX += partLength;
+                currentY += partHeight * scaleY;
+                scaleY *= -1;
+            }
+            currentX = 0;
+            currentY += partHeight;
+            ctx.setTransform(1, 0, 0, 1, 0, currentY);
+            isBlack = !isBlack;
+        }
+
+    </script>
+</body>
+</html>

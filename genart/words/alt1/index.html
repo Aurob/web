@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <canvas></canvas>
+    <script>
+        let quote = `At dawn of day, when you dislike being called, have this thought ready: 'I am called to man's labour; why then do I make a difficulty if I am going out to do what I was born to do and what I was brought into the world for? Is it for this that I am fashioned, to lie in bedclothes and keep myself warm?' 'But this is more pleasant.' 'Were you born then to please yourself; in fact for feeling, not for action? Can't you see the plants, the birds, the ants, the spiders, the bees each doing his own work, helping for their part to adjust a world? And then you refuse to do a man's office and don't make haste to do what is according to your own nature.' 'But a man needs rest as well.' I agree, he does, yet Nature assigns limits to rest, as well as to eating and drinking, and you nevertheless go beyond her limits, beyond what is sufficient; in your actions only this is no longer so, there you keep inside what is in your power. The explanation is that you do not love your own self, else surely you would love both your nature and her purpose. But other men who love their own crafts wear themselves out in labours upon them, unwashed and unfed; while you hold your own nature in less honour than the smith his metal work, the dancer his art, the miser his coin, the lover of vainglory his fame. Yet they, when the passion is on them, refuse either to eat or to sleep sooner than refuse to advance the objects they care about, whereas you imagine acts of fellowship to bring a smaller return and to be deserving of less pains.`;
+        
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let keyStates = {};
+        let points = [];
+        let radius = (window.innerWidth + window.innerHeight) / 1000;
+        let centerX = canvas.width / 2;
+        let centerY = canvas.height / 2;
+        let pointCount = 1220; //quote.split('').length;
+        let angleIncrement = (2 * Math.PI) / pointCount;
+        let loop_count = 1;
+        let update = true;
+        let spacing = -.3;
+        let decrement = 122; // Adjust the decrement to control the tightness of the spiral
+
+        /*
+        function makePoints(loops) {   
+            points = [];
+            let totalPoints = loops * pointCount;
+            for (let loop = 0; loop < loops; loop++) {
+                for (let i = 0; i < pointCount; i++) {
+                    let angle = angleIncrement * (loop * pointCount + i);
+                    // let spiralRadius = radius + (totalPoints * decrement) - ((loop * pointCount + i) * decrement);
+                    let spiralRadius = radius - ((loop * pointCount + i) * decrement);
+                    let x = centerX + spiralRadius * Math.cos(angle);
+                    let y = centerY + spiralRadius * Math.sin(angle);
+
+                    points.push({x, y});
+                }
+            }
+        }
+        */
+
+        /*
+        function  makePoints() {
+            points = [];
+            let angle = 0;
+            let _radius = decrement
+            let x, y;
+
+            for (let i = 0; i < pointCount; i++) {
+                // Calculate the position of the point
+
+                x = centerX + _radius * Math.cos(angle);
+                y = centerY + _radius * Math.sin(angle);
+
+                // Push the point to the list
+                points.push({x: x, y: y});
+
+                // Increase the angle for the next point
+                angle += (spacing / _radius)/22;
+
+                // Increase the radius for the next point to create a spiral
+                _radius += spacing / (2 * Math.PI);
+            }
+        }
+        */
+
+        function makePoints() {
+            points = [];
+            let angle = 0;
+            let distance = 0;
+            let spread = spacing;
+            let spDist = decrement;
+
+            for (let i = 0; i < pointCount; i++) {
+                // Calculate the x and y based on polar coordinates
+                const x = distance * Math.cos(angle) + centerX;
+                const y = distance * Math.sin(angle) + centerY;
+
+                points.push({x, y, angle, distance});
+
+                // Increase the angle and distance for the next point
+                angle += (Math.PI*spDist * spread) / (distance + 1);
+                distance += spread;
+            }
+            return points;
+        }
+
+
+        function drawLines() {
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.stroke();
+        }
+
+        function drawPoints() {
+            for (let i = 0; i < points.length; i++) {
+                ctx.beginPath();
+                ctx.arc(points[i].x, points[i].y, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        function drawText(text) {
+            ctx.font = '20px Arial';
+            for (let i = 0; i < points.length; i++) {
+                // ctx.fillText(text, points[i].x, points[i].y);
+                ctx.save();
+                ctx.translate(points[i].x, points[i].y);
+                ctx.rotate(Math.atan2(points[i].y - centerY, points[i].x - centerX));
+                ctx.rotate(Math.PI / 2);
+                ctx.fillText(quote[i % quote.length], 0, 0);
+                ctx.restore();
+            }
+        }       
+
+        function drawCurve() {
+            if (points.length < 2) return; // Ensure there are at least two points to draw a curve
+
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+
+            // Draw a line to the first control point
+            for (let i = 1; i < points.length - 2; i++) {
+                const ctrlPointX = (points[i].x + points[i + 1].x) / 2;
+                const ctrlPointY = (points[i].y + points[i + 1].y) / 2;
+                ctx.quadraticCurveTo(points[i].x, points[i].y, ctrlPointX, ctrlPointY);
+            }
+
+            // For the last two points
+            ctx.quadraticCurveTo(
+                points[points.length - 2].x,
+                points[points.length - 2].y,
+                points[points.length - 1].x,
+                points[points.length - 1].y
+            );
+
+            ctx.stroke();
+        }
+        
+        let sd = 1;
+        function updateSpacing() {
+            spacing += 0.00001 * sd;
+            if(spacing < -150 || spacing > 150) {
+                sd *= -1;
+            }
+            update = true;
+        }
+
+        let dd = 1;
+        function updateDecrement() {
+            decrement += 0.00000003 * dd;
+            if(decrement < -150 || decrement > 150) {
+                dd *= -1;
+            }
+
+            for (let i = 0; i < points.length; i++) {
+                updatePointParameters(i, points[i].angle, points[i].distance);
+            }
+
+            update = true;
+        }
+        
+        // scroll adjust decrement
+        document.addEventListener('wheel', function(e) {
+            const adjustValue = keyStates['P'] ? .001 : 0.0;
+            const spacingValue = keyStates['L'] ? .001 : 0.0;
+       
+
+            if(e.deltaY > 0) {
+                decrement += adjustValue;
+                spacing += spacingValue;
+            } else {
+                decrement -= adjustValue;
+                spacing -= spacingValue;
+            }
+            update = true;
+        });
+
+        // key state store
+        document.addEventListener('keydown', function(e) {
+            keyStates[e.key] = true;
+        });
+        document.addEventListener('keyup', function(e) {
+            keyStates[e.key] = false;
+        });
+        
+
+        function animate() {
+            // drawLines();
+            // drawPoints();
+            requestAnimationFrame(animate);
+            if(update) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                drawText();
+                //drawLines();
+                //drawPoints();
+                //drawCurve();
+                update = false;
+            }
+
+            //updateSpacing();
+            //updateDecrement();
+        }
+        makePoints(loop_count);
+        animate();
+    </script>
+</body>
+</html>

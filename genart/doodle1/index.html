@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle</title>
+    <script src="/files/srv/code/noise.js"></script>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const width = canvas.width;
+        const height = canvas.height;
+        const size = noise.simplex2(0, new Date().getTime()) * 50 + 50; // Random size based on noise and current time
+        const rows = Math.floor(width / size);
+        const cols = Math.floor(height / size);
+
+        let time = -2;
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function getComplementaryColor(hex) {
+            // Convert hex to RGB
+            let r = parseInt(hex.substring(1, 3), 16);
+            let g = parseInt(hex.substring(3, 5), 16);
+            let b = parseInt(hex.substring(5, 7), 16);
+            // Calculate the complementary color
+            r = (255 - r).toString(16);
+            g = (255 - g).toString(16);
+            b = (255 - b).toString(16);
+            // Ensure 2 digits by concatenating a zero when necessary
+            r = r.length === 1 ? "0" + r : r;
+            g = g.length === 1 ? "0" + g : g;
+            b = b.length === 1 ? "0" + b : b;
+            return "#" + r + g + b;
+        }
+
+        let color1 = getRandomColor();
+        let color2 = getComplementaryColor(color1);
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const noiseValue = noise.simplex2(i / size/10 + 1, j / size/10 + time);
+                    const gradient = ctx.createLinearGradient(0, 0, width, height);
+                    const colorPosition = (Math.sin(time) + Math.sin(i / rows * Math.PI) + Math.sin(j / cols * Math.PI) + noiseValue) / noise.simplex2(i / size/10 + 1, j / size/10 + time);
+                    gradient.addColorStop(Math.max(0, Math.min(colorPosition, 1)), color1);
+                    gradient.addColorStop(1 - Math.max(0, Math.min(colorPosition, 1)), color2);
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(i * size, j * size, size, size);
+                    // Draw a rotated cross inside each cell with the inverse of the cell gradient
+                    const centerX = (i + 0.5) * size;
+                    const centerY = (j + 0.5) * size;
+                    const rotation = noise.simplex2(i / size, j / size) * Math.PI*4; // Rotation based on noise
+
+                    ctx.save(); // Save the current state
+                    ctx.translate(centerX, centerY); // Translate to the center of the cell
+                    ctx.rotate(rotation); // Rotate the canvas
+
+                    // Draw the cross using the new rotated canvas
+                    ctx.beginPath();
+                    ctx.moveTo(-size / 2, 0);
+                    ctx.lineTo(size / 2, 0);
+                    ctx.moveTo(0, -size / 2);
+                    ctx.lineTo(0, size / 2);
+
+                    // Calculate the inverse color for the cross based on the colorPosition
+                    const inverseColorPosition = 1 - Math.max(0, Math.min(colorPosition, 1));
+                    const crossGradient = ctx.createLinearGradient(-size / 2, 0, size / 2, 0);
+                    crossGradient.addColorStop(inverseColorPosition, color2);
+                    crossGradient.addColorStop(Math.max(0, Math.min(inverseColorPosition, 1)), color1);
+                    ctx.strokeStyle = crossGradient; // Using the inverse gradient for the cross for contrast
+                    ctx.stroke();
+
+                    ctx.restore(); // Restore the original state
+                }
+            }
+
+            time += 0.01;
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>

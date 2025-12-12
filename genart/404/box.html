@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<style>
+    html, body {
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<pre></pre>
+<script>
+    const BOXES = [
+        [
+            "+------+.",
+            "|`.    | `.",
+            "|  `+--+---+",
+            "|   404|   |",
+            "+---+--+.  |",
+            " `. |    `.|",
+            "   `+------+",
+        ],
+        [
+            "+------+",
+            "|\\     |\\",
+            "| +----+-+",
+            "| | 404| |",
+            "+-+----+ |",
+            " \\|     \\|",
+            "  +------+"
+        ],
+        [
+            "+------+",
+            "|      |",
+            "+------+",
+            "|  404 |",
+            "+------+",
+            "|      |",
+            "+------+"
+        ],
+        [
+            "  +------+",
+            " /|     /|",
+            "+-+----+ |",
+            "| |404 | |",
+            "| +----+-+",
+            "|/     |/",
+            "+------+"
+        ],
+        [
+            "   .+------+",
+            " .' |    .'|",
+            "+---+--+'  |",
+            "|   |404   |",
+            "|  .+--+---+",
+            "|.'    | .'",
+            "+------+'"
+        ]
+
+    ]
+    window.addEventListener('load', () => {
+        let b = 0;
+        let bd = 1;
+        let boxes = setInterval(() => {
+            try {
+
+                let box = BOXES[b];
+                let pre = document.querySelector('pre');
+                pre.textContent = box.join('\n');
+
+                b += bd;
+                if (b >= BOXES.length-1 || b <= 0) {
+                    bd *= -1;
+                }
+            } catch (error) {
+                clearInterval(boxes);
+            }
+
+        }, 100)
+    });
+</script>

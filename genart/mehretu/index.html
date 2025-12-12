@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous">
+        </script>
+    <style>
+        canvas {
+            border: solid 1px black;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div>
+        <canvas id="cvbg"></canvas>
+        <div id="options">
+            <div id="seed_group">
+                <div>
+                    <label for="seed">Seed</label>
+                    <input id="seed" min=1 value=1 step=1>
+                    <button id="newgen">Re-generate</button>
+                </div>
+                <div>
+                    <div id="opacity_group">
+                        <label for="opacity">Show Opacity</label>
+                        <input type="checkbox" checked>
+                    </div>
+                    <div id="outline_group">
+                        <label for="outline">Show Shape Outlines</label>
+                        <input type="checkbox" checked>
+                    </div>
+                    <div id="line_group">
+                        <label for="lines">Lines</label>
+                        <input type="checkbox" checked>
+                        <input class="count" type="number" id="lines" value="5" min="1" />
+                    </div>
+                    <div id="curve_group">
+                        <label for="curves">Curves</label>
+                        <input type="checkbox" checked>
+                        <input class="count" type="number" id="curves" value="15" min="1" />
+                    </div>
+                    <div id="shape_group">
+                        <label for="shapes">Shapes</label>
+                        <input type="checkbox" checked>
+                        <input class="count" type="number" id="shapes" value="15" min="1" />
+                    </div>
+                    <div id="polygon_group">
+                        <label for="polygons">Polygons</label>
+                        <input type="checkbox" checked>
+                        <input class="count" type="number" id="polygons" value="10" min="1" />
+                    </div>
+                </div>
+
+            </div>
+            <script>
+                //TODO IDEAS
+                // find intersection points between lines and curves
+                //   do something interesting at the intersection points
+                // do something along the lines of /solar, where art elements revolve around points
+                //   could add masses to elements and gravity-like interactions
+                // use truchet tiling to determine where and how to place elements
+                // add foreshortened 3D shapes
+                let seed = Date.now();
+
+                let width = 512, height = 512;
+                let canvas = $('canvas');
+                let ctx = canvas[0].getContext('2d');
+                //set canvas size
+                canvas.prop('width', width);
+                canvas.prop('height', height);
+
+
+                let elments = [];
+
+                let elementTypes = ['line', 'shape', 'curve', 'angle', 'polygon'];
+                let shapeTypes = ['circle', 'rectangle'];
+
+                let lines = [];
+                let shapes = [];
+                let curves = [];
+                let polygons = [];
+                let allElements = [];
+
+                let showLines = true;
+                let showShapes = true;
+                let showCurves = true;
+                let showPolygons = true;
+                let showOpacity = true;
+                let showOutlines = true;
+
+                window.addEventListener('DOMContentLoaded', function () {
+                    loadParams();
+                    start();
+                });
+
+                const lineCount = () => {
+                    return $('#lines').val();
+                }
+
+                const curveCount = () => {
+                    return $('#curves').val();
+                }
+
+                const shapeCount = () => {
+                    return $('#shapes').val();
+                }
+
+                const polygonCount = () => {
+                    return $('#polygons').val();
+                }
+
+                function renderGenerated() {
+                    allElements.forEach(element => {
+                        if (showLines && element.type == 'line') renderLines([element]);
+                        else if (showShapes && (element.type == 'circle' || element.type == 'rectangle')) renderShapes([element]);
+                        else if (showCurves && element.type == 'curve') renderCurves([element]);
+                        else if (showPolygons && element.type == 'polygon') renderPolygons([element]);
+
+                        if(showOpacity) ctx.globalAlpha = 1;
+                    });
+                }
+
+                function loadParams() {
+                    let params = new URLSearchParams(window.location.search);
+
+                    if (params.get('seed')) {
+                        seed = hashStr(params.get('seed'));
+                        $('#seed').val(params.get('seed'));
+                    }
+
+                    if (params.get('l')) {
+                        showLines = parseInt(params.get('l'));
+                        
+                        if(!isNaN(showLines)) {
+                            $('#line_group [type="checkbox"]').prop('checked', true);
+                            $('#lines').val(showLines);
+                        }                        
+                    }
+
+                    if (params.get('s')) {
+                        showShapes = parseInt(params.get('s'));
+                        
+                        if(!isNaN(showShapes)) {
+                            $('#shape_group [type="checkbox"]').prop('checked', true);
+                            $('#shapes').val(showShapes);
+                        }                        
+                    }
+
+                    if (params.get('c')) {
+                        showCurves = parseInt(params.get('c'));
+                        
+                        if(!isNaN(showCurves)) {
+                            $('#curve_group [type="checkbox"]').prop('checked', true);
+                            $('#curves').val(showCurves);
+                        }                        
+                    }
+
+                    if (params.get('p')) {
+                        showPolygons = parseInt(params.get('p'));
+                        
+                        if(!isNaN(showPolygons)) {
+                            $('#polygon_group [type="checkbox"]').prop('checked', true);
+                            $('#polygons').val(showPolygons);
+                        }                        
+                    }
+
+                    if (params.get('op')) {
+                        showOpacity = parseInt(params.get('op'));
+                        
+                        if(!isNaN(showOpacity)) {
+                            $('#opacity_group [type="checkbox"]').prop('checked', true);
+                        }                        
+                    }
+
+                    if (params.get('ol')) {
+                        showOutlines = parseInt(params.get('ol'));
+                        
+                        if(!isNaN(showOutlines)) {
+                            $('#outline_group [type="checkbox"]').prop('checked', true);
+                        }                        
+                    }
+                }
+
+                function setParams() {
+                    let params = new URLSearchParams(window.location.search);
+                    params.set('seed', $('#seed').val());
+                    params.set('l', showLines ? $('#lines').val() : '0');
+                    params.set('s', showShapes ? $('#shapes').val() : '0');
+                    params.set('c', showCurves ? $('#curves').val() : '0');
+                    params.set('p', showPolygons ? $('#polygons').val() : '0');
+                    params.set('op', showOpacity ? '1' : '0');
+                    params.set('ol', showOutlines ? '1' : '0');
+
+                    window.history.replaceState(null, null, '?' + params.toString());
+                }
+
+                function start() {
+                    
+                    setParams();
+
+                    lines = [];
+                    for (let l = 0; l < lineCount(); l++) {
+                        lines.push(lineElement());
+                    }
+
+                    shapes = [];
+                    for (let s = 0; s < shapeCount(); s++) {
+                        shapes.push(shapeElement());
+                    }
+
+                    curves = [];
+                    for (let c = 0; c < curveCount(); c++) {
+                        curves.push(curveElement());
+                    }
+
+                    polygons = [];
+                    for (let p = 0; p < polygonCount(); p++) {
+                        polygons.push(polygonElement());
+                    }
+
+                    allElements = lines.concat(shapes).concat(curves).concat(polygons);
+                    alLElements = shuffleArray(allElements);
+
+                    let running = true;
+
+                    let runner;
+                    function animate() {
+                        if (running) {
+                            ctx.clearRect(0, 0, width, height);
+
+                            renderGenerated();
+
+                            window.requestAnimationFrame(animate);
+                        }
+
+                    }
+                    runner = window.requestAnimationFrame(animate);
+                }
+
+                //TODO, review this: https://stackoverflow.com/a/8326030
+                function renderCurves(curves) {
+                    for (let c = 0; c < curves.length; c++) {
+                        let curve = curves[c];
+                        ctx.strokeWidth = 12;
+                        ctx.strokeStyle = formatColor(curve.color);
+                        // Cubic Bézier curve
+                        ctx.beginPath();
+                        ctx.moveTo(curve.x1, curve.y1);
+                        ctx.bezierCurveTo(curve.x2, curve.y2, curve.x3, curve.y3, curve.x4, curve.y4);
+                        ctx.stroke();
+                    }
+                }
+
+                function renderShapes(shapes) {
+                    for (let shape of shapes) {
+                        ctx.fillStyle = formatColor(shape.color);
+                        if(showOpacity) ctx.globalAlpha = shape.opacity;
+
+                        switch (shape.type) {
+                            case 'circle':
+                                ctx.beginPath();
+                                ctx.arc(shape.x, shape.y, shape.radius, 0, 2 * Math.PI);
+                                ctx.fillStyle = shape.color;
+                                ctx.fill();
+                                ctx.closePath();
+                                if(showOutlines) ctx.stroke();
+                                break;
+                            case 'rectangle':
+                                ctx.beginPath();
+                                ctx.rect(shape.x, shape.y, shape.width, shape.height);
+                                ctx.fillStyle = shape.color;
+                                ctx.fill();
+                                ctx.closePath();
+                                if(showOutlines)  ctx.stroke();
+                                break;
+                        }
+                    }
+                }
+
+                //Line Art Elements
+                function renderLines(lines) {
+                    for (let line of lines) {
+                        ctx.strokeStyle = formatColor(line.color);
+                        ctx.beginPath();
+                        ctx.moveTo(line.x1, line.y1);
+                        ctx.lineTo(line.x2, line.y2);
+                        ctx.stroke();
+                    }
+                }
+
+                function renderPolygons(polygons) {
+                    for (let polygon of polygons) {
+                        let points = polygon.points;
+                        let color = formatColor(polygon.color);
+                        if(showOpacity) ctx.globalAlpha = polygon.opacity;
+
+                        if (points.length > 0) {
+                            ctx.fillStyle = color; // all css colors are accepted by this property
+
+                            var point = points[0];
+
+                            ctx.beginPath();
+                            ctx.moveTo(point.x, point.y);   // point 1
+
+                            for (var i = 1; i < points.length; ++i) {
+                                point = points[i];
+
+                                ctx.lineTo(point.x, point.y);
+                            }
+                            ctx.closePath();      // go back to point 1
+                            if(showOutlines) ctx.stroke();
+                            ctx.fill();
+                        }
+                    }
+                }
+
+                function curveElement() {
+                    let curve = {
+                        type: 'curve',
+                        x1: mulberry32(++seed) * width,
+                        y1: mulberry32(++seed) * height,
+                        x2: mulberry32(++seed) * width,
+                        y2: mulberry32(++seed) * height,
+                        x3: mulberry32(++seed) * width,
+                        y3: mulberry32(++seed) * height,
+                        x4: mulberry32(++seed) * width,
+                        y4: mulberry32(++seed) * height,
+                        color: randomRGB(),
+                        opacity: mulberry32(++seed)
+                    };
+                    return curve;
+                }
+
+                //Shape Art Elements 
+                function shapeElement() {
+                    //pick a random shape type
+                    //generate random positions and shapes
+
+                    let shapeType = shapeTypes[Math.floor(mulberry32(++seed) * shapeTypes.length)];
+                    let shape = {};
+                    switch (shapeType) {
+                        case 'circle':
+                            shape = circleElement();
+                            break;
+                        case 'rectangle':
+                            shape = rectangleElement();
+                            break;
+                    }
+
+                    return shape;
+                }
+
+                function circleElement() {
+                    let x = mulberry32(++seed) * width - (width / 10);
+                    let y = mulberry32(++seed) * height - (height / 10);
+                    let radius = mulberry32(++seed) * (width / 10);
+                    let color = randomRGB();
+                    return {
+                        'type': 'circle',
+                        'x': x,
+                        'y': y,
+                        'radius': radius,
+                        'color': color,
+                        opacity: mulberry32(++seed)
+                    };
+                }
+
+                function rectangleElement() {
+                    let x = mulberry32(++seed) * width - (width / 10);
+                    let y = mulberry32(++seed) * height - (height / 10);
+                    let _width = mulberry32(++seed) * (width / 10);
+                    let _height = mulberry32(++seed) * (height / 10);
+                    let color = randomRGB();
+                    return {
+                        'type': 'rectangle',
+                        'x': x,
+                        'y': y,
+                        'width': _width,
+                        'height': _height,
+                        'color': color,
+                        opacity: mulberry32(++seed)
+                    };
+                }
+
+                function lineElement() {
+                    let startx = mulberry32(++seed) * width - (width / 10);
+                    let starty = mulberry32(++seed) * height - (height / 10);
+
+                    let endx = startx + mulberry32(++seed) * (width - startx);
+                    let endy = starty + mulberry32(++seed) * (height - starty);
+
+                    return {
+                        type: 'line',
+                        x1: startx, y1: starty,
+                        x2: endx, y2: endy,
+                        color: randomRGB(),
+                        opacity: mulberry32(++seed)
+                    }
+                }
+
+                function polygonElement() {
+                    let startx = mulberry32(++seed) * width - (width / 10);
+                    let starty = mulberry32(++seed) * height - (height / 10);
+
+                    let endx = startx + mulberry32(++seed) * (width - startx);
+                    let endy = starty + mulberry32(++seed) * (height - starty);
+
+
+                    let endx2 = endx + mulberry32(++seed) * (width - endx);
+                    let endy2 = endy;
+
+                    let points = [
+                        { x: startx, y: starty },
+                        { x: endx, y: endy },
+                        { x: endx2, y: endy2 }
+                    ];
+
+                    return {
+                        type: 'polygon',
+                        points: points,
+                        color: randomRGB(),
+                        opacity: mulberry32(++seed)
+                    }
+                }
+
+                //Color utility functions
+                function randomRGB() {
+                    let r = Math.floor(mulberry32(++seed) * 256);
+                    let g = Math.floor(mulberry32(++seed) * 256);
+                    let b = Math.floor(mulberry32(++seed) * 256);
+
+                    return { 'r': r, 'g': g, 'b': b };
+                }
+
+                function formatColor(color) {
+                    return `rgb(${color.r},${color.g},${color.b})`;
+                }
+
+                //https://stackoverflow.com/a/47593316
+                function mulberry32(a) {
+                    var t = a += 0x6D2B79F5;
+                    t = Math.imul(t ^ t >>> 15, t | 1);
+                    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+                }
+
+                //https://stackoverflow.com/a/7616484
+                function hashStr(string) {
+                    var hash = 0, i, chr;
+                    if (string.length === 0) return hash;
+                    for (i = 0; i < string.length; i++) {
+                        chr = string.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + chr;
+                        hash |= 0; // Convert to 32bit integer
+                    }
+                    return hash;
+                };
+
+                /* Randomize array in-place using Durstenfeld shuffle algorithm */
+                function shuffleArray(_array) {
+                    for (var i = _array.length - 1; i > 0; i--) {
+                        var j = Math.floor(mulberry32(++seed) * (i + 1));
+                        var temp = _array[i];
+                        _array[i] = _array[j];
+                        _array[j] = temp;
+                    }
+
+                    return _array;
+                }
+
+                $('#shape_group [type="checkbox"]').change(function () {
+                    showShapes = $(this).prop('checked');
+                });
+
+                $('#line_group [type="checkbox"]').change(function () {
+                    showLines = $(this).prop('checked');
+                });
+
+                $('#curve_group [type="checkbox"]').change(function () {
+                    showCurves = $(this).prop('checked');
+                });
+
+                $('#polygon_group [type="checkbox"]').change(function () {
+                    showPolygons = $(this).prop('checked');
+                });
+
+                $('#opacity_group [type="checkbox"]').change(function () {
+                    showOpacity = $(this).prop('checked');
+                });
+
+                $('#outline_group [type="checkbox"]').change(function () {
+                    showOutlines = $(this).prop('checked');
+                });
+
+                $('.count, [type="checkbox"]').change(function () {
+                    start();
+                });
+
+                $('#seed').on('change', function () {
+                    seed = hashStr($(this).val());
+                    start();
+                });
+
+                $('#newgen').click(function () {
+                    $('#seed').val(String(Date.now()));
+                    $('#seed').change();
+                });
+
+            </script>
+</body>
+
+</html>

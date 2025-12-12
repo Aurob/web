@@ -1,0 +1,51 @@
+[
+    {
+        poly: [
+            {x: 0, y: 0},
+            {x: size/2, y: 0},
+            {x: size/2, y: size/2},
+            {x: 0, y: 0}
+        ], 
+        color: getRandomColor()
+    },
+    {
+        poly: [
+            {x: size/2, y: 0},
+            {x: size/2, y: size/2},
+            {x: size, y: size},
+            {x: size, y: 0},
+            {x: size/2, y: 0}
+        ], 
+        color: getRandomColor()
+    },
+    {
+        poly: [
+            {x: 0, y: 0},
+            {x: size, y: size},
+            {x: size/2, y: size},
+            {x: 0, y: size/2},
+        ], 
+        color: getRandomColor()
+    },
+    {
+        poly: [
+            {x: 0, y: size/2},
+            {x: size/2, y: size},
+            {x: 0, y: size},
+            {x: 0, y: size/2},
+        ], 
+        color: getRandomColor()
+    },
+    {
+        poly: [{x: size/2.85, y: size/8}], 
+        color: getRandomColor(), 
+        type: 'dot', 
+        size: size/42
+    },
+    {
+        poly: [{x: size/2.85, y: size/8}], 
+        color: 'black', 
+        type: 'text', 
+        text: 'R'
+    }
+]

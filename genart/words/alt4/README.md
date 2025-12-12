@@ -1,0 +1,1 @@
+This directory will contain projects related to Language, Typography, and ASCII Art

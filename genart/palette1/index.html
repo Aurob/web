@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" type="image/x-icon" href="https://api.robsweb.site/image/rand_shape?as_image=1">
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="#">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js"
+        integrity="sha512-NxocnqsXP3zm0Xb42zqVMvjQIktKEpTIbCXXyhBPxqGZHqhcOXHs4pXI/GoZ8lE+2NJONRifuBpi9DxC58L0Lw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+        </script>
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body {
+            width: 80%;
+            height: 80%;
+            margin: 0;
+            text-align: center;
+        }
+
+        canvas {
+            border: solid 1px black;
+        }
+
+        #options {
+            display: flex;
+            justify-content: center;
+        }
+
+        .test {
+            margin: auto;
+            width: fit-content;
+            height: fit-content;
+            display: flex;
+            flex-direction: row-reverse;
+        }
+    </style>
+
+</head>
+
+<body>
+    <main class="test"></main>
+    <script>
+        let bodyWidth = document.body.clientWidth;
+        let bodyHeight = document.body.clientHeight;
+        let pause = false;
+        let paperColors = {
+            'paper1': [
+                [203, 201, 197],
+                [188, 188, 180],
+                [212, 212, 212],
+                [220, 215, 212],
+                [188, 188, 188],
+                [179, 179, 177],
+                [196, 188, 188],
+                [188, 180, 180],
+                [212, 220, 212]
+            ]
+        };
+
+        let cellSize = 10;
+        let noiseXDiv = 100;
+        let noiseYDiv = 100;
+        function setup() {
+            createCanvas(bodyWidth, bodyHeight);
+            background(0);
+            noStroke();
+            fill(255);
+            rectMode(CENTER);
+            frameRate(60);
+
+            cellSizeSlider = createSlider(10, 100, cellSize, 2);
+            cellSizeSlider.input(() => {
+                cellSize = cellSizeSlider.value();
+                pause = false;
+            });
+
+            noiseXDivSlider = createSlider(1, 1000, noiseXDiv, 1);
+            noiseXDivSlider.input(() => {
+                noiseXDiv = noiseXDivSlider.value();
+                pause = false;
+            });
+
+            noiseYDivSlider = createSlider(1, 1000, noiseYDiv, 1);
+            noiseYDivSlider.input(() => {
+                noiseYDiv = noiseYDivSlider.value();
+                pause = false;
+            });
+        }
+
+        let palette = getRandomColorPalette();
+        function draw() {
+            if (pause) return;
+            background(0);
+            for (let x = -cellSize; x < width + cellSize; x += cellSize) {
+                for (let y = -cellSize; y < height + cellSize; y += cellSize) {
+                    // noise color picker
+                    let pix_color = parseInt(noise(x / noiseXDiv, y / noiseYDiv) * palette.length);
+
+
+                    let color = palette[pix_color];
+                    fill(color[0], color[1], color[2]);
+                    stroke(color[0], color[1], color[2]);
+                    rect(x, y, cellSize, cellSize);
+                }
+            }
+            pause = true;
+        }
+
+        // Utility
+        function getRandomColorPalette() {
+            
+            var rbase = Math.floor(Math.random() * 100);
+            var gbase = Math.floor(Math.random() * 100);
+            var bbase = Math.floor(Math.random() * 100);
+            var roffset = Math.floor(Math.random() * 100);
+            var goffset = Math.floor(Math.random() * 100);
+            var boffset = Math.floor(Math.random() * 100);
+
+            var baseColor = [
+                Math.floor(Math.random() * rbase) + roffset,
+                Math.floor(Math.random() * gbase) + goffset,
+                Math.floor(Math.random() * bbase) + boffset
+            ];
+
+            var colorPalette = [];
+            var rshift = Math.floor(Math.random() * 100);
+            var gshift = Math.floor(Math.random() * 100);
+            var bshift = Math.floor(Math.random() * 100);
+            for (var i = 0; i < 9; i++) {
+                var color = [
+                    baseColor[0] + Math.floor(Math.random() * rbase) - rshift,
+                    baseColor[1] + Math.floor(Math.random() * gbase) - gshift,
+                    baseColor[2] + Math.floor(Math.random() * bbase) - bshift
+                ];
+                colorPalette.push(color);
+            }
+
+            return colorPalette;
+        }
+    </script>
+</body>
+
+</html>

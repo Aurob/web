@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../template/template.css">
+    
+    <style>
+        table { border-collapse: collapse; }
+        th, td { 
+            border: 1px solid var(--global-white); 
+            color: var(--global-white);padding: 8px; 
+        }
+        blockquote { 
+            margin: auto; 
+        }
+
+        pre {
+            width: fit-content;
+            background-color: var(--global-dark-blue);
+            padding: 1em;
+            color: var(--global-dark-blue);
+        }
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="">
+
+        <div>
+            View my input file here: <a href="input">input.txt</a>
+            <br>    
+            <button id="show">Show Code</button>
+        </div>
+        <pre id="pre"><code id="solution">
+# Advent of Code Day 5
+# https://adventofcode.com/2025/day/5
+
+def day5_part1(input_str):
+
+    blank_line = input_str.index('\n\n')
+    fresh_ids = input_str[:blank_line].strip().replace('\n', ',').replace(' ', '').split(',')
+    ingredients = input_str[blank_line:].strip().replace('\n', ',').replace(' ', '').split(',')
+    fresh_set = set()
+
+    ingredients = set([int(i) for i in ingredients])
+    
+    for i, val in enumerate(fresh_ids):
+        dash = val.index('-')
+        low = int(val[:dash])
+        high = int(val[dash+1:])
+        fresh_ids[i] = (low, high)
+
+
+    for ingrid in ingredients:
+        for fresh in fresh_ids:
+            low, high = fresh
+            if ingrid >= low and ingrid <= high:    
+                fresh_set.add(ingrid)
+
+    fresh_ingredients = ingredients.intersection(fresh_set)
+
+    return len(fresh_ingredients)
+        </code></pre>
+        <p>
+        </p>
+    </div>
+    <script>
+        document.getElementById("show").onclick = function() {
+            document.getElementById("pre").style.color = "var(--global-white)"
+        }
+    </script>
+    <script src="../../template/template.js"></script>
+</body>
+</html>
