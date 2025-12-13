@@ -167,17 +167,22 @@ window.addEventListener('load', ()=>{
     if (!SITEMAP) {
         SITEMAP = {
             ".": {},
+            "webring": {},
+            "photo": {},
+            "music": {},
+            "books": {},
+            "links": {},
+            "genart": {},
+            "doodles": {},
             "advent": {
                 "day1": {},
                 "day2": {},
                 "day3": {},
-                "day4": {}
+                "day4": {},
+                "day5": {},
+                "day6": {},
+                "day7": {}
             },
-            "webring": {},
-            "photo": {},
-            "links": {},
-            "genart": {},
-            "doodles": {}
         };
         sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
     }
