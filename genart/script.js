@@ -161,7 +161,7 @@ function run(paths) {
 }
 
 
-const paths = `404,canvas,circles,clock,curves,design1,doodle1,dots,ellipse,figure,flow,flower,flowers,foreshorten,generative,genode,grass,grav,home,hotel,laundry,layout,life,lines,lines2,mehretu,mosaic,mosaic2,motion,museum,museum2,music1,noise,onion,optical,orgm,p5js1,palette1,pixsym,poly,rain,rchords,scale,sdl,shaders,sounds,spin,strings,super,super2,sym,terra,tess,textured,tree,truchet1,truchet2,waves,weave,words,`
+const paths = `404,canvas,circles,clock,curves,design1,doodle1,dots,ellipse,figure,flow,flower,flowers,foreshorten,generative,genode,grass,grav,home,hotel,laundry,layout,life,lines,lines2,mehretu,mosaic,mosaic2,motion,museum,museum2,music1,noise,onion,opart,orgm,p5js1,palette1,pixsym,poly,rain,rchords,scale,sdl,shaders,sounds,spin,strings,super,super2,sym,terra,tess,textured,tree,truchet1,truchet2,waves,weave,words,`
                 .split(',')
 window.addEventListener('load', function () {
     run(paths)
