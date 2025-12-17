@@ -19,7 +19,7 @@
             border: solid red .1em;
         }
         #content {
-            height: 100vh;
+            /* height: 100vh; */
         }
         iframe {
             border: none !important;
@@ -37,12 +37,12 @@
         </div>
         <div class="edge el"></div>
     </div>
+
+    <script src="../template/template.js"></script>
     <div id="content">
         These are photos that I've taken mostly on my phone, but some were taken on and developed from cheap disposable cameras. <br>
         In total there are 3103 images here. Click on any to open a larger view.
         <hr>
-        <iframe src="images.html"></iframe>
-        <script src="cf_image_ids.js"></script>
         <script>
             // fetch('images.html')
             // .then(res=>res.text())
@@ -88,8 +88,9 @@
 
             // })
         </script>
-    </div>
-    <script src="../template/template.js"></script>
+
+        <iframe src="images.html"></iframe>
+    </div>    
 </body>
 
 </html>

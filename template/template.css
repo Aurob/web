@@ -124,6 +124,8 @@ a {
     box-sizing: border-box;
     border-bottom: outset .01em;
     padding-left: 1em;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 et > * {

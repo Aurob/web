@@ -171,9 +171,9 @@ window.addEventListener('load', ()=>{
             "photo": {},
             "music": {},
             "books": {},
-            "links": {},
+            // "links": {},
             "genart": {},
-            "doodles": {},
+            // "doodles": {},
             "advent": {
                 "day1": {},
                 "day2": {},
