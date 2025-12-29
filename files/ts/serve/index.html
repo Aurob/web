@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../../../../template/template.css">
+    <link rel="icon" href="" type="image/x-icon">
+    <style>
+
+        #links {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .link {
+                display: flex;
+                padding-bottom: 20vh;
+
+                .preview {
+                    border: solid;
+                    font-size: 5vw;
+                }
+
+                .link_qr > canvas {
+                    width: 25vw;
+                    height: 25vw;
+                }
+            }
+
+
+            img {
+                width: 50vw;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb">
+            <div id="wr-widget"></div>
+        </div>
+        <div class="edge el"></div>
+    </div>
+    <div id="content">
+        <div id="links">
+
+        </div>
+        <template>
+            <div class="link">
+                <div class="preview"></div>
+                <div class="link_qr"></div>
+            </div>
+        </template>
+        </div>
+    </div>
+    <script src="qr-creator.min.js"></script>
+    <script>
+        fetch('../')
+            .then(res => res.text())
+            .then(htmlString => {
+                console.log(htmlString)
+                const parser = new DOMParser();
+                // const doc = parser.parseFromString(htmlString, 'text/html');
+                // const doc_links = doc.querySelectorAll('a');
+                const links = document.getElementById('links');
+                const template = document.querySelector("template");
+                const files_path = window.location.href.split('/').slice(0, -2).join('/');
+
+                const reg_href = new RegExp(/href="(.*?)"/g);
+                const reg_dates = new RegExp(/\d{2}-\w{3}-\d{4} \d{2}:\w{2}/g);
+
+                var doc_links = [...htmlString.matchAll(reg_href)].map(m=>{return m[1]});
+                
+                var link_data = [];
+                for(let l = 0; l < doc_links.length; l++) {
+                    link_data.push({
+                        'link': doc_links[l]
+                    })
+                }
+
+                link_data.forEach(data => {
+                    if(data.link.endsWith('/')) return;
+
+                    const link = data.link;
+
+                    const clone = document.importNode(template.content, true);
+                    const preview = clone.querySelector('.preview');
+                    const qr = clone.querySelector('.link_qr');
+
+                    const path = files_path+'/'+link;
+                    fetch(path)
+                    .then(response => {
+                        const contentType = response.headers.get('Content-Type');
+                        if(contentType.startsWith('image')) {
+                            const img = new Image();
+                            img.src = path;
+
+                            const img_link = document.createElement('a');
+                            img_link.href = path;
+                            img_link.appendChild(img);
+
+                            preview.appendChild(img_link);
+                        }
+                        else {
+                            const a_link = document.createElement('a');
+                            a_link.href = path;
+                            a_link.innerHTML = decodeURIComponent(link);
+
+                            preview.appendChild(a_link);
+                        }
+                    })
+                    .catch(error => console.error(error));
+                    
+
+
+                    QrCreator.render({
+                        text: path,
+                        radius: 0.0, // 0.0 to 0.5
+                        ecLevel: 'H', // L, M, Q, H
+                        fill: 'black', // foreground color
+                        background: 'white', // color or null for transparent
+                        size: 128 // in pixels
+                    }, qr);
+
+                    links.appendChild(clone);
+
+                });
+            });
+    </script>
+    <script src="../../../../../template/template.js"></script>
+</body>
+</html>

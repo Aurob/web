@@ -14,17 +14,11 @@
     <link rel="stylesheet" type="text/css" href="../template/template.css">
     <link rel="icon" href="" type="image/x-icon">
     <style>
-        img:hover {
-            /* cursor: grab; */
-            border: solid red .1em;
-        }
-        #content {
-            /* height: 100vh; */
-        }
-        iframe {
-            border: none !important;
-            width: 100%;
-            height: 100%;
+        img.responsive-map {
+            width: 90vw;
+            /* or whatever you want */
+            height: auto;
+            display: block;
         }
     </style>
 </head>
@@ -40,57 +34,93 @@
 
     <script src="../template/template.js"></script>
     <div id="content">
-        These are photos that I've taken mostly on my phone, but some were taken on and developed from cheap disposable cameras. <br>
-        In total there are 3103 images here. Click on any to open a larger view.
+        These are photos that I've taken mostly on my phone, but some were taken on and developed from cheap disposable
+        cameras. <br>
+        For each image, I created a 32x32 thumbnail and merged them all into a single collage. I use HTML <a
+            href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/area">Image Map Area</a> elements
+        to make the collage interactable so that each individual thumbnail is clickable.<br>
+        In total there are <span id="img_count"></span> images, click on any to view the full size.
         <hr>
+        <img src="collage.webp" usemap="#imgmap" class="responsive-map" draggable="false">
+
+        <map name="imgmap"></map>
+
+        <template id="area_template">
+            <area shape="rect" target="_blank">
+        </template>
+
         <script>
-            // fetch('images.html')
-            // .then(res=>res.text())
-            // .then(data=>{
-            //     document.getElementById('images').innerHTML = data;
-            // })
-            // function shuffle(array) {
-            //     let currentIndex = array.length;
+            (async () => {
+                const COLS = 50;
+                const TILE = 32;
 
-            //     // While there remain elements to shuffle...
-            //     while (currentIndex != 0) {
+                const map = document.querySelector("map[name='imgmap']");
+                const template = document.querySelector("#area_template");
+                const img = document.querySelector(".responsive-map");
 
-            //         // Pick a remaining element...
-            //         let randomIndex = Math.floor(Math.random() * currentIndex);
-            //         currentIndex--;
+                // Load IDs
+                let text = await fetch("cf_image_ids.txt").then(r => r.text());
+                let image_ids = text.split(/\r?\n/).filter(Boolean);
+                
+                document.querySelector('#img_count').innerHTML = image_ids.length;
 
-            //         // And swap it with the current element.
-            //         [array[currentIndex], array[randomIndex]] = [
-            //         array[randomIndex], array[currentIndex]];
-            //     }
-            // }
+                // Build <area> tags with DATA attributes (unscaled coords)
+                for (let i = 0; i < image_ids.length; i++) {
+                    const img_id = image_ids[i];
 
-            // const images = document.getElementById('images');
-            // var track_ids = [];
+                    const col = i % COLS;
+                    const row = Math.floor(i / COLS);
 
-            // shuffle(IMAGE_IDS);
-            // var _404s = []
-            //     IMAGE_IDS.forEach(img_id => {
-            //         let img = document.createElement('img');
-            //         img.loading = 'lazy';
-            //         img.src = `https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${img_id}/thumbxsm`;
-            //         images.append(img);
-            //         img.onclick = function(){
-            //             if(!track_ids.includes(img_id)) {
-            //                 track_ids.push(img_id);
-            //             }
-            //             window.open(`https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${img_id}/public`, '_blank');
-            //         };
+                    const x1 = col * TILE;
+                    const y1 = row * TILE;
+                    const x2 = x1 + TILE;
+                    const y2 = y1 + TILE;
 
-            //         img.onerror = function(e) {
-            //             console.log(e)
-            //         }
+                    const clone = template.content.cloneNode(true);
+                    const area = clone.querySelector("area");
 
-            // })
+                    area.dataset.x1 = x1;
+                    area.dataset.y1 = y1;
+                    area.dataset.x2 = x2;
+                    area.dataset.y2 = y2;
+
+                    area.href = `https://imagedelivery.net/LJW9TBw5H2BwGc8uUBxFZA/${img_id}/public`;
+
+                    map.appendChild(area);
+                }
+
+                // ---- Responsive scaling logic ----
+                function rescaleMap() {
+                    const naturalWidth = img.naturalWidth;
+                    const displayedWidth = img.clientWidth;
+                    const scale = displayedWidth / naturalWidth;
+
+                    Array.from(map.querySelectorAll("area")).forEach(area => {
+                        const xs = [
+                            Math.round(area.dataset.x1 * scale),
+                            Math.round(area.dataset.y1 * scale),
+                            Math.round(area.dataset.x2 * scale),
+                            Math.round(area.dataset.y2 * scale)
+                        ];
+                        area.coords = xs.join(",");
+                    });
+                }
+
+                // Wait for the image's real dimensions
+                if (img.complete) {
+                    rescaleMap();
+                } else {
+                    img.onload = rescaleMap;
+                }
+
+                // Re-scale on window resize
+                window.addEventListener("resize", rescaleMap);
+
+            })();
         </script>
 
-        <iframe src="images.html"></iframe>
-    </div>    
+
+    </div>
 </body>
 
 </html>

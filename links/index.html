@@ -61,15 +61,15 @@
             })
         })
 
-        // update default sitemap with link paths
-        let SITEMAP = JSON.parse(sessionStorage.getItem('sitemap'));
-        console.log(SITEMAP)
-        SITEMAP['links'] = {};
-        for(let l = 0; l < link_paths.length; l++) {
-            let link = link_paths[l].replace('.md', '');
-            SITEMAP['links']['#'+link] = {}
-        }
-        sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
+        // // update default sitemap with link paths
+        // let SITEMAP = JSON.parse(sessionStorage.getItem('sitemap'));
+        // console.log(SITEMAP)
+        // SITEMAP['links'] = {};
+        // for(let l = 0; l < link_paths.length; l++) {
+        //     let link = link_paths[l].replace('.md', '');
+        //     SITEMAP['links']['#'+link] = {}
+        // }
+        // sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
 
     </script>
     <script src="../template/template.js"></script>

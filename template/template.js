@@ -19,7 +19,7 @@ function buildUI(data) {
     const DOMAIN_ROOT = firstPathSegment ? `/${firstPathSegment}/` : '/';
     const rootPath = window.location.pathname.split('/').filter(Boolean);
 
-
+    // TODO check if the nav elements exist
     const et = document.querySelector(`.${classMap.Top}`);
     const el = document.querySelector(`.${classMap.Left}`);
     const currentPath = rootPath.join('/');
@@ -163,15 +163,17 @@ function loadScript(url, callback) {
 window.addEventListener('load', ()=>{
     // fetchSitemap();
 
-    let SITEMAP = sessionStorage.getItem('sitemap');
-    if (!SITEMAP) {
+    // let SITEMAP = sessionStorage.getItem('sitemap');
+    // if (!SITEMAP) {
         SITEMAP = {
             ".": {},
             "webring": {},
             "photo": {},
             "music": {},
             "books": {},
-            // "links": {},
+            "links": {
+                "articles": {}
+            },
             "genart": {},
             // "doodles": {},
             "advent": {
@@ -184,11 +186,11 @@ window.addEventListener('load', ()=>{
                 "day7": {}
             },
         };
-        sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
-    }
-    else {
-        SITEMAP = JSON.parse(SITEMAP);
-    }
+        // sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
+    // }
+    // else {
+    //     SITEMAP = JSON.parse(SITEMAP);
+    // }
     buildUI(SITEMAP);
 
 

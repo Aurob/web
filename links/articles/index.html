@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../../template/template.css">
+    <link rel="icon" href="" type="image/x-icon">
+
+    <style>
+
+        :root {
+            --global-blue: color(display-p3 0.231 0.309 0.355);
+            --global-dark-blue: color(display-p3 0.157 0.192 0.208);
+            --global-white: color(display-p3 0.985 0.985 0.95);
+            --global-orange: color(display-p3 1 0.6 0.4);
+            --global-yellow: color(display-p3 0.95 0.85 0.5);
+        }
+
+
+        html {
+            font-family: monospace;
+            height: 100%;
+            width: 100%;
+            background-color: var(--global-blue);
+            box-sizing: border-box;
+            font-size: clamp(12px, 4vw, 16px);
+
+        }
+
+        body {
+            margin: 0;
+            padding: 2em;
+            box-sizing: border-box;
+            background-color: var(--global-blue);
+            position: relative; /* Establish a containing block for absolute positioning */
+            z-index: -3;
+            min-height: 100vh; /* Ensures at least full viewport height */
+            /* width: 100%; */
+            overflow-x: hidden;
+            height: auto; /* Let content grow, but min-height keeps at least 100% */
+        }
+
+        body a {
+            color: var(--global-yellow);
+        }
+        body a:hover {
+            color: var(--global-orange);
+        }
+
+        #site_cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            border: solid;
+            width: 20vw;
+            height: fit-content;
+            margin: .25vw;
+
+
+            .title, .site {
+                word-break: break-word;
+                padding: .5vw;
+            }
+
+            .summary {
+                padding: 1vw;
+                color: var(--global-white);
+                background-color: var(--global-dark-blue);
+                font-family: system-ui;
+            }
+
+
+            .tags {
+                display: flex;
+                flex-wrap: wrap;
+                padding: .25vw;
+
+
+                .tag {
+                    padding: .25vw;
+                    margin: .25vw 0 0 .25vw;
+                }
+            }
+
+        }
+
+        #reload {
+            display: none;
+            justify-content: center;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb">
+            <div id="wr-widget"></div>
+        </div>
+        <div class="edge el"></div>
+    </div>
+
+    <div id="content">
+        <a id="reload" href="?">clear filters</a>
+        <div id="site_cards"></div>
+        <template id="site_card">
+            <div class="card">
+                <div class="title"></div>
+                <div class="site"></div>
+                <div class="summary"></div>
+                <hr>
+                <div class="tags general"></div>
+                <hr>
+                <div class="tags specific"></div>
+            </div>
+        </template>
+    </div>
+    <script src="gemini3_flash_summaries.js"></script>
+    <script>
+        //  Color generator helper — ChatGPT (OpenAI), 2025-12-25.
+        //  Prompt summary: concise JS function for colorful HSL bg + readable text.  
+        function randColor() {
+            const h = Math.random()*360;
+            const s = 80 + Math.random()*20;  // 80–100%
+            const l = 30 + Math.random()*40;  // 30–70% → gives balanced luminance
+            const bg = `hsl(${h}deg ${s}% ${l}%)`;
+
+            // HSL → RGB (short version)
+            const a = s/100 * Math.min(l/100, 1-l/100);
+            const f = t => {
+                const k = (t + h/30) % 12;
+                const c = l/100 - a * Math.max(-1, Math.min(k-3, 9-k, 1));
+                return c * 255;
+            };
+            const r = f(0), g = f(8), b = f(4);
+
+            // luminance
+            const y = 0.2126*r + 0.7152*g + 0.0722*b;
+            const text = y > 128 ? "color(display-p3 0.157 0.192 0.208)" : "color(display-p3 0.985 0.985 0.95)";
+
+            return { bg, text };
+        }
+    
+        const renderTags = (tags, container, link=true) => {
+            tags.forEach(tag => {
+                const tag_el = document.createElement('a');
+                const tag_color = tags_map[tag].color;
+                if(link)
+                    tag_el.href = '?tags='+tag;
+                tag_el.className = 'tag';
+                tag_el.innerText = tag;
+                tag_el.style.backgroundColor = tag_color.bg;
+                tag_el.style.color = tag_color.text;
+                
+                container.appendChild(tag_el);
+            });
+        };
+
+
+
+    </script>
+    <script>
+        
+        var site_cards = document.getElementById('site_cards');
+        const template = document.querySelector("#site_card");
+        const url_params = new URLSearchParams(window.location.search);
+        const url_tags = url_params.get('tags');
+
+        if(url_tags) {
+            document.getElementById('reload').style.display = 'flex';
+        }
+        
+        // Get the list of unique general and specific tags
+        var general_tags = [];
+        var specific_tags = [];
+        var tags = [];
+
+        for(let t of Object.keys(SUMMARIES)) {
+            let gtags = SUMMARIES[t].general_tags.map(tag=>{ return {tag, type: "general"}});
+            let stags = SUMMARIES[t].specific_tags.map(tag=>{ return {tag, type: "specific"}});
+
+            tags.push(...gtags, ...stags);
+        }
+
+        tags = [...new Set(tags)]
+
+        var colors = []
+        var tags_map = {};
+        // Create a unique color for each tag
+        for(let t = 0; t < tags.length; t++) {
+            let tag = tags[t];
+            let t_color = randColor();
+            while(colors.includes(t_color)) {
+                t_color = randColor();
+            }
+            colors.push(t_color);
+
+            tag.color = t_color;
+
+            tags_map[tag.tag] = tag;
+        }
+
+        for(let s = 0; s < Object.keys(SUMMARIES).length; s++) {
+            let site = Object.keys(SUMMARIES)[s];
+            let site_summary = SUMMARIES[site];
+
+            const clone = document.importNode(template.content, true);
+            
+            let title = clone.querySelector('.title');
+            let site_title = site_summary.title;
+            title.innerHTML = `<a href="${site}">${site_title}</a>`;
+
+
+            let site_host = clone.querySelector('.site');
+            let site_url = new URL(site);
+            site_host.innerHTML = `<a href="${site_url.origin}">${site_url.hostname}</a>`;
+            
+            let summary = clone.querySelector('.summary');
+            summary.innerText = site_summary.summary;
+
+            if(url_tags && !site_summary.general_tags.includes(url_tags)) continue;
+
+            let tags_general = clone.querySelector('.tags.general');
+            let tags_specific = clone.querySelector('.tags.specific');
+
+            renderTags(site_summary.general_tags, tags_general);
+            renderTags(site_summary.specific_tags, tags_specific, false);
+
+            site_cards.appendChild(clone);
+        }
+
+    </script>
+    <script src="../../../template/template.js"></script>
+</body>
+</html>
