@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../../template/template.css">
+    <link rel="icon" href="" type="image/x-icon">
+    <script src="../../template/template.js"></script>
+</head>
+
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb">
+            <div id="wr-widget"></div>
+        </div>
+        <div class="edge el"></div>
+    </div>
+    <div id="content">
+        learning live coding and generative music.<br>
+        <script src="https://unpkg.com/@strudel/embed@latest"></script>
+        <script src="https://unpkg.com/@strudel/repl@latest"></script>
+
+        <div id="input" >
+            <code>
+                <pre contenteditable="true">
+                </pre>
+            </code>
+        </div>
+
+        <strudel-repl>
+        <!--
+setcps(4)
+$:note("[c3 e3 g3 c2]/2, <g3 c2>/4")
+// .speed("<1 2 3 -1 -2 -3>")
+.sound("piano")
+//.vowel("<[u o] <y e>>")
+.adsr(".1:.1:.5:.2")
+.scale("<c#:major cb:minor eb:major>/8")
+        -->
+        </strudel-repl>
+    </div>
+</body>
+
+</html>

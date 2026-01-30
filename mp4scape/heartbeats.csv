@@ -1,0 +1,29 @@
+Difficulty,Animal,Min BPM,Max BPM,Avg BPM,Seconds per Beat
+Very Easy,Blue whale,4,8,6,10.000
+Very Easy,Camel,25,32,28.5,2.105
+Very Easy,Elephant,25,35,30,2.000
+Very Easy,Horse,28,44,36,1.667
+Very Easy,Lion,40,75,57.5,1.043
+Very Easy,Cow,40,80,60,1.000
+Easy,Gorilla,60,85,73,0.822
+Easy,Dog (large),60,90,75,0.800
+Easy,Tiger,56,97,76.5,0.784
+Easy,Human (resting),60,100,80,0.750
+Easy,Sheep/Goat,70,90,80,0.750
+Easy,Pig,70,120,95,0.632
+Easy,Cheetah,110,130,120,0.500
+Easy,Dog (small),100,140,120,0.500
+Medium,Cat,140,220,180,0.333
+Medium,Guinea pig,130,300,215,0.279
+Medium,Rabbit,130,325,230,0.261
+Medium,Rhesus monkey,160,330,245,0.245
+Medium,Chicken,250,300,275,0.218
+Medium,Ferret,300,400,350,0.171
+Hard,Rat,260,450,355,0.169
+Hard,Gerbil,250,500,375,0.160
+Hard,Hamster,450,600,525,0.114
+Hard,Mouse,500,700,600,0.100
+Hard,Bat,100,970,750,0.080
+Hard,Small songbird,500,1000,750,0.080
+Very Hard,Shrew,800,1200,1000,0.060
+Very Hard,Hummingbird,1000,1260,1130,0.053

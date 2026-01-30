@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Barcode Scanner</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: monospace; background: #000; color: #fff; }
+
+        #videoContainer {
+            width: 100vw;
+            height: 50vh;
+            position: relative;
+            background: #000;
+        }
+        #videoContainer.hidden { display: none; }
+        #video { width: 100%; height: 100%; object-fit: cover; }
+
+        #controls {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #000;
+            border-bottom: 1px solid #333;
+        }
+
+        button {
+            padding: 10px 15px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #fff;
+            background: #000;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:active { background: #333; }
+
+        #scans {
+            list-style: none;
+            padding: 10px;
+            background: #000;
+            height: calc(50vh - 51px);
+            overflow-y: auto;
+        }
+        #scans li {
+            padding: 8px;
+            margin-bottom: 1px;
+            background: #111;
+            border-left: 2px solid #fff;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div id="controls">
+    <button id="toggleCamera">Stop Camera</button>
+    <button id="toggleVideo">Hide Video</button>
+    <button id="scanBtn">Start Scan</button>
+    <span id="status" style="padding: 10px;">Ready</span>
+</div>
+
+<div id="videoContainer">
+    <video id="video" autoplay playsinline muted></video>
+</div>
+
+<ul id="scans"></ul>
+
+<script>
+const video = document.getElementById('video');
+const videoContainer = document.getElementById('videoContainer');
+const scansList = document.getElementById('scans');
+const statusDiv = document.getElementById('status');
+const scanBtn = document.getElementById('scanBtn');
+const toggleVideoBtn = document.getElementById('toggleVideo');
+const toggleCameraBtn = document.getElementById('toggleCamera');
+
+let stream = null;
+let allScans = [];
+let isProcessing = false;
+let scanInterval = null;
+let audioContext = null;
+let videoVisible = true;
+let cameraActive = false;
+let isScanning = false;
+
+function initAudio() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+}
+
+function beep() {
+    initAudio();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+}
+
+function startCamera() {
+    navigator.mediaDevices.getUserMedia({
+        video: {
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            facingMode: 'environment'
+        }
+    })
+    .then(s => {
+        stream = s;
+        video.srcObject = stream;
+        cameraActive = true;
+        statusDiv.textContent = "Ready";
+        toggleCameraBtn.textContent = "Stop Camera";
+    })
+    .catch(err => {
+        statusDiv.textContent = "Error: " + err.message;
+    });
+}
+
+function stopCamera() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        stream = null;
+        cameraActive = false;
+        statusDiv.textContent = "Camera Off";
+        toggleCameraBtn.textContent = "Start Camera";
+        stopScanning();
+    }
+}
+
+function toggleCamera() {
+    if (cameraActive) {
+        stopCamera();
+    } else {
+        startCamera();
+    }
+}
+
+function sendFrame() {
+    if (isProcessing || !video.videoWidth || !cameraActive) return;
+    isProcessing = true;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0);
+    const dataURL = canvas.toDataURL("image/png");
+
+    fetch("/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataURL })
+    })
+    .then(res => res.json())
+    .then(data => {
+        statusDiv.textContent = data.detections > 0 ? `Detecting ${data.detections}` : "Scanning...";
+        if(data.new_scans && data.new_scans.length) {
+            data.new_scans.forEach(s => {
+                addScan(s);
+                beep();
+            });
+        }
+        isProcessing = false;
+    })
+    .catch(err => {
+        console.error(err);
+        isProcessing = false;
+    });
+}
+
+function addScan(scan) {
+    allScans.push(scan);
+    const li = document.createElement("li");
+    li.textContent = `${scan.type}: ${scan.value}`;
+    scansList.insertBefore(li, scansList.firstChild);
+}
+
+function startScanning() {
+    if (!cameraActive) return;
+    initAudio();
+    isScanning = true;
+    statusDiv.textContent = "Scanning...";
+    scanBtn.textContent = "Stop Scan";
+    if (!scanInterval) {
+        scanInterval = setInterval(sendFrame, 300);
+    }
+}
+
+function stopScanning() {
+    isScanning = false;
+    statusDiv.textContent = cameraActive ? "Ready" : "Camera Off";
+    scanBtn.textContent = "Start Scan";
+    if (scanInterval) {
+        clearInterval(scanInterval);
+        scanInterval = null;
+    }
+}
+
+function toggleScanning() {
+    if (isScanning) {
+        stopScanning();
+    } else {
+        startScanning();
+    }
+}
+
+function toggleVideo() {
+    videoVisible = !videoVisible;
+    videoContainer.classList.toggle('hidden');
+    toggleVideoBtn.textContent = videoVisible ? "Hide Video" : "Show Video";
+}
+
+toggleVideoBtn.addEventListener('click', toggleVideo);
+toggleCameraBtn.addEventListener('click', toggleCamera);
+scanBtn.addEventListener('click', toggleScanning);
+
+startCamera();
+</script>
+</body>
+</html>
+

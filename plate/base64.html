@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Base64 Word Filter</title>
+<style>
+  body { font-family: system-ui, monospace; margin: 1rem; }
+  pre { white-space: pre-wrap; max-height: 70vh; overflow: auto; }
+</style>
+</head>
+<body>
+
+<input type="file" id="file" accept=".txt">
+<div id="status"></div>
+<pre id="out"></pre>
+
+<script>
+const fileInput = document.getElementById("file");
+const statusEl  = document.getElementById("status");
+const outEl     = document.getElementById("out");
+
+const VALID = /^[A-Z0-9]{1,7}$/; // <= changed
+const CHUNK = 5000;
+
+fileInput.onchange = async () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const text = await file.text();
+  const lines = text.split(/\r?\n/);
+
+  let results = [];
+  let i = 0;
+
+  function processChunk() {
+    const end = Math.min(i + CHUNK, lines.length);
+    for (; i < end; i++) {
+      const w = lines[i].trim();
+      if (!w) continue;
+
+      //const b64 = btoa(w).replace(/=+$/, "");
+      const b64 = btoa(w.toUpperCase()).replace(/=+$/, "");
+      if (VALID.test(b64)) {
+        results.push(`${w} → ${b64}`);
+      }
+    }
+
+    statusEl.textContent = `Processed ${i}/${lines.length}`;
+
+    if (i < lines.length) {
+      requestIdleCallback(processChunk);
+    } else {
+      statusEl.textContent = `Done. Matches: ${results.length}`;
+      outEl.textContent = results.join("\n");
+    }
+  }
+
+  processChunk();
+};
+</script>
+
+</body>
+</html>

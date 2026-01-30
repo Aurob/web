@@ -1,0 +1,290 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyvrb}
+
+\definecolor{promptblue}{RGB}{50,100,150}
+\definecolor{examplegray}{RGB}{245,245,245}
+\definecolor{warnred}{RGB}{180,60,60}
+\definecolor{successgreen}{RGB}{60,130,60}
+
+\titleformat{\section}{\large\bfseries\color{promptblue}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+\tcbset{
+    promptbox/.style={
+        colback=examplegray,
+        colframe=promptblue,
+        boxrule=0.5pt,
+        arc=2pt,
+        left=6pt,
+        right=6pt,
+        top=6pt,
+        bottom=6pt,
+        fontupper=\ttfamily\small
+    },
+    warnbox/.style={
+        colback=red!5,
+        colframe=warnred,
+        boxrule=0.5pt,
+        arc=2pt,
+        left=6pt,
+        right=6pt,
+        top=6pt,
+        bottom=6pt
+    },
+    successbox/.style={
+        colback=green!5,
+        colframe=successgreen,
+        boxrule=0.5pt,
+        arc=2pt,
+        left=6pt,
+        right=6pt,
+        top=6pt,
+        bottom=6pt
+    }
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\textbf{Forcing LaTeX Output from LLMs}}\\[0.5em]
+{\large A Prompt Engineering Guide}\\[0.3em]
+{\small Preserving creative intent while specifying technical format}
+\end{center}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+\section{The Core Problem}
+
+You want two things simultaneously:
+
+\begin{enumerate}
+    \item \textbf{Creative/contextual output} --- the LLM should think, invent, maintain voice, preserve narrative intent
+    \item \textbf{Strict formatting} --- output must be valid, compilable LaTeX
+\end{enumerate}
+
+These goals can conflict. Over-specifying format can flatten creativity. Under-specifying format gets you markdown or plaintext with \verb|\textbf{}| sprinkled in randomly.
+
+\section{The Key Insight}
+
+\textbf{Separate the WHAT from the HOW.}
+
+Structure your prompt in layers:
+
+\begin{enumerate}
+    \item Creative/contextual instruction (what to generate)
+    \item Format specification (how to encode it)
+    \item Output wrapper (force the container)
+\end{enumerate}
+
+\section{Prompt Templates}
+
+\subsection{Template 1: The Wrapper Method}
+
+Wrap your creative prompt, then specify output format as a \textit{container} constraint.
+
+\begin{tcolorbox}[promptbox]
+[Your full creative prompt here --- character, setting, \\
+intent, style, all the context you've built up]\\
+\\
+-{}-{}-\\
+\\
+Generate this in LaTeX. Output ONLY the complete .tex file, \\
+starting with \textbackslash documentclass and ending with \\
+\textbackslash end\{document\}. No explanation, no markdown \\
+code fences, no preamble. Just the raw LaTeX.
+\end{tcolorbox}
+
+\begin{tcolorbox}[successbox]
+\textbf{Why it works:} The creative instruction gets full attention first. The format spec comes as a \textit{delivery mechanism}, not a constraint on the content itself.
+\end{tcolorbox}
+
+\subsection{Template 2: The Role + Format Method}
+
+Assign a role that \textit{implies} LaTeX fluency, then make format feel natural.
+
+\begin{tcolorbox}[promptbox]
+You are a writer who drafts everything in LaTeX because you \\
+love typographic control. You think in LaTeX---section breaks, \\
+emphasis, structured lists are how your mind organizes ideas.\\
+\\
+[Creative prompt here]\\
+\\
+Draft this as you naturally would---as a .tex file ready to compile.
+\end{tcolorbox}
+
+\begin{tcolorbox}[successbox]
+\textbf{Why it works:} The format becomes \textit{characterization} rather than constraint. The LLM isn't ``translating to LaTeX''---it's ``being someone who writes in LaTeX.''
+\end{tcolorbox}
+
+\subsection{Template 3: The Specific Structure Method}
+
+When you want particular LaTeX features (colors, boxes, specific packages), specify them as \textit{tools available} rather than requirements.
+
+\begin{tcolorbox}[promptbox]
+[Creative prompt]\\
+\\
+Output as LaTeX with the following available to you:\\
+- xcolor for emphasis (define your own semantic colors)\\
+- tcolorbox for callouts or asides\\
+- enumitem for flexible lists\\
+- titlesec if you want styled headers\\
+\\
+Use whatever serves the content. Full .tex file, documentclass \\
+through end\{document\}.
+\end{tcolorbox}
+
+\begin{tcolorbox}[successbox]
+\textbf{Why it works:} Framing packages as ``available tools'' rather than ``required elements'' gives the LLM creative latitude while ensuring it knows what's possible.
+\end{tcolorbox}
+
+\section{Anti-Patterns (What NOT to Do)}
+
+\begin{tcolorbox}[warnbox]
+\textbf{Don't: Over-specify structure before content}
+
+\begin{Verbatim}[fontsize=\small]
+Write a LaTeX document with:
+- 3 sections
+- 2 subsections per section  
+- A tcolorbox every 200 words
+- [creative stuff here]
+\end{Verbatim}
+
+This makes the LLM think about \textit{structure} first, \textit{content} second. You get compliant but lifeless output.
+\end{tcolorbox}
+
+\begin{tcolorbox}[warnbox]
+\textbf{Don't: Mix markdown and LaTeX instructions}
+
+\begin{Verbatim}[fontsize=\small]
+Write this as **LaTeX** with `\section{}` headers...
+\end{Verbatim}
+
+Mixing markup languages in the prompt confuses the output parser. The LLM may produce hybrid garbage.
+\end{tcolorbox}
+
+\begin{tcolorbox}[warnbox]
+\textbf{Don't: Forget the document wrapper}
+
+If you just say ``output in LaTeX,'' you might get fragments---a bunch of \verb|\section{}| and \verb|\textbf{}| without the documentclass, packages, or begin/end document. Always specify ``complete .tex file'' or ``compilable document.''
+\end{tcolorbox}
+
+\section{Preserving Context Across Format Shifts}
+
+When you've built up context (like our Persistence conversation), and you want to shift to LaTeX output mid-conversation:
+
+\subsection{The Pivot Prompt}
+
+\begin{tcolorbox}[promptbox]
+<angle brackets for meta-commentary, not part of output>\\
+\\
+Take everything we've developed---the world, the tone, the \\
+themes, the unresolved questions---and generate [specific thing].\\
+\\
+Output as LaTeX. The format should SERVE the content: use \\
+structure to organize thinking, emphasis to mark importance, \\
+color/boxes if they help distinguish idea-types.\\
+\\
+Complete .tex file. No explanation outside the document.
+\end{tcolorbox}
+
+\subsection{Why Angle Brackets / Meta-Commentary}
+
+Using a consistent marker for ``this is instruction, not content'' helps the LLM distinguish:
+
+\begin{itemize}
+    \item \texttt{<like this>} --- meta-level, about the output
+    \item Everything else --- content-level, part of the output
+\end{itemize}
+
+Your original prompt did this intuitively:
+
+\begin{tcolorbox}[promptbox]
+< beautiful, thanks>\\
+<Can you just make a brainstorm style crude note dump...>
+\end{tcolorbox}
+
+The angle brackets signaled: ``this is me talking \textit{about} what I want, not dialogue to include.''
+
+\section{Advanced: Encoding Creative Constraints in LaTeX}
+
+You can use LaTeX structure itself to \textit{embody} creative constraints:
+
+\begin{tcolorbox}[promptbox]
+Generate a document where:\\
+\\
+- \textbackslash section\{\} = major thematic shifts\\
+- \textbackslash subsection\{\} = sub-arguments or variations\\
+- \textcolor{blue}{blue text} = unresolved questions\\
+- \textcolor{red}{red text} = warnings/dangers/things to avoid\\
+- \textcolor{green}{green text} = promising directions\\
+- tcolorbox = ideas that need isolation/emphasis\\
+\\
+The structure IS the thinking. Let the LaTeX organization \\
+reflect how the ideas relate.
+\end{tcolorbox}
+
+This turns LaTeX from ``output format'' into ``thinking tool''---the LLM uses the structure to \textit{organize} its generation, not just \textit{encode} it.
+
+\section{Quick Reference: The Minimal Effective Prompt}
+
+If you just need LaTeX output and don't want to overthink it:
+
+\begin{tcolorbox}[promptbox]
+[Your creative prompt, complete with all context]\\
+\\
+Output as a complete, compilable LaTeX document. \\
+Start with \textbackslash documentclass, end with \textbackslash end\{document\}. \\
+No markdown, no explanation, no code fences. Just the .tex file.
+\end{tcolorbox}
+
+That's usually enough. The key elements:
+
+\begin{enumerate}
+    \item ``Complete, compilable'' --- not fragments
+    \item ``Start with... end with...'' --- explicit boundaries
+    \item ``No markdown, no explanation'' --- prevent contamination
+    \item ``Just the .tex file'' --- reinforces raw output
+\end{enumerate}
+
+\section{Why This Worked in Our Conversation}
+
+Your prompt:
+
+\begin{tcolorbox}[promptbox]
+<Can you just make a brainstorm style crude note dump of \\
+ideas and style choices and caveats and directions, you feel \\
+me. Generate in LaTeX>
+\end{tcolorbox}
+
+Effective because:
+
+\begin{enumerate}
+    \item \textbf{Context was pre-loaded} --- we'd built the world together
+    \item \textbf{``Brainstorm style crude note dump''} --- gave permission for messy/authentic thinking
+    \item \textbf{``you feel me''} --- signaled trust in my interpretation
+    \item \textbf{``Generate in LaTeX''} --- clear format spec, came AFTER the creative instruction
+\end{enumerate}
+
+The creative latitude came first. The format was the delivery vehicle.
+
+\vspace{2em}
+\hrule
+\vspace{1em}
+
+\begin{center}
+\textit{The format should serve the content.}\\
+\textit{Specify what you want made, then how you want it wrapped.}\\
+\textit{Trust the LLM to use the tools if you make them available.}
+\end{center}
+
+\end{document}

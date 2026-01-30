@@ -194,7 +194,7 @@ window.addEventListener('load', ()=>{
     buildUI(SITEMAP);
 
 
-    loadScript("/webring/wr.js", () => {
+    loadScript("https://cdn.dump.garden/wr/wr.js?", () => {
         console.log("wr.js loaded");
     });
 })

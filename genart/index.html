@@ -50,6 +50,7 @@
 
     </p>
   </div>
+  <script src="../template/template.js"></script>
   <script>
 
     const links = document.getElementById('links');
@@ -59,10 +60,11 @@
 
     // update default sitemap with link paths
     let SITEMAP = JSON.parse(sessionStorage.getItem('sitemap'));
-    SITEMAP['genart'] = {};
+    console.log(SITEMAP)
+    // SITEMAP['genart'] = {};
     for (let l = 0; l < paths.length; l++) {
       let link = paths[l];
-      SITEMAP['genart'][link] = {}
+      // SITEMAP['genart'][link] = {}
 
       // add to links element
       links.innerHTML += `<a href="${link}" target=_blank>${link}</a>`;
@@ -70,7 +72,6 @@
     sessionStorage.setItem('sitemap', JSON.stringify(SITEMAP));
 
   </script>
-  <script src="../template/template.js"></script>
 </body>
 
 </html>
