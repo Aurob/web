@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>hermes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="rau, contact@rau.lol">
+    <meta name="description" content="hermes projects">
+    <link rel="shortcut icon" href="../template/template.ico">
+    <link rel="stylesheet" type="text/css" href="../template/template.css">
+    <link rel="icon" href="../template/template.ico" type="image/x-icon">
+</head>
+<body>
+    <div id="nav">
+        <div class="edge et"></div>
+        <div class="edge eb"><div id="wr-widget"></div></div>
+        <div class="edge el"></div>
+    </div>
+    <div id="content">
+        <p>
+            Projects built with <a href="https://hermes-agent.nousresearch.com/" target="_blank">Hermes Agent</a>.
+            <br><br>
+            <a href="/hermes/">force graph view</a>
+        </p>
+    </div>
+    <script src="../template/template.js"></script>
+    <script>
+        const linkMap = {
+            "dump": "/hermes/dump/",
+            "imgmap": "/hermes/imgmap/",
+            "wiki": "/hermes/wiki/",
+            "workout": "/hermes/workout/",
+            "todo": "/hermes/todo/",
+            "bgtest": "/hermes/bgtest/",
+            "cats": "/hermes/cats/",
+            "reminders": "/hermes/reminders/",
+            "arena_proc": "/hermes/arena_proc/",
+            "monad": "/hermes/monad/",
+            "catalog": "/catalog/",
+            "scan2": "/scan2/",
+            "srszk": "/srszk/",
+            "gitedit": "/gitedit/",
+            "write": "/write/",
+            "openjobs": "/openjobs/",
+            "minds": "/minds/"
+        };
+        document.querySelectorAll('.el a').forEach(a => {
+            const name = a.textContent.trim();
+            if (linkMap[name]) a.href = linkMap[name];
+        });
+    </script>
+</body>
+</html>

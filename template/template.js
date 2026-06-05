@@ -12,12 +12,17 @@ function buildUI(data) {
     };
 
     const ebLinks = [''];
-    let firstPathSegment = window.location.pathname.split('/').filter(Boolean)[0];
-    if (firstPathSegment && !firstPathSegment.includes('.')) {
-        firstPathSegment = undefined;
-    }
-    const DOMAIN_ROOT = firstPathSegment ? `/${firstPathSegment}/` : '/';
-    const rootPath = window.location.pathname.split('/').filter(Boolean);
+    // Set BASE_PATH to the deploy prefix (e.g. '/web') or '' for root deployment.
+    // Everything else derives from this single value.
+    const BASE_PATH = window.__BASE_PATH !== undefined ? window.__BASE_PATH : '/web';
+    const baseParts = BASE_PATH.split('/').filter(Boolean); // e.g. ['web'] or []
+    const DOMAIN_ROOT = BASE_PATH ? `${BASE_PATH}/` : '/';
+
+    const fullPath = window.location.pathname.split('/').filter(Boolean);
+    // Strip the base prefix so rootPath only contains sitemap-relevant segments
+    const rootPath = (baseParts.length && fullPath.slice(0, baseParts.length).join('/') === baseParts.join('/'))
+        ? fullPath.slice(baseParts.length)
+        : fullPath;
 
     // TODO check if the nav elements exist
     const et = document.querySelector(`.${classMap.Top}`);
@@ -31,7 +36,7 @@ function buildUI(data) {
     // Determine the current hierarchy and display appropriate links
     let dataCopy = data;
     let parentHref = DOMAIN_ROOT;
-    let isRoot = currentPath == firstPathSegment || rootPath.length === 0;
+    let isRoot = rootPath.length === 0;
     // rootPath.forEach((segment, index) => {
     let page_subs = dataCopy;
 
@@ -53,17 +58,13 @@ function buildUI(data) {
         }
     };
 
-    // Add "back" link if on 3rd level or deeper
+    // Add "back" link if on 2nd level or deeper
     if (rootPath.length > 1) {
-        // console.log(DOMAIN_ROOT, rootPath, currentPath);
-        const parentPath = rootPath.slice(0, -1).join('/');
-        // Make back link stand out with bold text and a slightly different color
         createLink('back', `../`, et);
     }
 
     // Add "home" link if not on the homepage
-    if (currentPath !== firstPathSegment) {
-        // console.log(firstPathSegment, currentPath)
+    if (!isRoot) {
         createLink('home', DOMAIN_ROOT, et);
     }
 
@@ -76,7 +77,7 @@ function buildUI(data) {
 
     for(let s = 0; s < rootPath.length; s++) {
         let segment = rootPath[s];
-        // if (segment === firstPathSegment) return;
+        
         if (page_subs && page_subs[segment]) {
             let show_siblings = false;
 
@@ -168,6 +169,7 @@ window.addEventListener('load', ()=>{
         SITEMAP = {
             ".": {},
             "webring": {},
+            "gamedev": {},
             "photo": {},
             "music": {},
             "books": {},
@@ -175,6 +177,25 @@ window.addEventListener('load', ()=>{
                 "articles": {}
             },
             "genart": {},
+            "hermes": {
+                "dump": {},
+                "imgmap": {},
+                "wiki": {},
+                "workout": {},
+                "todo": {},
+                "bgtest": {},
+                "cats": {},
+                "reminders": {},
+                "arena_proc": {},
+                "monad": {},
+                "catalog": {},
+                "scan2": {},
+                "srszk": {},
+                "gitedit": {},
+                "write": {},
+                "openjobs": {},
+                "minds": {}
+            },
             // "doodles": {},
             "advent": {
                 "day1": {},

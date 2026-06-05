@@ -105,9 +105,12 @@ a {
     overflow: scroll;
 }
 
+.edge.el {
+    padding-top: 2em;
+}
+
 .el > a {
     padding-left: .8em;
-    padding-top: 2em;
 }
 
 .et {
