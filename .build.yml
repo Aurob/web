@@ -4,9 +4,15 @@ packages:
 - hut
 environment:
   site: rau.srht.site
+secrets:
+  - webg
 tasks:
 - package: |
     cd web
     tar -cvz . > ../site.tar.gz
 - upload: |
     hut pages publish -d $site site.tar.gz
+- mirror: |
+    cd web
+    git remote add github git@github.com:aurob/web.git
+    git push --mirror github
