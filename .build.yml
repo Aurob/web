@@ -5,7 +5,7 @@ packages:
 environment:
   site: rau.srht.site
 secrets:
-  - webg
+  - e7a0f0ec-1757-4b43-a14e-acfc4ca5dc5d
 tasks:
 - package: |
     cd web
