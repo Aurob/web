@@ -1,41 +1,36 @@
+environment:
+  site: rau.srht.site
+  github_repo: git@github.com:aurob/web.git
+  repo: web
+
 image: alpine/edge
-oauth: pages.sr.ht/PAGES:RW
+
 packages:
 - hut
 - git
 - openssh-client
-environment:
-  site: rau.srht.site
-  repo: web
-  github_repo: git@github.com:aurob/web.git
-  github_key: ~/.ssh/e7a0f0ec-1757-4b43-a14e-acfc4ca5dc5d
 
 secrets:
-  - e7a0f0ec-1757-4b43-a14e-acfc4ca5dc5d
+- f19991f7-356b-4348-91bc-734d5f3ffffd
+
 sources:
-  - https://git.sr.ht/~rau/web
+- "git@git.sr.ht:~rau/web"
 
 tasks:
 - package: |
     cd web
     tar -cvz . > ../site.tar.gz
+    
 - upload: |
     hut pages publish -d $site site.tar.gz
-- mirror: |
-    cd web
-    git remote add github git@github.com:aurob/web.git
-    git push --mirror github
-- push-to-github: |
-    set -eu
+    
+- push-to-github: |-
     cd "$repo"
-
-    mkdir -p ~/.ssh
-    chmod 700 ~/.ssh
+    
     ssh-keyscan github.com >> ~/.ssh/known_hosts
-    chmod 600 "$github_key"
-
+    
     git remote add github "$github_repo" || git remote set-url github "$github_repo"
-
-    # Push current SourceHut commit to GitHub main
-    GIT_SSH_COMMAND="ssh -i $github_key -o IdentitiesOnly=yes" \
-      git push github HEAD:main
+    
+    git push github HEAD:main
+    
+oauth: pages.sr.ht/PAGES:RW
