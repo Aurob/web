@@ -29,8 +29,9 @@ tasks:
     
     ssh-keyscan github.com >> ~/.ssh/known_hosts
     
-    git remote add github "$github_repo" || git remote set-url github "$github_repo"
-    
-    git push github HEAD:main
+    git remote add github git@github.com:aurob/web.git || \
+      git remote set-url github git@github.com:aurob/web.git
+
+    git push github +HEAD:refs/heads/main
     
 oauth: pages.sr.ht/PAGES:RW
